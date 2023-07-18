@@ -7,6 +7,9 @@ output:
 #  html_document: 
 #    number_sections: yes
 #    toc: yes
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r setup, include=FALSE}
@@ -30,27 +33,29 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## Overview of Session 3+4
 
-What we do in Session 
+What we do in Session
 
 -   Useful background information
 -   Introduction into R and RStudio
 -   Refresher of Econometrics: OLS, 2SLS, and endogeneity
 -   How to estimate OLS and 2SLS in R
--   Practice exercise: estimation of linear regression and controlling for endogeneity
+-   Practice exercise: estimation of linear regression and controlling
+    for endogeneity
 
 ## Learning objectives of Session 3
 
-- Familiarize with R and RStudio (no rocket science!)
-- Become confident to use it 
-- Understand why we need econometrics: to have causal effects instead of (potentially spurious) simple correlations
-- Revisit the standard tools of econometrics: OLS, 2SLS
-- Apply linear regressions in R without and with endogeneity 
+-   Familiarize with R and RStudio (no rocket science!)
+-   Become confident to use it
+-   Understand why we need econometrics: to have causal effects instead
+    of (potentially spurious) simple correlations
+-   Revisit the standard tools of econometrics: OLS, 2SLS
+-   Apply linear regressions in R without and with endogeneity
 
 # Introduction into R and RStudio
 
 ## Some basics in R...
 
-To be able to use R, we need to understand: 
+To be able to use R, we need to understand:
 
 -   Surface of R and RStudio
 -   Packages
@@ -65,14 +70,13 @@ To be able to use R, we need to understand:
     -   from: <http://www.r-project.org>
 -   works best in combination with RStudio
     -   from: <https://posit.co/download/rstudio-desktop>
-- Sign up for Github (for version control): <https://github.com/>
-  - and download Github desktop: <https://desktop.github.com/>
+-   Sign up for Github (for version control): <https://github.com/>
+    -   and download Github desktop: <https://desktop.github.com/>
 
 ## Useful links
 
-Some introductory classes:
-Using R for Introductory Econometrics: 
--   <http://www.urfie.net/>
+Some introductory classes: Using R for Introductory Econometrics: -
+<http://www.urfie.net/>
 
 If you need help:
 
@@ -81,33 +85,40 @@ If you need help:
     -   <http://stats.stackexchange.com/questions/tagged/R>
     -   <http://stackoverflow.com/questions/tagged/r>
 
-## Github for  content + version control
+## Github for content + version control
+
 Once you have installed everything, and signed up for the necessary:
 
-- Go to <https://github.com/DennisRickert/IOIntroduction>, 
-  - click on ‘fork’, then 'fork' again. 
-  - then ‘code’, then ‘Open with Github desktop’
-- Open RStudio on your computer, click on ‘new project’, then browse to the folder that you just cloned the git repo into in
-Windows 
-- probably: C:/Users/Username/Documents/GitHub/IOIntroduction
+-   Go to <https://github.com/DennisRickert/IOIntroduction>,
+    -   click on 'fork', then 'fork' again.
+    -   then 'code', then 'Open with Github desktop'
+-   Open RStudio on your computer, click on 'new project', then browse
+    to the folder that you just cloned the git repo into in Windows
+-   probably: C:/Users/Username/Documents/GitHub/IOIntroduction
 
 ## Save your work in github
+
 In RStudio, once you have opened your project:
 
-- Click on ‘file’, ‘new file’, ‘Rmarkdown’, ‘PDF’, and save it (‘tutorial1’)
-- Click on ‘knit’
-- RMarkdown is a great way to have your report text and
-econometrics code in the same file
+-   Click on 'file', 'new file', 'Rmarkdown', 'PDF', and save it
+    ('tutorial1')
+-   Click on 'knit'
+-   RMarkdown is a great way to have your report text and econometrics
+    code in the same file
 
 ## Trying out Git
+
 In RStudio:
 
-- Head over to git on the top right hand side, select files you’d like to commit, click ‘commit’, add a message (e.g. ‘first
-commit’), and then click ‘commit’, then ‘push’
-- Git is a version control system that you can use to roll back to any version of your work
-- Commit frequently
-- You may want to add a branch, perhaps called ‘local’, so that you are not working on the ‘master’ (production) version
-You can have a look at your latest commit and push on github.com
+-   Head over to git on the top right hand side, select files you'd like
+    to commit, click 'commit', add a message (e.g. 'first commit'), and
+    then click 'commit', then 'push'
+-   Git is a version control system that you can use to roll back to any
+    version of your work
+-   Commit frequently
+-   You may want to add a branch, perhaps called 'local', so that you
+    are not working on the 'master' (production) version You can have a
+    look at your latest commit and push on github.com
 
 ## Surface of RStudio (using R)
 
@@ -140,40 +151,46 @@ Simple operations
 
 ## Console = similar to calculator:
 
-creating a  vector of 1 row and 5 columns. 
+creating a vector of 1 row and 5 columns.
+
 ```{r , echo=t}
 c(1,2,3,4,5)
 rbind(1:5)
 ```
+
 ## Console = similar to calculator:
- 
+
 creating a vector of 5 rows and 1 column
+
 ```{r , echo=t}
 cbind(1:5)
 ```
 
 ## Console = similar to calculator:
- 
+
 creating matrices. Alternative is function matrix()
+
 ```{r , echo=t}
 cbind(1:5,1:5)
 rbind(1:5,1:5)
 ```
 
-
 ## Practical Excercise
+
 1/ Type in calculator operations in console
 
 ## Functions
-|Command    |Description                              |
-|-----------|-----------------------------------------|
-|sqrt(x)    |square root of value x                   |
-|abs(x)     |absolute value of x                      |
-|exp(x)     |exponential of x                         |
-|log(x)     |natural logarithm of ln(x)               |
-|round(x,s) |round x to s digits after decimal point  |
+
+| Command    | Description                             |
+|------------|-----------------------------------------|
+| sqrt(x)    | square root of value x                  |
+| abs(x)     | absolute value of x                     |
+| exp(x)     | exponential of x                        |
+| log(x)     | natural logarithm of ln(x)              |
+| round(x,s) | round x to s digits after decimal point |
 
 ## Practical Excercise
+
 2/ Type in functions with x=5.34, s=1 in console
 
 # R scripts
@@ -197,7 +214,8 @@ rbind(1:5,1:5)
     -   ctrl + enter (all or selection)
 -   You should comment the scripts.
     -   Each line starting with \# will be ignored by R
-    -   Helps for documentation and to remember why you did what (for yourself and others)
+    -   Helps for documentation and to remember why you did what (for
+        yourself and others)
 
 ```{r , echo=t}
 # This is a comment for 3*8
@@ -205,31 +223,36 @@ rbind(1:5,1:5)
 ```
 
 ## Practical Excercise
+
 3/ Create new R script
 
-- File -> New File -> R Script
-- ctrl + shift + n
+-   File -\> New File -\> R Script
+-   ctrl + shift + n
 
 # Variables
 
 ## Variables: what are they?
-- Variables are similar to objects in other programs
-- Variables can be populated with a variety of content, e.g.,
-  - Numbers
-  - Vectors
-  - Matrices 
-  - Data sets
-  - Results from econometric estimations
-  - ...
 
-## Variables: create + operate 
-Create a new variable by assigning a value to it using “<-” 
+-   Variables are similar to objects in other programs
+-   Variables can be populated with a variety of content, e.g.,
+    -   Numbers
+    -   Vectors
+    -   Matrices
+    -   Data sets
+    -   Results from econometric estimations
+    -   ...
+
+## Variables: create + operate
+
+Create a new variable by assigning a value to it using "\<-"
+
 ```{r , echo=t}
 # Create vector x from 1 to 5 without printing 
 x <- c(1:5)
 ```
 
 Operate with variables
+
 ```{r , echo=t}
 # Create vector y = x+2
 y <- x + 2
@@ -238,22 +261,24 @@ y <- x + 2
 y
 ```
 
-- RStudio  shows the variable in the “Environment” panel. 
-- Print variable: type variable name and hit enter.
+-   RStudio shows the variable in the "Environment" panel.
+-   Print variable: type variable name and hit enter.
 
 ## Special functions for variables
-|Command    |Description                                           |
-|---------------|--------------------------------------------------|
-|x[i]           |i-th value within vector x                        |
-|length(x)      |length of vector x (number of elements)           |
-|min(x)         |minimum of vector x (smallest element)            |
-|max(x)         |maximum of vector x (largest element)             |
-|sum(x)         |sum of elements in vector x                       |
-|mean(x)        |mean of elements in vector x                      |
-|sort(x)        |sort elements in vector x (from lowest to largest)|
-|t(x)           |transpose vector x (exchange columns and rows)    |
 
-## Functions also work with vector x 
+| Command   | Description                                        |
+|-----------|----------------------------------------------------|
+| x[i]      | i-th value within vector x                         |
+| length(x) | length of vector x (number of elements)            |
+| min(x)    | minimum of vector x (smallest element)             |
+| max(x)    | maximum of vector x (largest element)              |
+| sum(x)    | sum of elements in vector x                        |
+| mean(x)   | mean of elements in vector x                       |
+| sort(x)   | sort elements in vector x (from lowest to largest) |
+| t(x)      | transpose vector x (exchange columns and rows)     |
+
+## Functions also work with vector x
+
 ```{r , echo=t}
 # Create vector x from 1 to 5. 
 x <- c(1:5)
@@ -262,135 +287,158 @@ x <- c(1:5)
 sqrt(x)
 ```
 
-Similarly, we can type: 
+Similarly, we can type:
 
-- abs(x)     
-- exp(x)     
-- log(x)     
-- round(x,s) 
-
+-   abs(x)\
+-   exp(x)\
+-   log(x)\
+-   round(x,s)
 
 # Data
 
 ## Create data (using data.frame)
-- Data: collection of vectors into columns and rows 
-  - similar to matrices and tables
-- Vectors often are variables; 
-  - the first row is the variable name x1,x2, …
-- Data.frame(x1,x2,…) 
-  - creates a data set consisting of vectors x1,x2,…
-- Extract vector x1 from data frame df 
-  - e.g., df\$x1
 
-## Useful functions for data frames (df)
-|Command    |Description                              |
-|-----------|-----------------------------------------|
-|names(df)  |variable names                           |
-|nrow(df)   |number of rows (i.e., observations)      |
-|ncol(df)   |number of columns (i.e., variable names) |
-|head(df)   |first 6 rows of data frame               |
-|tail(df)   |last 6 rows of data frame                |
+-   Data: collection of **vectors** into columns and rows
+    -   just like matrices and tables
+-   **Vectors** often are our variables c();
+    -   the first row is the variable name x1,x2, ...
+-   Function data.frame(x1,x2,...)
+    -   creates a data set consisting of vectors x1,x2,...
+-   Extract vector x1 from data frame df
+    -   e.g., df\$x1
 
 
-## Brief digression: Packages
+## Create data: Application
 
-We use the package ***rio*** to import data
-
-- we first see what packages are
-- Packages extend the functionality of R
-- To use the package ***rio*** (or others): 
-  - Download for each computer using: Menu -> Tools -> Install Packages … 
-  - or by typing install.packages(“rio”) and execute once
-- Activate once per session and script using library(“rio”)
-
-## Import data
-- R can import several types of data sets: xls, csv, txt, .dta, …
-- ***rio*** can detect the data type automatically
-- We use the command import from the package ***rio***
-
-## Practical Excercise
-
-5/ Import data and store in data frame df
-
-## Missing Data (na = no available)
-- mean(x1, na.rm=true) 
-  - drop missing values from calculation of mean
-- is.na(x1)
-  - Check if missing values (na) exist in your data
-- na.omit(df)
-  - Create new data frame with all missing values (na) omitted
-
-# Graphs
-
-## Graphs
-<blockquote>
-***“The simple graph has brought more information to the data analyst’s mind than any other device***” John Tukey
-<blockquote>
-
-<br>
-
-- Graphs are the most important toll for data analysis!!!
-- We use ggplot2, with gg standing for “grammar of graphics”
-- This shows the philosophy of the package
--  Google, Microsoft, New York Times create graphs like this
-- Cheatsheet: 
-  - Help -> Cheatsheets -> Data visualization with ggplot2
-
-## Structure of the command ggplot
-- Create new graph by using ggplot()
-- Geometrical objects (“Geoms”) added using symbol “+”
-- Each graph consists of geometrical objects (Geoms)
-  - Lines: geom_line()
-  - Dots: geom_point()
-  - ... (see “Cheatsheet”)
-- Each Geom requires
-  - A dataset containing our variables of interest
-  - A mapping of the variables with the graphical elements (aesthetics)
-    - x: x-axis
-    - y: y-axis
-
-## Practical Excercise
-
-6/ Create data frame using df
-
-
-## Slide with table
-
-```{r, echo=t, fig.height=2.5,fig.width=4}
-load("C:/Users/Anonymouse/CERNA Dropbox/Dennis Rickert/UJ Quant/IO_Introduction_main/my_df.Rdata")
-my_df
-```
-
-To get the formula $profits = revenues - costs$, we type:
-
-$$profits = revenues - costs$$ \## Slide with Plot
-
-```{r pressure}
-plot(pressure)
-```
-
-## Slide2 with Plot
-
-```{r, echo=t, fig.height=2.5,fig.width=4}
-# load("C:/Users/Anonymouse/CERNA Dropbox/Dennis Rickert/UJ Quant/IO_Introduction_main/my_df.Rdata")
-
+```{r, echo=TRUE}
+# create fake vectors
 year <- c(2001:2010)
 revenues <- sample.int(100, 10)
 costs <- sample.int(10, 10)
 
 # gather fake vectors in data frame
 my_df <- data.frame(year,revenues,costs)
+
+# save data
+save(my_df, file="~/my_df.Rdata")
+
+# view data
+my_df
 ```
+
+## Create data: Application contd.
+
+```{r, echo=TRUE}
+# extract vector / variable name from data frame
+my_df$revenues
+
+# simulate new revenue and store as new variable
+new_revenue = 5 + my_df$revenues
+new_revenue
+
+# add variable to data frame
+my_df$new_revenue <- new_revenue 
+
+# add variable directly to data frame
+my_df$profit <- my_df$revenues - my_df$cost
+```
+
+
+## Useful functions for data frames (df)
+
+| Command   | Description                              |
+|-----------|------------------------------------------|
+| names(df) | variable names                           |
+| nrow(df)  | number of rows (i.e., observations)      |
+| ncol(df)  | number of columns (i.e., variable names) |
+| head(df)  | first 6 rows of data frame               |
+| tail(df)  | last 6 rows of data frame                |
+
+## Brief digression: Packages
+
+We use the package ***rio*** to import data
+
+- Packages extend the functionality of R
+- To use the package ***rio*** (or others):
+  - Download once per computer by install.packages("rio")
+  - Activate once per session and script using library("rio")
+
+
+## Import data
+
+-   R can import several types of data sets: xls, csv, txt, .dta, ...
+-   ***rio*** can detect the data type automatically
+-   We use the command import from the package ***rio***
+
+```{r,echo=TRUE}
+# import data set using command import from package rio 
+# install.packages("rio") if needed
+library("rio")
+df <- import("~/my_df.Rdata")
+```
+
+
+## Practical Excercise
+
+5/ Import data and store in data frame df
+
+## Missing Data (na = no available)
+
+-   mean(x1, na.rm=true)
+    -   drop missing values from calculation of mean
+-   is.na(x1)
+    -   Check if missing values (na) exist in your data
+-   na.omit(df)
+    -   Create new data frame with all missing values (na) omitted
+
+# Graphs
+
+## Graphs
+
+<blockquote>
+
+***"The simple graph has brought more information to the data analyst's
+mind than any other device***" John Tukey
+
+<blockquote>
+
+<br>
+
+-   Graphs are the most important tool for data analysis!!!
+-   We use ggplot2, with gg standing for "grammar of graphics"
+-   This shows the philosophy of the package
+-   Google, Microsoft, New York Times create graphs like this
+-   Cheatsheet:
+    -   Help -\> Cheatsheets -\> Data visualization with ggplot2
+
+## Structure of the command ggplot
+
+-   Create new graph by using ggplot()
+-   Geometrical objects ("Geoms") added using symbol "+"
+-   Each graph consists of geometrical objects (Geoms)
+    -   Lines: geom_line()
+    -   Dots: geom_point()
+    -   ... (see "Cheatsheet")
+-   Each Geom requires
+    -   A dataset containing our variables of interest
+    -   A mapping of the variables with the graphical elements
+        (aesthetics)
+        -   x: x-axis
+        -   y: y-axis
 
 ## Slide3 with Plot
 
 ```{r, echo=t, fig.height=2.5,fig.width=4}
-# load("C:/Users/Anonymouse/CERNA Dropbox/Dennis Rickert/UJ Quant/IO_Introduction_main/my_df.Rdata")
-
 library(ggplot2)
 ggplot() + 
   geom_line(data=my_df,
             mapping=aes(x=year, y=revenues))
 ```
 
-Revenues of the `r nrow(my_df)` years from `r min(my_df$year)` through `r max(my_df$year)` lie between `r min(my_df$revenue)` and `r max(my_df$revenue)` with an average of `r mean(my_df$revenue)`
+Revenues of the `r nrow(my_df)` years from `r min(my_df$year)` through
+`r max(my_df$year)` lie between `r min(my_df$revenue)` and
+`r max(my_df$revenue)` with an average of `r mean(my_df$revenue)`
+
+## Practical Excercise
+
+7/ Create graph using df
