@@ -81,7 +81,7 @@ If you need help:
     -   <http://stats.stackexchange.com/questions/tagged/R>
     -   <http://stackoverflow.com/questions/tagged/r>
 
-## Getting started
+## Github for  content + version control
 Once you have installed everything, and signed up for the necessary:
 
 - Go to <https://github.com/DennisRickert/IOIntroduction>, 
@@ -89,9 +89,27 @@ Once you have installed everything, and signed up for the necessary:
   - then ‘code’, then ‘Open with Github desktop’
 - Open RStudio on your computer, click on ‘new project’, then browse to the folder that you just cloned the git repo into in
 Windows 
-- probably: C:/Users/Username/Documents/GitHub/IOIntroduction)
+- probably: C:/Users/Username/Documents/GitHub/IOIntroduction
 
-## R Studio using R
+## Save your work in github
+In RStudio, once you have opened your project:
+
+- Click on ‘file’, ‘new file’, ‘Rmarkdown’, ‘PDF’, and save it (‘tutorial1’)
+- Click on ‘knit’
+- RMarkdown is a great way to have your report text and
+econometrics code in the same file
+
+## Trying out Git
+In RStudio:
+
+- Head over to git on the top right hand side, select files you’d like to commit, click ‘commit’, add a message (e.g. ‘first
+commit’), and then click ‘commit’, then ‘push’
+- Git is a version control system that you can use to roll back to any version of your work
+- Commit frequently
+- You may want to add a branch, perhaps called ‘local’, so that you are not working on the ‘master’ (production) version
+You can have a look at your latest commit and push on github.com
+
+## Surface of RStudio (using R)
 
 The surface of RStudio consists of four windows
 
@@ -112,17 +130,39 @@ knitr::include_graphics("Rstudio_surface.jpg")
 
 ## Console = similar to calculator:
 
-- Simple operations
-  - 2+4 or 5*3 or 3^4
-- creating a  vector of 1 row and 5 columns. 
-  - cbind(1:5) or c(1,2,3,4,5)
-- creating a vector of 5 rows and 1 column
-  - cbind(1:5)
-- you can also use rbind() instead of c()
-  - rbind(1:5)
-- creating matrices. Alternative is function matrix()
-  - cbind(1:5,1:5)
-  - rbind(1:5,1:5)
+Simple operations
+
+```{r , echo=t}
+2+4
+5*3
+3^4
+```
+
+## Console = similar to calculator:
+
+creating a  vector of 1 row and 5 columns. 
+```{r , echo=t}
+c(1,2,3,4,5)
+rbind(1:5)
+```
+## Console = similar to calculator:
+ 
+creating a vector of 5 rows and 1 column
+```{r , echo=t}
+cbind(1:5)
+```
+
+## Console = similar to calculator:
+ 
+creating matrices. Alternative is function matrix()
+```{r , echo=t}
+cbind(1:5,1:5)
+rbind(1:5,1:5)
+```
+
+
+## Practical Excercise
+1/ Type in calculator operations in console
 
 ## Functions
 |Command    |Description                              |
@@ -134,7 +174,7 @@ knitr::include_graphics("Rstudio_surface.jpg")
 |round(x,s) |round x to s digits after decimal point  |
 
 ## Practical Excercise
-1. Type in operations in console
+2/ Type in functions with x=5.34, s=1 in console
 
 # R scripts
 
@@ -149,7 +189,7 @@ knitr::include_graphics("Rstudio_surface.jpg")
     -   Reproducibility
     -   You can run the code with one click when data changes
 
-## Working with R-scripts
+## Working with R scripts
 
 -   You can run scripts all at once, line-by-line, or in sections
     -   Mouse click: -\> run (all or selection)
@@ -159,13 +199,21 @@ knitr::include_graphics("Rstudio_surface.jpg")
     -   Each line starting with \# will be ignored by R
     -   Helps for documentation and to remember why you did what (for yourself and others)
 
+```{r , echo=t}
+# This is a comment for 3*8
+3*8
+```
+
 ## Practical Excercise
-2. Create new R script
+3/ Create new R script
+
+- File -> New File -> R Script
+- ctrl + shift + n
 
 # Variables
 
-## Variables: objects in other programs
-
+## Variables: what are they?
+- Variables are similar to objects in other programs
 - Variables can be populated with a variety of content, e.g.,
   - Numbers
   - Vectors
@@ -175,10 +223,21 @@ knitr::include_graphics("Rstudio_surface.jpg")
   - ...
 
 ## Variables: create + operate 
-- Create a new variable by assigning a value to it using “<-” 
-    -   x <- sqrt(c(1,2,3,4,5))
--   Operate with variables
-    -   x + 2
+Create a new variable by assigning a value to it using “<-” 
+```{r , echo=t}
+# Create vector x from 1 to 5 without printing 
+x <- c(1:5)
+```
+
+Operate with variables
+```{r , echo=t}
+# Create vector y = x+2
+y <- x + 2
+
+# Print y
+y
+```
+
 - RStudio  shows the variable in the “Environment” panel. 
 - Print variable: type variable name and hit enter.
 
@@ -195,15 +254,21 @@ knitr::include_graphics("Rstudio_surface.jpg")
 |t(x)           |transpose vector x (exchange columns and rows)    |
 
 ## Functions also work with vector x 
-- sqrt(x)
+```{r , echo=t}
+# Create vector x from 1 to 5. 
+x <- c(1:5)
+
+# Show output of square root of x
+sqrt(x)
+```
+
+Similarly, we can type: 
+
 - abs(x)     
 - exp(x)     
 - log(x)     
 - round(x,s) 
 
-## Practical Excercise
-
-3. Write + execute commands in 'my_first_Rscript.R'
 
 # Data
 
@@ -245,7 +310,7 @@ We use the package ***rio*** to import data
 
 ## Practical Excercise
 
-4. Import data and store in data frame df
+5/ Import data and store in data frame df
 
 ## Missing Data (na = no available)
 - mean(x1, na.rm=true) 
@@ -286,7 +351,7 @@ We use the package ***rio*** to import data
 
 ## Practical Excercise
 
-5. Create data frame using df
+6/ Create data frame using df
 
 
 ## Slide with table
