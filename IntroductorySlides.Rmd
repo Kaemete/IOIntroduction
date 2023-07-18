@@ -31,9 +31,67 @@ knitr::opts_chunk$set(echo = FALSE)
 -   Session 11: Merger analysis
 -   Session 12: Merger analysis - Empirical tutorial in R
 
+## A few words about me: CV
+
+- Assistant Professor at the Centre for Industrial Economics (CERNA) at MINES ParisTech/PSL University.
+- Before I was Marie-Curie Fellow (AgreenSkills+) and Post-Doctoral Researcher at the Toulouse School of Economics (TSE).
+- PhD from Duesseldorf Institute of Competition Economics (DICE)
+
+
+## My Research
+Field: analysis of firm size, market power, competition, and public policies at different levels of supply chains. 
+
+Methodology: Structural Models for causal inference using economic theory, empirical methods, and data.
+
+Research Topics:
+
+- How does size market power affect prices and product variety?
+- What is the damage to victims due to illegal collusive agreements?
+- How much of a cost increase (e.g., taxes) do firms pass-through to their consumers?
+
+## Selected Academic Articles
+
+- Vertical Restraints, Pass-Through, and Market Definition: Evidence from Grocery Retailing, International Journal of Industrial Organization 74, 2021.
+
+- The Effect of Mergers on Retail Prices: Evidence from Germany, Journal of Industrial Economics Volume 69, 3
+
+- Upstream Collusion with Vertical Restraints: Anatomy of the German Coffee Cartel, joint with E. Holler, International Journal of Industrial Organization 84, 2022
+
+## Newspaper, Blogs, Policy, 
+Newspaper Articles
+
+- Minimum retail prices for agricultural products do not increase sustainability, Frankfurter Allgemeine Zeitung (FAZ), Feb 4, 2022 
+
+Blogs
+
+- A Bad Apple in the Based. Market Power in Digital Markets illustrated by the Apple-Epic Case, Kluwer Competition Law Blog, Feb 17, 2022
+
+
+Policy Papers (in German)
+
+- Determination of Buyer Power in Grocery Retailing: Theoretical Foundations and Empirical Assessment
+- Competition (Problems) in Food Retailing
+
+## Other Services 
+
+Scientific reviewer in journals, such as 
+
+- International Journal of Industrial Organization; 
+- American Journal of Agricultural Economics; 
+- ...
+
+... as practitioner
+
+- Research Assistant for the German Monopolies Commission
+- Economic expert for (i) shopping costs + buyer power and (ii) he truck cartel overcharges
+
+... as presenter to 
+- DG comp of the EC
+- cartel offices in Germany, Norway, and Chile  
+
 ## Overview of Session 3+4
 
-What we do in Session
+What we do in Session 3+4
 
 -   Useful background information
 -   Introduction into R and RStudio
@@ -53,6 +111,14 @@ What we do in Session
 
 # Introduction into R and RStudio
 
+## Impressive growth of R
+
+```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
+knitr::include_graphics("growth_r.png")
+```
+
+<https://stackoverflow.blog/2017/10/10/impressive-growth-r/>
+
 ## Some basics in R...
 
 To be able to use R, we need to understand:
@@ -64,14 +130,20 @@ To be able to use R, we need to understand:
 
 ... which we learn in this class.
 
+
 ## Before using R and RStudio
 
--   R is a free software (GNU license)
-    -   from: <http://www.r-project.org>
--   works best in combination with RStudio
-    -   from: <https://posit.co/download/rstudio-desktop>
--   Sign up for Github (for version control): <https://github.com/>
-    -   and download Github desktop: <https://desktop.github.com/>
+R is a free software (GNU license)
+
+- from: <http://www.r-project.org>
+
+works best in combination with RStudio
+
+- from: <https://posit.co/download/rstudio-desktop>
+
+Sign up for Github (for version control): <https://github.com/>
+
+- and download Github desktop: <https://desktop.github.com/>
 
 ## Useful links
 
@@ -426,7 +498,7 @@ mind than any other device***" John Tukey
         -   x: x-axis
         -   y: y-axis
 
-## Slide3 with Plot
+## Example Graph
 
 ```{r, echo=t, fig.height=2.5,fig.width=4}
 library(ggplot2)
@@ -442,3 +514,4 @@ Revenues of the `r nrow(my_df)` years from `r min(my_df$year)` through
 ## Practical Excercise
 
 7/ Create graph using df
+
