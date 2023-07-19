@@ -18,7 +18,7 @@ cbind(1:3,1:3)
 rbind(1:3,1:3)
 
 ### Functions
-sqrt(64)
+sqrt(5.34)
 
 # taking the square root of vector. Alternative: sqrt(c(1,2,3,4,5))
 sqrt(c(1:5))
@@ -38,7 +38,8 @@ x
 x <- sqrt(c(1:5)); x
 
 # operation using variable x (aka object)
-x + 2
+y = x + 2
+y
 
 # defining a new x will overwrite the previous x
 x <- 6+3
@@ -58,14 +59,14 @@ my_df
 # extract vector / variable name from data frame
 my_df$revenues
 
-# transform variable from data and store as new variable (e.g., cost increase)
-new_cost = 5 + my_df$costs
+# simulate new revenue and store as new variable
+new_revenues = 5 + my_df$revenues
 
 # add variable to data frame
 my_df$new_cost <- new_cost 
 
 # add variable directly to data frame
-my_df$profit <- my_df$revenues - my_df$new_cost
+my_df$profit <- my_df$revenues - my_df$cost
 
 # save data
 save(my_df, file="C:/Users/Anonymouse/CERNA Dropbox/Dennis Rickert/UJ Quant/IO_Introduction_main/my_df.Rdata")
@@ -108,5 +109,5 @@ ggplot(data=my_df,
   geom_point() +
   geom_line()
 
-# save graph intoi working directory
+# save graph into working directory
 ggsave("revenues.png", height=2.4,width=4)

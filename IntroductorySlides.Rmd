@@ -33,39 +33,39 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## A few words about me: CV
 
-- Assistant Professor at the Centre for Industrial Economics (CERNA) at MINES ParisTech/PSL University.
-- Before I was Marie-Curie Fellow (AgreenSkills+) and Post-Doctoral Researcher at the Toulouse School of Economics (TSE).
-- PhD from Duesseldorf Institute of Competition Economics (DICE)
+- Associate Professor MINES Paris-PSL University.
+- Before: Marie-Curie Fellow (AgreenSkills+) and Post-Doctoral Researcher at the Toulouse School of Economics (TSE)
+- PhD: Duesseldorf Institute of Competition Economics (DICE)
 
 
 ## My Research
-Field: analysis of firm size, market power, competition, and public policies at different levels of supply chains. 
+***Field***: analysis of firm size, market power, competition, and public policies at different levels of supply chains. 
 
-Methodology: Structural Models for causal inference using economic theory, empirical methods, and data.
+***Methodology***: Structural Models for causal inference using economic theory, empirical methods, and data.
 
-Research Topics:
+***Research Topics***:
 
-- How does size market power affect prices and product variety?
-- What is the damage to victims due to illegal collusive agreements?
-- How much of a cost increase (e.g., taxes) do firms pass-through to their consumers?
+- How does size + market power affect prices and variety?
+- What is the damage from illegal collusive price fixing?
+- How much of a cost increase (e.g., taxes) do firms pass-on to their consumers?
 
 ## Selected Academic Articles
 
-- Vertical Restraints, Pass-Through, and Market Definition: Evidence from Grocery Retailing, International Journal of Industrial Organization 74, 2021.
+- **Vertical Restraints, Pass-Through, and Market Definition: Evidence from Grocery Retailing**, *International Journal of Industrial Organization* 74, 2021.
 
-- The Effect of Mergers on Retail Prices: Evidence from Germany, Journal of Industrial Economics Volume 69, 3
+- **The Effect of Mergers on Retail Prices: Evidence from Germany**, *Journal of Industrial Economics* 69, 3
 
-- Upstream Collusion with Vertical Restraints: Anatomy of the German Coffee Cartel, joint with E. Holler, International Journal of Industrial Organization 84, 2022
+- **Upstream Collusion with Vertical Restraints: Anatomy of the German Coffee Cartel**, joint with E. Holler, *International Journal of Industrial Organization* 84, 2022
 
 ## Newspaper, Blogs, Policy, 
-Newspaper Articles
 
-- Minimum retail prices for agricultural products do not increase sustainability, Frankfurter Allgemeine Zeitung (FAZ), Feb 4, 2022 
+***Newspaper Articles***
 
-Blogs
+- **Minimum retail prices do not increase sustainability**, *Frankfurter Allgemeine Zeitung (FAZ)*, Feb 4, 2022, [Link](https://drive.google.com/file/d/1CSVcCWSf6zMR16zvU88viYqBk0UKV88F/view)
 
-- A Bad Apple in the Based. Market Power in Digital Markets illustrated by the Apple-Epic Case, Kluwer Competition Law Blog, Feb 17, 2022
+***Blogs***
 
+- **[A Bad Apple in the Based. Market Power in Digital Markets illustrated by the Apple-Epic Case]**, *Kluwer Competition Law Blog*, Feb 17, 2022, [Link](https://competitionlawblog.kluwercompetitionlaw.com/2022/02/17/a-bad-apple-in-the-basket-market-power-in-digital-markets-illustrated-by-the-epic-apple-case/)
 
 Policy Papers (in German)
 
@@ -74,18 +74,18 @@ Policy Papers (in German)
 
 ## Other Services 
 
-Scientific reviewer in journals, such as 
+***Scientific reviewer*** in journals, such as 
 
 - International Journal of Industrial Organization; 
 - American Journal of Agricultural Economics; 
-- ...
+- some others
 
-... as practitioner
+... as ***practitioner***
 
 - Research Assistant for the German Monopolies Commission
-- Economic expert for (i) shopping costs + buyer power and (ii) he truck cartel overcharges
+- Economic expert for cartel offices and cartel victims in cases of (i) buyer power and (ii) cartel overcharges
 
-... as presenter to 
+... as ***presenter*** to 
 - DG comp of the EC
 - cartel offices in Germany, Norway, and Chile  
 
@@ -100,10 +100,86 @@ What we do in Session 3+4
 -   Practice exercise: estimation of linear regression and controlling
     for endogeneity
 
+## 
+
+***Brilliant minds expressed their scepticism regarding statistics***
+
+- **There are three kinds of lies: lies, damned lies, and statistics** (popularized by Mark Twain)
+- **The only statistics you can trust are those you falsified yourself** (attributed to Whinston Churchill)
+<br>
+
+One reason may lie in the abuse of statistics...
+
+- **Torture the data until it confesses** (Mancur Olson)
+<br>
+
+... another in the difficulty of using statistics appropriately
+
+- **The economy is a miserable experimental design** (R. E. Lucas)
+
+In this class, we learn the proper use of statistics in economics
+
+## What is improper use of statistics? 
+
+Indeed, we all do honest mistakes due to 
+
+- time pressure (deadlines for bachelor, master, PhD) 
+- loosing track in the **garden of forking paths** (A. Gelman)
+
+Sometimes there are illegitimate attempts for fame  
+
+- **p-hacking**: torturing the data until we get the result we want 
+- **HARKing**: making your ***H***ypothesis ***A***fter ***R***esult ***K***nown 
+- **fraud**: faking the data
+
+... potentially caused by publication bias or biased employer 
+
+## This led to replication crisis: psychology
+
+Only 23-33% of studies in leading Psychology journal replicated:
+
+- [Group Author: Open Science Collaboration](https://mfr.osf.io/render?url=https://osf.io/jq7v6/?action=download%26mode=render>)
+- [Link to article in Nature](https://www.nature.com/articles/nature.2015.17433)
+
+
+Standard theory of social priming not at all reproducible:
+
+- Students exposed to senior-connotated words walk slower, warm coffee makes people feel warmer towards others, people exposed to the word money are more selfish, etc
+- Some claim that none of the studies in Kahnemann's thinking fast and slow would replicate (e.g., framing)
+- [Link to article in Nature](https://www.nature.com/articles/d41586-019-03755-2)
+
+## This led to replication crisis: medicine
+
+Only 11-30% of cancer studies could be replicated:
+
+- [Link to article in Science](https://www.sciencemag.org/news/2018/07/plan-replicate-50-high-impact-cancer-papers-shrinks-just-18)
+- [Link to article in Nature](https://www.nature.com/articles/483531a)
+
+J. Ioannidis' drastic conclusion: Most Clinical Research Not Useful
+
+- [Why Most Clinical Research Is Not Useful](https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1002049)
+
+
+## This led to replication crisis: economics
+
+60-70% of studies in major journals could be replicated:
+
+- [Link 1 to article in Science](https://science.sciencemag.org/content/351/6280/1433)
+- [Link 2 to article in Science](https://www.sciencemag.org/news/2016/03/about-40-economics-experiments-fail-replication-survey)
+
+Why is that?
+
+- Combining economic theory, rigorous econometrics, and good data? Aka Structural Econometrics?
+- Using Stata, Python, and R for reproducible research? 
+- You will both learn in this class!
+
 ## Learning objectives of Session 3
 
--   Familiarize with R and RStudio (no rocket science!)
--   Become confident to use it
+- Understand how to use GitHub, R, and RStudio 
+  - for reproducible research 
+  - with transparent path to final results
+  - using version control for error management  
+-   Become confident to use them (no rocket science!)
 -   Understand why we need econometrics: to have causal effects instead
     of (potentially spurious) simple correlations
 -   Revisit the standard tools of econometrics: OLS, 2SLS
@@ -435,6 +511,7 @@ We use the package ***rio*** to import data
   - Download once per computer by install.packages("rio")
   - Activate once per session and script using library("rio")
 
+We will also need the various other packages in “0 starthere.R”, so please install and load them.
 
 ## Import data
 
