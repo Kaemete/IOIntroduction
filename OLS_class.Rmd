@@ -16,38 +16,62 @@ editor_options:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
+# Introduction 
+
+## Overview of Session 3+4
+
+What we do in Session 3+4
+
+- Intro: Intuitive examples of causality vs correlation
+- Understanding the causal effect of price on demand
+- 
 
 
 ## Clearly there are some strange studies
 
 Some examples of real research questions (and results) are
 
-- Chocolate consumption increases the chances of winning a nobel price!
-- Storks deliver babies!
+- Winning a nobel price by eating more chocolate?
+- Do storks deliver babies?
 
-## Chocolate Consumption and Nobel Prices
+Other examples are
+
+- More likely to drown after eating ice cream?
+- Does Internet Explorer cause murders?
+
+## Eating chocolate to get Nobel price?
 ```{r , echo=FALSE, out.width = "80%", fig.align = "center"}
 knitr::include_graphics("choc1.png")
 ```
 
-## 
-```{r , echo=FALSE, out.width = "80%", fig.align = "center"}
+## Graphical support for the hypothesis
+```{r , echo=FALSE, out.width = "75%", fig.align = "center"}
 knitr::include_graphics("choc2.png")
 ```
 
-## Prestige journal 
+## NEJM is a leading prestige journal 
 ```{r , echo=FALSE, out.width = "80%", fig.align = "center"}
 knitr::include_graphics("nejm.png")
 ```
 
-## Ice cream causes drownings?
+## Do storks deliver babies?
 ```{r , echo=FALSE, out.width = "80%", fig.align = "center"}
-knitr::include_graphics("IceCreamDrowning.png")
+knitr::include_graphics("storks.png")
 ```
 
-## Ice cream causes crimes?
+## Positive relationship between the two
 ```{r , echo=FALSE, out.width = "80%", fig.align = "center"}
-knitr::include_graphics("Icecream.jpg")
+knitr::include_graphics("stork1.png")
+```
+
+## What is potentially driving the results? 
+```{r , echo=FALSE, out.width = "50%", fig.align = "center"}
+knitr::include_graphics("stork2.png")
+```
+
+## Do you drown after eating ice cream?
+```{r , echo=FALSE, out.width = "80%", fig.align = "center"}
+knitr::include_graphics("IceCreamDrowning.png")
 ```
 
 
@@ -56,36 +80,28 @@ knitr::include_graphics("Icecream.jpg")
 knitr::include_graphics("explorer.png")
 ```
 
-## Storks deliver babies?
-```{r , echo=FALSE, out.width = "80%", fig.align = "center"}
-knitr::include_graphics("storks.png")
-```
+## Learning objectives
 
-## We clearly find a positive relationship between the two
-```{r , echo=FALSE, out.width = "80%", fig.align = "center"}
-knitr::include_graphics("stork1.png")
-```
+- Understand difference between causality and correlation
+- Being able to spot omitted variable bias
+- Create summary statistics and plots in R using dplyr & ggplot2
+- Revisit the basics of linear regression models
 
-## You can try out at home what could potentially drive the results 
-```{r , echo=FALSE, out.width = "80%", fig.align = "center"}
-knitr::include_graphics("stork2.png")
-```
-
-# Bla
+# Understanding the effect of price on demand
 
 ## Bob’s Ice Cream Business
 
 - Bob bought a small ice cream truck from Emma 
 - Emma left Bob a small collection of sales data, in which she noted for each day $t$
   - the price $p_{t}$ she had set
-  - the number of ice portions $q_{t}$ she sold
-  - the cost $c_{t}$ for buying a big box of ice cream
+  - the number of ice cream portions $q_{t}$ she had sold
+  - the wholesale cost $w_{t}$ for buying a big box of ice cream
 - You are a young consultant who shall help Bob to optimize his ice cream business. 
 - How would you proceed to find an optimal pricing rule?
 
-## Loading the ice cream data
-To load the data as an object, type this into a new code chunk
-(hold down ctrl+alt+I) in your Rmarkdown script:
+## Loading Emma's data it into R
+
+As a consultant you of course have put Emma's data into an excel spreadsheet. We load it as follows: 
 
 ```{r, echo=TRUE}
 # install.packages("rio")
@@ -99,115 +115,147 @@ str(ice_cream_sales)
 
 ```
 
-## Then summarise the data (in a new, separate chunk), with:
+## Summarize the data using pipe syntax
 
-Where:
+Pipes ‘%>%’ from package `dplyr', where in 4 seperate lines
 
-- The ‘%>%’ is known as a ‘pipe’ - it means ‘then’
-- ‘select’ chooses variables we are interested in
-- ‘summary()’ produces summary statistics
-- ‘kable()’ produces nice tables
+1. we first choose the name of the data set of interest; followed by ‘%>%’ which means ‘then’ 
+2. ‘select(x1,x2,...)’ to choose variables of interest 
+3. ‘summary()’ to produce summary statistic
+4. ‘kable()’ to produce nice tables
 
-## Summary statistics
+## Summary statistics using pipes
 
 ```{r,echo=TRUE, message = FALSE}
 library(dplyr) 
 library(knitr)
-library(kableExtra)
+library(kableExtra) # extra package to make table fit to slide
 
 ice_cream_sales %>%
 select(w,p,q) %>%
 summary() %>%
 kable()%>%
-  kable_styling(full_width = F)
+  kable_styling(full_width = F) # to make table fit to slide
 ```
-## Is this relationship between price & quantity correct?
-Type in a new code chunk: 
+
+
+## Intuitive relationship between $p$ and $q$?
+
+As a consultant you know the power of graphs, so you type:
 
 ```{r,echo=TRUE, out.width = "70%", fig.align = "center"}
 plot(p ~ q, data = ice_cream_sales)
 ```
+Was Emma setting profit-maximizing prices?
 
 ## Some explanations 
 
-Demand shocks might generate positive relationship
+Unobserved factors may increase demand (i.e., demand shocks)
 
 - Advertising may increase demand
 - Better quality increase demand
-- Price may also be affected by these demand shocks
+- Seasonality (summer vs winter) likely affects demand 
 
-## A model of the data generating process with a profit-maximizing firm
+Price may react in response to demand shocks, e.g., 
 
-We now present a simple model:
+- ask for higher prices in summer, when demand is high
+- ask for lower  prices in winter, when demand is low
 
-- Downward sloping demand function, with random demand shocks
-- Firm sets profit maximizing prices
-- We can find a positive relationship between prices and output.
+Unobserved factors affect both demand and price
 
-## Demand Function
+- which might generate the positive relationship
 
-The sales in period $t$ shall be given by the following demand function $$q_{t}=a_{t}-bp_{t}$$
-- The market size parameter $a_{t}$ shall be given by $$a_{t}=a_{0}+\varepsilon_{t}$$
-- $\varepsilon_{t}$ is a random variable that measures a “demand shock” in period $t$.
-  - Example: Good weather -> higher $\varepsilon$
-  - The demand shock shall not be influenced by the price (but the price may depend on $\varepsilon$)
-  - $b$ and $a_{0}$ are exogenously given numerical parameters with $$a_{0}>0\mbox{ and }b>0$$
+# The economic model behind omitted variables
 
-## Profit Maximization
+## A simple economic theory model 
 
-The firm’s profits shall be given by $$\pi_{t}=p_{t}q_{t}-c_{t}q_{t} - F$$
+In principle, we can well imagine to have
 
-  - $c_{t}\geq0$ is a constant marginal cost of production in period $t$ (cost of one portion of ice cream)
-  - $F$ are some fixed costs that don't depend on the price.
+- a downward-sloping demand function (in price $p$), 
+  - with random demand shocks (e.g., due to seasonality)
+- and firms which set profit-maximizing prices
 
-Assume the firm knows in each period $t$ its cost $c_{t}$, the demand shock $\varepsilon_{t}$ and the parameters $a_{0}$ and $b$ in period $t$ and chooses a price $p_{t}$ that maximizes its expected profits.
+and still find a positive relationship between prices and output.
 
-## Optimal Prices and Corresponding Output
+<br>
 
-Exercise: Show that the profit-maximizing price and corresponding sold quanitity are given by: 
-$$p^*_{t} = \frac{a_0+\varepsilon_t}{2b}+\frac{c_{t}}{2}$$ and
-$$q^*_{t} = \frac{a_{0}+\varepsilon_{t}}{2}-\frac{b c_{t}}{2}$$
+We now present a simple model of the data generating process
 
-##
+## We first specify the demand function $q$
 
-The optimal price $p^*_t$ maximizes the profit function.
+Demand in period $t$ is given by the following function 
+
+$$q_{t}=a_{t}-bp_{t}$$
+
+- $b>0$: parameter measuring how $q$ changes with $p$
+- $a$ measures how high demand would be at price 0
+
+The market size parameter $a_{t}$ is given by 
+$$a_{t}=a_{0}+\varepsilon_{t}$$
+
+- $a_{0}>0$ is a constant (some poeple always buy ice cream)
+- $\varepsilon_{t}$ is a random “demand shock” in period $t$ (not affected by $p$).
+  - Good weather: -> higher $\varepsilon$
+
+## How do firms set profit-maximizing $p$?
+
+The firm’s profits are given by 
+
+$$\pi_{t}=p_{t}q_{t}-w_{t}q_{t} - F$$
+
+- $w_{t}\geq0$ is a constant marginal cost of production in period $t$ (cost of one portion of ice cream)
+- $F$ are some fixed costs that don't depend on the price.
+- We already know that: $q_{t}=a_{0}+\varepsilon_{t}-bp_{t}$
+
+A firm chooses a price $p_{t}$ that maximizes its profits knowing
+
+- its cost $w_{t}$, 
+- the demand shock $\varepsilon_{t}$
+- the parameters $a_{0}$ and $b$
+
+## Optimal Prices and output
+
+We find optimal prices and quantities are given by: 
+
+$$p^*_{t} = \frac{a_0+\varepsilon_t}{2b}+\frac{w_{t}}{2}$$ 
+$$q^*_{t} = \frac{a_{0}+\varepsilon_{t}}{2}-\frac{b w_{t}}{2}$$
+
+which both depend on $a_t=a_0+\epsilon_t$ 
+
+(Show this by taking the derivative of profits w.r.t. price $\frac{\partial \Pi_t}{\partial p_t}$)
+
+## Proof  (to look at home)
+
+Plug in demand function into profits
 
 $$\begin{align*}
-\pi(p_t) & = q_t(p_t)(p-c_{t}) - F\\
- & =(a_{t}-bp_t)(p_t-c_{t}) - F\\
- & =a_{t}p-a_{t}c_t-bp_t^{2}+bp_tc_{t} - F
+\pi(p_t) & = q_t(p_t)(p-w_{t}) - F\\
+ & =(a_{t}-bp_t)(p_t-w_{t}) - F\\
+ & =a_{t}p-a_{t}w_t-bp_t^{2}+bp_tw_{t} - F
 \end{align*}$$
 
 The first order condition is given by
-$$\begin{align*}
-\pi'(p_t^*) =& a_t-2bp_t^*+bc_t = 0 \Leftrightarrow \\
-& p_t^* = \frac{a_{t}}{2b}+\frac{c_{t}}{2}
-\end{align*}$$
 
-## 
+$$\frac{\partial \pi(p_t)}{\partial p_t} = a_t-2bp_t+bw_t = 0$$
+
+Solving for price $p$
+
+$$p_t = \frac{a_{t}}{2b}+\frac{w_{t}}{2}$$
+
+## Proof (to look at home)
+
 If we plug in $a_t=a_0+\varepsilon_t$, we get
 $$\begin{align*}
-p^*_{t} & =\frac{a_{0}+\varepsilon_{t}}{2b}+\frac{c_{t}}{2}
+p^*_{t} & =\frac{a_{0}+\varepsilon_{t}}{2b}+\frac{w_{t}}{2}
 \end{align*}$$
 
-We get the equilibrium quantity as
+Plug this expression into $q$ to get the equilibrium quantity
 
 $$\begin{align*}
 q^*_{t} & = a_{0}+\varepsilon_{t} - b p_t^* \\
-        & = \frac{a_{0}+\varepsilon_{t}}{2}-\frac{b c_{t}}{2}
+        & = \frac{a_{0}+\varepsilon_{t}}{2}-\frac{b w_{t}}{2}
 \end{align*}$$
 
-
-## Understanding prices and quantities in R (1a)
-
-- We will now consider how demand can be estimated in R
-
-You will learn how to:
-
-- Run a random simulation in R
-- Perform a basic linear regression using ordinary least squares
-- Start to appreciate the endogeneity problem in demand
-estimation
 
 ## Simulating the model in R
 
@@ -216,79 +264,107 @@ estimation
 - You will repeat similar steps in more detail in the corresponding RTutor problem sets (here the problem set for Chapter 1a).
   - For that reason you won't get the R code from class. Look at the RTutor problem set instead.
 
-## Simulating the model in R
+## 
 
-- Open a new R script in RStudio and write a program that numerically simulates the model above
-  - Choose some values for the parameters $a_{0}>0$ and $b>0$ and pick a total number of periods $T$
-  - Assume demand shocks are independently, identically normally distributed with standard deviation $\sigma_{\varepsilon}$ $$\varepsilon_{t}\overset{iid}{\sim}N(0,\sigma_{\varepsilon}^{2})$$
-  - Assume costs $c_{t}$ are uniformely distributed on an interval.
-  - Compute the values of $q$ and $p$ for each period and show a scatter plot of both variables.
+```{r,echo=TRUE}
+T = 10 # number of days
+a0 = 100 # market size parameter
+b = 1
+c = runif(T,min = 10, max = 20)
+  
+sigma.eps = 10 # standard deviation sigma of demand shocks
+eps = rnorm(n = T, mean = 0, sd = sigma.eps)
 
-## Analysing the Model with Simulation and Theory
+# equation for optimal prices
+p = (a0 + eps)/(2*b)  + c / 2
 
-- Is the plotted relationship between prices and quantity just a noisy version of the demand curve?
-- Try to find parameter constellations such that prices are positively correlated with sold quantities.
-- Why can prices be positively correlated with sold quantities? Try to explain intuitively.
-- Study with your simulation how the correlation between $q$ and $p$ changes if you reduce the standard deviation of the demand shocks $\sigma_{\varepsilon}$ to a very small value.
+# demand function
+q = a0 + eps - b*p
+```
 
-## Insights from the analysis so far
+## Plot the graph
 
-- It is really useful to think about how a data set is created: Form a model about the data generating process!
-- A positive correlation between prices and output does not imply that higher prices *cause* higher output.
-  - A positive *correlation* can arise if prices are set systematically higher in markets with high demand.
-- Here, the observed *relationship* between prices and output is *not* a noisy version of a demand function.
-- The demand function describes how, ceteris paribus, higher prices *cause* lower quantities sold.
-- To set profit maximizing prices it would be really helpful to estimate such a demand function.
+Indeed we have a positive relationship between $p$ and $q$ 
 
-## A pricing experiment to find the demand function
+- although demand is downward sloping due to $b=1$ 
+- $b=1$ enters negatively into the demand function
 
-- You convinced Bob that the data could have been generated by the model described above. He asks you to estimate the the demand function.
+```{r}
+plot(x=p,y=q)
+```
 
-- You propose a “randomized pricing experiment”
-  - Bob shall choose for $T$ periods in each period $t$ some randomly selected price $p_{t}$ and observe the resulting sales $q_{t}$
+## 
+The reason is that 
 
-## R Simulation of Pricing Experiment
+- positive epsilons increase both the $p$ and the $q$ 
+- while negative epsilons decrease both the $p$ and the $q$. 
 
-(You do this in the corresponding RTutor problem set)
+To do at home 
 
-- Adapt your R code such that prices are now randomly selected.
-- Plot the resulting relationship between $p$ and $q$. Does it look like a noisy version of the demand curve?
+- Set T=1000 to see a stronger relationship 
+- Decrease epsilon to 0.0001 to see the role demand shock on the relationship between $p$ and $q$
+- How does the relationship change between $p$ and $q$?
+- What is the slope of demand function?
 
 ## Estimating the demand function
 
 - Use the R function lm (stands for linear model) to estimate the following linear regression model of the demand function 
+
 $$\begin{align*}
 q_{t}=&\beta_{0}&+&\beta_{1}p_{t}&+\varepsilon_{t} \\
      (=& a_0   &+& (-b)p_t & +\varepsilon_{t})    
 \end{align*}$$
-via ordinary least squares (OLS).
 
-  - Compare the true values of $\beta_{0}$ and $\beta_{1}$ with the OLS estimates.
-  - Does the OLS estimator seem to be **consistent** in the sense that the estimated coefficients are close to to their true values when we have a very large number $T$ of observations? (We will formally define consistency later)
-- Repeat the previous exercise for the case that the data is generated by the model with profit maximizing prices.
+## via ordinary least squares (OLS).
+```{r, echo=TRUE}
+T=1000
+lm(q~p) 
+```
+And of course, we get inconsistent estimates representing the upward sloping relationship from the previous graph. 
+
+## 
+
+Let's replace p with random values and calculate corresponding quantity for high T. Remember that $a_0=100$ and $b=1$
+
+
+```{r,echo=TRUE}
+T = 10000
+p = runif(n=T,min = 30,max = 50)
+q = a0 + eps - b*p
+
+lm(q ~ p)
+```
+Are we close to the true values? Justify why resp. why not. 
+
+## 
+Given that prices are randomly drawn, they do not depend on demand shock $a$ and we do not have an omitted variable problem. Thus, the effect of $p$ on $q$ is just $a_0=100$ and $b=-1$.As intuitively seen by looking at the demand function.
+
+## Reduce number of observatins to T=10
+
+```{r,echo=TRUE}
+T = 10
+p = runif(n=T,min = 30,max = 50)
+q = a0 + eps - b*p
+
+lm(q ~ p)
+```
+
+The estimates seem to be closer to the true values when the number of observations is high. This is known as consistency, which we discuss later.
 
 ## What have we done so far?
 
 - **Policy Question:** We want to find a rule to set profit maximizing prices for Bob’s ice cream business.
-
 - **Model for decision:** We discussed how to set profit maximizing prices based on an economic model with a downward sloping “demand function”. To find optimal prices, we need to know / estimate a demand function for ice cream.
-
 - **Data:** We got a historical data set of prices and output. Interestingly, prices are positively correlated with quantity sold.
-
 - **Model of data generating process:** We wrote down and studied a simple model of how the data could have been generated. Similar to our decision model, we assume the model has a downward sloping demand function and prices have been set in a profit maximizing fashion. Importantly, there are also random demand shocks $\varepsilon$ (incorporating conditions like weather) that have been known by the price setter.
 
 ## What have we done so far?
 
 - **Simulation:** To get better intuition about the data generating process, we simulated it in R.
-
   - We found that the model can indeed generate a positive correlation between equilibrium prices and output, even though the demand function is downward sloping. The reason is that positive demand shocks increase both prices and output.
-
   - We also simulated an alternative model in which prices are set randomly.
-
 - **Estimation:** We estimated a linear regression of our demand function with the simulated data.
-
   - When prices were set randomly, it looked as if we had a consistent estimator of the true parameters of the demand function
-
   - When prices were set in a profit maximizing fashion, our estimator of the demand function was inconsistent.
 
 ## What will we do next?
@@ -296,14 +372,9 @@ via ordinary least squares (OLS).
 1\.  We will review some basic concepts of econometrics, focusing on the linear regession model
 
   - Key idea in econometrics: there is a true model with random variables that generated the data.
-
   - Econometric tools, like estimation procedures or statistical tests, only make sense if the model satisfies certain conditions.
-
   - We study some important tools and concepts.
-
 2\.  We will study instrumental variable (IV) estimation
-
   - IV estimation is a very prominent method to consistently estimate coefficients in cases in which OLS estimation does not work.
-
   - IV estimation will allow us to consistently estimate the demand function for our example data set, in which prices have not been set randomly.
 
