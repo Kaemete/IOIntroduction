@@ -1,5 +1,5 @@
 ---
-title: "Session 3: Introduction into R and Econometrics"
+title: "Session 3+4: Introduction into R and Econometrics"
 author: "Dennis Rickert, MINES Paris-PSL University"
 date: "2023-07-17"
 output: 
@@ -203,7 +203,7 @@ The firm’s profits are given by
 
 $$\pi_{t}=p_{t}q_{t}-w_{t}q_{t} - F$$
 
-- $w_{t}\geq0$ is a constant marginal cost of production in period $t$ (cost of one portion of ice cream)
+- $c_{t}\geq0$ is a constant marginal cost of production in period $t$ (cost of one portion of ice cream)
 - $F$ are some fixed costs that don't depend on the price.
 - We already know that: $q_{t}=a_{0}+\varepsilon_{t}-bp_{t}$
 
@@ -351,30 +351,12 @@ lm(q ~ p)
 
 The estimates seem to be closer to the true values when the number of observations is high. This is known as consistency, which we discuss later.
 
-## What have we done so far?
+## Learning objectives
+
+What have we done so far?
 
 - **Policy Question:** We want to find a rule to set profit maximizing prices for Bob’s ice cream business.
 - **Model for decision:** We discussed how to set profit maximizing prices based on an economic model with a downward sloping “demand function”. To find optimal prices, we need to know / estimate a demand function for ice cream.
 - **Data:** We got a historical data set of prices and output. Interestingly, prices are positively correlated with quantity sold.
-- **Model of data generating process:** We wrote down and studied a simple model of how the data could have been generated. Similar to our decision model, we assume the model has a downward sloping demand function and prices have been set in a profit maximizing fashion. Importantly, there are also random demand shocks $\varepsilon$ (incorporating conditions like weather) that have been known by the price setter.
-
-## What have we done so far?
-
-- **Simulation:** To get better intuition about the data generating process, we simulated it in R.
-  - We found that the model can indeed generate a positive correlation between equilibrium prices and output, even though the demand function is downward sloping. The reason is that positive demand shocks increase both prices and output.
-  - We also simulated an alternative model in which prices are set randomly.
-- **Estimation:** We estimated a linear regression of our demand function with the simulated data.
-  - When prices were set randomly, it looked as if we had a consistent estimator of the true parameters of the demand function
-  - When prices were set in a profit maximizing fashion, our estimator of the demand function was inconsistent.
-
-## What will we do next?
-
-1\.  We will review some basic concepts of econometrics, focusing on the linear regession model
-
-  - Key idea in econometrics: there is a true model with random variables that generated the data.
-  - Econometric tools, like estimation procedures or statistical tests, only make sense if the model satisfies certain conditions.
-  - We study some important tools and concepts.
-2\.  We will study instrumental variable (IV) estimation
-  - IV estimation is a very prominent method to consistently estimate coefficients in cases in which OLS estimation does not work.
-  - IV estimation will allow us to consistently estimate the demand function for our example data set, in which prices have not been set randomly.
+- **Model of data generating process:** We wrote down and studied a simple model of how the data could have been generated. Similar to our decision model, we assume the model has a downward sloping demand function and prices have been set in a profit maximizing fashion. Importantly, there are also random demand shocks $u$ (incorporating conditions like weather) that have been known by the price setter.
 

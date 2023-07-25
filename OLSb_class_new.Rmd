@@ -1,0 +1,414 @@
+---
+title: "Session 3+4: Introduction into R and Econometrics"
+author: "Dennis Rickert, MINES Paris-PSL University"
+date: "2023-07-17"
+output: 
+  ioslides_presentation: 
+#  html_document: 
+#    number_sections: yes
+#    toc: yes
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Introduction 
+
+##
+```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
+knitr::include_graphics("College_NewYorker.jpg")
+```
+
+## Overview of Session 3+4
+
+What we do in Session 3+4
+
+- Intro: Intuitive examples of causality vs correlation
+- Understanding the causal effect of price on demand
+- 
+
+
+## Learning objectives
+
+- 
+
+## Concept of Simple Regressions
+
+Assume two variables $x$ and $y$ from a population (e.g., clients) 
+
+- "Explaining $y$ in terms of $x$," or 
+- "studying how $y$ changes when we change $x$."
+
+
+Some examples include:
+
+- $y$ is the *demand* of ice cream and $p$ is the price
+- $y$ is  *market value* of a footballer and $x$ the *goals* he scored
+- $y$ is the *quality of wine* and $x$ the *weather*
+- $y$ is  *soybean crop yield* and $x$ is amount of fertilizer;
+- $y$ is *hourly wage* and $x$ is *years of education*;
+
+## The Simple Regression Model
+
+We confront three issues, if we want to “explain $y$ in terms of $x$”
+
+- Which functional relationship do we assume (e.g., linear)? 
+- How do we allow factors, other than $x$, to affect $y$? 
+- How can we ensure a causal relationship between $y$ and $x$?  
+  - *ceteris paribus* notion: holding constant other factors
+
+## To address those 3 issues, we define
+
+$$y=\beta_0+\beta_1x+u$$
+
+- Linear relation between observables $x$ and $y$ (*Issue 1*)
+- $\beta_1:$ **slope parameter** in the relation between $y$ and $x$
+- $\beta_0:$ **intercept parameter** aka the **constant term**
+- Error term $u:$ Unobservables allowed to enter (*Issue 2*)
+- Certain assumptions to get causal effect of $x$ on $y$ (*Issue 3*)  
+
+Main intuition: given we observe $x$ and $y$
+
+- $\beta_1$ and $\beta_0$: estimated making assumptions on $u$
+- $\beta_1$: how changes in $x$ affect changes in $y$ given $\beta_0$ and $u$
+
+## We get the causal effect of $x$ on $y$ 
+
+holding all else equal (using ceteris paribus notion) 
+
+- i.e., the the unobserved factors in $u$ are held fixed, 
+- so that the change in $u$ is zero, i.e., $\Delta{u}$= 0, 
+- i.e., $u$ does not affect $y$
+$$\Delta{y}=\beta_1\Delta{x}~~~~if~~~~\Delta{u}=0$$ 
+
+- then $x$ has a linear effect on $y$ 
+- where $\beta_1$ yields causal effect of $x$ on $y$ 
+
+
+## Example: Soybean Yield and Fertilizer
+  
+Suppose that soybean yield per land unit is determined by:  
+      
+$$yield=\beta_0+\beta_1 fertilizer + u$$
+
+where $y= yield$ and $x=fertilizer$. 
+
+- Coefficient $\beta_1$ measures the effect of fertilizer on yield, holding unobservable factors fixed  
+- Error term $u$ contains factors, such as, land quality, rainfall, ... 
+- $\beta_0$ captures factors that are constant across land units
+
+$$\Delta{yield}=\beta_1\Delta fertilizer$$
+
+## Example: A Simple Wage Equation
+  
+Relating a person's wage to education and unobservables:  
+          
+$$wage=\beta_0+\beta_1 educ + u$$ 
+
+- $wage$ is dollars earned per hour and $educ$ is education years, 
+- $\beta_1$ measures the change in hourly wage given another year of education, holding all other factors fixed. 
+- Some of the unobserved factors include 
+  - labor force experience, 
+  - innate ability, 
+  - tenure with current employer, 
+  - work ethic, 
+
+$$\Delta{wage}=\beta_1\Delta educ$$
+
+
+
+## Example: Bob's Ice Cream Business
+
+Similarly, $\beta_1$ measures the causal effect of price on quantity
+
+$$quantity=\beta_0+\beta_1 price + u$$
+
+if we hold unobservable factors in $u$ fixed, 
+
+- e.g., seasonality has no systematic impact on quantity
+
+Only then we get the causal effect: 
+
+$$\Delta{quantity}=\beta_1\Delta price$$
+
+## Zero conditional mean assumption
+
+How can we learn about the causal effect of $x$ on $y$, holding other factors fixed, if we ignore all those other factors?
+
+We assume: $\mathbb{E}[u|x]=\mathbb{E}[u]=0$
+
+Take the expected value of $y|x$.   
+
+Then: $\mathbb{E}[y|x]= \mathbb{E}[\beta_0 +\beta_1x + u|x] = \beta_0 +\beta_1x + \mathbb{E}[u|x]$
+
+which yields
+
+$$\mathbb{E}(y|x)=\beta_0+\beta_1x$$
+
+$\beta_1$ is causal due to this *zero conditional mean assumption*
+
+## Harmless assumption $E(u)=0$
+
+.. says nothing about the relation between $u$ and $x$, but simply makes a statement about the distribution of unobservables
+
+We can always redefine the intercept in $y=\beta_0+\beta_1x+u$ to make $\mathbb{E}(u)=0$ true.
+
+  - Soybean example: we can normalize the unobserved factors affecting soybean yield, such as land quality, to 0
+  - Wage example: We can assume that things such as average ability are zero in the population of all working people.
+
+
+## Less harmless: mean independence
+
+or $\mathbb{E}(u|x)=u$ 
+
+- for any $x$, we can obtain the expected (or average) value of $u$ for that slice of the population described by the value of $x$.
+- The crucial assumption is that the average value of $u$ does not depend on the value of $x$.
+- When assumption $E(u|x)=E(u)$ holds, we say that $u$ is **mean independent** of $x$. 
+- When we combine mean independence with assumption $\mathbb{E}(u)=0$, we obtain the **zero conditional mean assumption**, $E(u|x)=0$.
+
+## Wage example with $u=abil$
+
+Equation $\mathbb{E}(u|x)=\mathbb{E}(u)$ requires that the average level of ability is the same, regardless of years of education $x$.
+  
+- For example, if $E(abil|8)$ denotes the average ability for the group of all people with eight years of education, 
+- and $E(abil|16)$ denotes the average ability among people in the population with sixteen years of education, 
+- $E(u|x)=E(u)$ implies that $E(abil|8)=E(abil|18)$
+
+Thus, the average ability the same for all education levels.
+
+## Is this a reasonable assumption?
+
+
+If, for example, we think that average ability increases with years of education, then equation $E(u|x)=E(u)$ is false.
+
+- This would happen if, on average, people with more ability choose to become more educated.
+- As we cannot observe innate ability, we have no way of knowing whether or not average ability is the same for all education levels.
+- But: this is an issue that we must address before relying on simple regression analysis!
+
+## Bob's ice cream business 
+
+For equation $\mathbb{E}(u|x)=\mathbb{E}(u)$ with
+
+- $x=price$
+- $u=seasonality$
+
+it must hold $\mathbb{E}(summer|price)=\mathbb{E}(winter|price)$
+
+- i.e., $u=seasonality$ is uncorrelated to $x=prices$ 
+- remember higher demand in summer leads to higher prices
+  - observing a high price, we expect a high demand shock
+  - observing a low price, we expect a low demand shock
+
+
+
+## The Ordinary Least Squares Estimator
+
+How to estimate the parameters $\beta_0$ and $\beta_1$ in equation $y=\beta_0+\beta_1x+u$?
+
+- To do this, we need a sample from the population.
+- Let {($x_i,y_i):i=1,...,n$} denote a random sample of size $n$ from the
+population.
+- We can write $y_i=\beta_0+\beta_1x_i+u_i$ for each $i$.
+
+As an example, $x_i$ might be the annual income and $y_i$ the annual savings for family $i$ during a particular year.
+
+- If we have collected data on 15 families, then _n=15_.
+
+
+## Savings and income for 15 families
+
+aim is to get: $\mathbb{E}(savings|income)=\beta_0+\beta_1 income$
+
+
+```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
+knitr::include_graphics("wool_2_2.png")
+```
+
+##  OLS Graph: Fitted values and residuals
+
+Idea: choose $(\beta_0,\beta_1)$ to minimizes the squared sum of $u_i$
+
+```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
+knitr::include_graphics("wool_2_4.png")
+```
+
+
+
+## The Ordinary Least Squares Estimator
+
+The OLS estimator has the following objective function:
+
+$$(\hat{\beta}_{0}^{OLS}, \hat{\beta}_{1}^{OLS})=\underset{(\hat{\beta}_{0}, \hat{\beta}_{1})}{argmin[\sum_i\hat{u}_i^2]}=\underset{(\hat{\beta}_{0}, \hat{\beta}_{1})}{argmin[\sum_i(\hat{y}_i-y_i)^2]}$$ 
+
+Algorithm chooses $(\hat{\beta}_{0}, \hat{\beta}_{1})$ until $\hat{u}_i^2$ reaches global minimum
+
+- $\hat{y}_i$ are the predicted values, 
+- $\hat{\beta_0}$ and $\hat{\beta_1}$ are estimated coefficients, 
+- $\hat{u}_i$ are residuals
+
+
+## OLS: how to estimate $\beta_0$ and $\beta_1$?
+
+The ordinary least squares (OLS) estimators are  
+
+$$\hat{\beta_1}=\frac{\sum_{i=1}^n(x_i-\bar{x})(y_i-\bar{y})}{\sum_{i=1}^n(x_i-\bar{x})^2} = \frac{Cov(x,y)}{Var(x)}$$
+
+$$\hat{\beta_0}=\bar{y}-\hat{\beta_1}\bar{x}$$
+
+Based on these estimated parameters, the OLS regression line is  
+
+$$\hat{y}=\hat{\beta_0}+\hat{\beta_1}x$$
+
+Given observations $x_i$ and $y_i$, we just need to calculate 
+
+- the mean of $\bar{y},\bar{x}$
+- more commonly $Cov(x,y)$ and $Var(x)$. 
+
+
+
+## Economist Ashenfelter vs. wine experts
+
+There are differences in price and quality of wine from year to year that are sometimes very significant: 
+
+- wines are tasting better when they are older. 
+- So, there is an incentive to store young wines until they are mature. 
+- Wine experts taste the wine and then predict which ones will be the best later. 
+- But it is hard to determine the quality of the wine when it is so young just by tasting it, 
+  - since the taste will change significantly by the time it will be consumed.
+- Ashenfelter used Econometrics instead of believing experts
+
+##
+```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
+knitr::include_graphics("wine_nyt.jpg")
+```
+
+- Calculate the winter rain and the harvest rain (in millimeters). 
+- Add summer heat in the vineyard (in degrees centigrade). 
+- What do you have? 
+- A very, very passionate argument over wine.
+
+
+##
+```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
+knitr::include_graphics("wine_forbes.jpg")
+```
+
+## 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/8WMRj9mTQtI" frameborder="0" allowfullscreen></iframe>
+
+## Have a look at the paper and answer the following questions
+1. Which of the following predicts the prices of older, mature wines?',['Dry Summers','Humid Summers','Cold Winters','Cold Summers'],'Dry Summers')
+2. What is true about the relationship between Bordeaux wine and rain in August',['Positively correlated + statistically insignificant','Positively correlated + statistically significant','Negatively correlated + statistically insignificant','Negatively correlated + statistically significant'],'Negatively correlated + statistically significant')
+3. Which independent variable has the largest (statistically significant) effect on the price of Bordeaux wine?',['Age of the vintage','Average temperature in growing season','Rain in August','Average temperature in September'],'Average temperature in growing season
+4. With every additional year, the price of a vintage increases by (column 2)',['0.024%','0.048%','2.4%','4.8%'],'2.4%'
+5. According to the table above, the famous Ashenfelter Wine Equation can be represented as:                                      0.024 Age + 0.62 Temp. (growing season) – 0.004 August rain + 0.001 Pre-vintage rain + 0.008 Temp. (September)',['Yes','No'],'No')
+6. It is a good example for regressions because wine prices have an effect on weather but not weather on wine prices',['Yes','No','Maybe'],'No'
+7. Concluding from the question above, we do not have to care about unobserved confounding factors',['Yes','No','Maybe'],'No'
+
+
+##  Have a look at this table from the research paper. 
+
+```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
+knitr::include_graphics("wine_table2.jpg")
+```
+
+
+## Let's have a look how the magic wine equation works
+
+1. Load the data set ('wine.csv').
+2. Calculate the average price of wine. Explain why this is not a good predictor for future prices. 
+3. Explain under which circumstances OLS is the preferred choice and why.  
+4. Regress average temperature in the growing season on prices. What do you see? How do you interpret the slope?
+5. How do you measure the "fit" of a model? Which of the two models has the better fit? 
+6. And are there even better models?
+7. Show if OLS assumptions are violated
+
+## 
+Regression of Average Temperature in Growing Season on Price 
+```{r}
+library("rio")
+df <- import("wine.csv")
+
+lm(Price ~ AGST, ,data=df) 
+```
+
+## 
+```{r, echo=FALSE}
+y <-df$Price
+x <-df$AGST
+
+# Add regression line
+plot(x, y, main = "Regression of AGST on Price",
+     xlab = "AGST (Average Temperature in Growing Season)", ylab = "Prices",
+     pch = 19, frame = FALSE)
+abline(lm(y ~ x, data = df), col = "blue")
+
+```
+
+## 
+
+```{r}
+fit <- lm(Price ~ AGST, ,data=df) 
+summary(fit)
+
+```
+
+## 
+OLS by construction minimizes the distance from the observation point to the regression line, which allows us to exploit some information from it:
+
+- SSE: the distance from observation point to regression line is the error that our model makes. The part that is not explained by the model
+- SSR: the sum of the differences between the predicted value and the mean of the dependent variable SSR=(1-SSE)
+a measure that describes how well our line fits the data
+- SST: is the difference between the observed dependent variable and its mean a measure of total variation
+
+## How do you measure the "fitness" of a model?
+
+Every model makes errors.
+These residuals are sometimes used to measure how good is a model and to compare models against each other.
+Goodness if fit:
+
+measured by explained part of our model in relation
+R2: the fraction of explained variation and total variation (R2=SSR/SST)
+
+## Check the two properties of OLS
+
+The zero conditional mean assumption implies: E(x,u)=0 and E(u|x)=E(u)=0
+
+We do not know expectation, but can use sample averages as analog: Thus, cov(x,u)=0, avg u=0
+
+## 
+For now, we only regress prices on average temperature in the growing season
+
+What else can we include into the model?
+
+```{r}
+head(df)
+```
+
+## 
+```{r}
+fit <- lm(Price ~ AGST + WinterRain + HarvestRain + Age, data=df) 
+summary(fit)
+
+```
+## 
+Robert Parker, the world’s most influential wine expert said:
+
+Ashenfelter is an absolute total sham. His methods are "Neanderthal" not to mention ludicrous and absurd. He is like a movie critic who never goes to see the movie but tells you how good it is based on the actors and the director.
+However Orley Ashenfelter's model proved quite succesfull regarding auction prices and many times he beat experts' opinions. There is even an app now called shiny app used to evaluate wine quality.
+
+## 
+Ashenfelter responds (http://www.liquidasset.com/feature1.html)
+
+"I won't have much influence on (the industry) at all," he said. "Their goal now is to ignore us." The professor, however, laments a silent type of copycat syndrome among wine writers, noting many connoisseurs agree privately with him but refuse to say so publicly. He has yet to receive support from professional wine tasters, despite the accuracy of his methods. "Everyone now says the same thing I do," he said. Years ago, many tasters criticized Dr. Ashenfelter when he announced that his data indicated the 1986 vintage would be average, despite the belief of many tasters the wine would age incredibly well. History has supported his claims. Today, many people consider the 1986 vintages to be average wines.
+
+##
+
+## There is even an app now
+```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
+knitr::include_graphics("shinyapp.jpg")
+```

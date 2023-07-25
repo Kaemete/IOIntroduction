@@ -18,6 +18,11 @@ knitr::opts_chunk$set(echo = FALSE)
 
 # Introduction 
 
+##
+```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
+knitr::include_graphics("College_NewYorker.jpg")
+```
+
 ## Overview of Session 3+4
 
 What we do in Session 3+4
@@ -33,7 +38,7 @@ What we do in Session 3+4
 
 ## Concept of Simple Regressions
 
-Assume two variables (or vectors) $x$ and $y$ from some population (e.g., individuals, firms, regions) 
+Assume two variables $x$ and $y$ from a population (e.g., clients) 
 
 - "Explaining $y$ in terms of $x$," or 
 - "studying how $y$ changes when we change $x$."
@@ -41,11 +46,11 @@ Assume two variables (or vectors) $x$ and $y$ from some population (e.g., indivi
 
 Some examples include:
 
+- $y$ is the *demand* of ice cream and $p$ is the price
 - $y$ is  *market value* of a footballer and $x$ the *goals* he scored
 - $y$ is the *quality of wine* and $x$ the *weather*
 - $y$ is  *soybean crop yield* and $x$ is amount of fertilizer;
 - $y$ is *hourly wage* and $x$ is *years of education*;
-- $y$ is *crime rate* and $x$ is number of police officers.  
 
 ## The Simple Regression Model
 
@@ -71,17 +76,18 @@ Main intuition: given we observe $x$ and $y$
 - $\beta_1$ and $\beta_0$: estimated making assumptions on $u$
 - $\beta_1$: how changes in $x$ affect changes in $y$ given $\beta_0$ and $u$
 
-## Using ceteris paribus notion, we get
+## We get the causal effect of $x$ on $y$ 
 
-... the causal effect of $x$ on $y$ if and only if
+holding all else equal (using ceteris paribus notion) 
 
-- the unobserved factors in $u$ are held fixed, 
+- i.e., the the unobserved factors in $u$ are held fixed, 
 - so that the change in $u$ is zero, i.e., $\Delta{u}$= 0, 
-
+- i.e., $u$ does not affect $y$
 $$\Delta{y}=\beta_1\Delta{x}~~~~if~~~~\Delta{u}=0$$ 
 
 - then $x$ has a linear effect on $y$ 
 - where $\beta_1$ yields causal effect of $x$ on $y$ 
+
 
 ## Example: Soybean Yield and Fertilizer
   
@@ -113,64 +119,69 @@ $$wage=\beta_0+\beta_1 educ + u$$
 
 $$\Delta{wage}=\beta_1\Delta educ$$
 
-## The Simple Regression Model
-
-Does the above model really allows us to draw causal conclusions about how $x$ affects $y$?
-
-$\Delta{y}=\beta_1\Delta{x}$ implies that $\beta_1$ measures the effect of $x$ on $y$, holding all other factors (in $u$) fixed, i.e., $u$ does not affect $y$
-
-- Is this the end of the causality issue? Unfortunately, **NO**!
-- We will now learn why!
 
 
-## The Simple Regression Model
+## Example: Bob's Ice Cream Business
+
+Similarly, $\beta_1$ measures the causal effect of price on quantity
+
+$$quantity=\beta_0+\beta_1 price + u$$
+
+if we hold unobservable factors in $u$ fixed, 
+
+- e.g., seasonality has no systematic impact on quantity
+
+Only then we get the causal effect: 
+
+$$\Delta{quantity}=\beta_1\Delta price$$
+
+## Zero conditional mean assumption
 
 How can we learn about the causal effect of $x$ on $y$, holding other factors fixed, if we ignore all those other factors?
 
-Take the expected value of $y=\beta_0+\beta_1x+u$ conditional on $x$
+We assume: $\mathbb{E}[u|x]=\mathbb{E}[u]=0$
 
-$$E(y|x)=\beta_0+\beta_1x$$
+Take the expected value of $y|x$.   
 
-We get this expression by two assumptions on error term $u$
+Then: $\mathbb{E}[y|x]= \mathbb{E}[\beta_0 +\beta_1x + u|x] = \beta_0 +\beta_1x + \mathbb{E}[u|x]$
 
-- $E(u)=0$ (harmless)
-- $E(u|x)= u = 0$ (less harmless)
+which yields
+
+$$\mathbb{E}(y|x)=\beta_0+\beta_1x$$
 
 $\beta_1$ is causal due to this *zero conditional mean assumption*
 
-## Assumption $E(u)=0$
+## Harmless assumption $E(u)=0$
 
 .. says nothing about the relation between $u$ and $x$, but simply makes a statement about the distribution of unobservables
 
-We can always redefine the intercept in $y=\beta_0+\beta_1x+u$ to make $E(u)=0$ true.
+We can always redefine the intercept in $y=\beta_0+\beta_1x+u$ to make $\mathbb{E}(u)=0$ true.
 
   - Soybean example: we can normalize the unobserved factors affecting soybean yield, such as land quality, to 0
   - Wage example: We can assume that things such as average ability are zero in the population of all working people.
 
-## Assumption expected value of u given x is equal to 0
 
-or formally $E(u|x)=u=0$
+## Less harmless: mean independence
+
+or $\mathbb{E}(u|x)=u$ 
 
 - for any $x$, we can obtain the expected (or average) value of $u$ for that slice of the population described by the value of $x$.
 - The crucial assumption is that the average value of $u$ does not depend on the value of $x$.
 - When assumption $E(u|x)=E(u)$ holds, we say that $u$ is **mean independent** of $x$. 
-- When we combine mean independence with assumption $E(u)=0$, we obtain the **zero conditional mean assumption**, $E(u|x)=0$.
+- When we combine mean independence with assumption $\mathbb{E}(u)=0$, we obtain the **zero conditional mean assumption**, $E(u|x)=0$.
 
-## 
+## Wage example with $u=abil$
 
-Let us see what equation $E(u|x)=E(u)$ entails in the wage example.
+Equation $\mathbb{E}(u|x)=\mathbb{E}(u)$ requires that the average level of ability is the same, regardless of years of education $x$.
+  
+- For example, if $E(abil|8)$ denotes the average ability for the group of all people with eight years of education, 
+- and $E(abil|16)$ denotes the average ability among people in the population with sixteen years of education, 
+- $E(u|x)=E(u)$ implies that $E(abil|8)=E(abil|18)$
 
-- To simplify the discussion, assume that $u$ is the same as innate ability (or intelligence).
-- Then equation $E(u|x)=E(u)$ requires that the average level of ability is the same, regardless of years of education $x$.
-    - For example, if $E(abil|8)$ denotes the average ability for the group of all people with eight years of education, 
-    - and $E(abil|16)$ denotes the average ability among people in the population with sixteen years of education, 
-    - then equation $E(u|x)=E(u)$ implies that these must be the same.
-- In fact, the average ability level must be the same for all education levels.
+Thus, the average ability the same for all education levels.
 
-Is this a reasonable assumption?
+## Is this a reasonable assumption?
 
-
-## 
 
 If, for example, we think that average ability increases with years of education, then equation $E(u|x)=E(u)$ is false.
 
@@ -178,202 +189,69 @@ If, for example, we think that average ability increases with years of education
 - As we cannot observe innate ability, we have no way of knowing whether or not average ability is the same for all education levels.
 - But: this is an issue that we must address before relying on simple regression analysis!
 
-## 
-In the fertilizer example, if fertilizer amounts are chosen independently of other features of the land plots, then equation $E(u|x)=E(u)$ will hold: 
-- the average land quality will not depend on the amount of fertilizer.
+## Bob's ice cream business 
 
-However, if more fertilizer is put on the higher-quality plots of land, then the expected value of $u$ changes with the level of fertilizer, and equation $E(u|x)=E(u)$ fails.
+For equation $\mathbb{E}(u|x)=\mathbb{E}(u)$ with
 
+- $x=price$
+- $u=seasonality$
 
-## 
+it must hold $\mathbb{E}(summer|price)=\mathbb{E}(winter|price)$
 
-Given the zero conditional mean assumption $E(u|x)=0$, it is useful to view equation $y=\beta_0+\beta_1x+u$ as breaking $y$ into two components.
-
-1. The piece $\beta_0+\beta_1s$, which represents $E(y|x)$, is called the *systematic part* of $y$ - that is, the part of $y$ explained by $x$ 
-2. and $u$ is called the *unsystematic part*, or the part of $y$ not explained by $x$. 
-
-Later we discuss how to determine how large the systematic part is relative to the unsystematic part.
+- i.e., $u=seasonality$ is uncorrelated to $x=prices$ 
+- or the level of demand does not depend on price
+- But we do know that demand is higher in summer, which is why we set higher prices  
 
 
-## The Ordinary Least Squares Estimator*
 
-Now that we have discussed the basic ingredients of the simple regression model, we will address the important issue of how to estimate the parameters $\beta_0$ and $\beta_1$ in equation $y=\beta_0+\beta_1x+u$.
+
+## The Ordinary Least Squares Estimator
+
+How to estimate the parameters $\beta_0$ and $\beta_1$ in equation $y=\beta_0+\beta_1x+u$?
 
 - To do this, we need a sample from the population.
 - Let {($x_i,y_i):i=1,...,n$} denote a random sample of size $n$ from the
 population.
-- Because these data come from equation $y=\beta_0+\beta_1x+u$, we can write $y_i=\beta_0+\beta_1x_i+u_i$ for each $i$.
-- Here, $u_i$ is the error term for observation $i$ because it contains all factors affecting $y_i$ other than $x_i$.
+- We can write $y_i=\beta_0+\beta_1x_i+u_i$ for each $i$.
 
 As an example, $x_i$ might be the annual income and $y_i$ the annual savings for family $i$ during a particular year.
 
 - If we have collected data on 15 families, then _n=15_.
-- A scatterplot of such a data set is given in the figure below, along with the (necessarily fictitious) population regression function.
-- We must decide how to use these data to obtain estimates of the intercept and slope in the population regression of savings on income.
 
-## Scatterplot of savings and income for 15 families, 
 
-and the population regression $E(savings|income)=\beta_0+\beta_1 income$
+## Savings and income for 15 families
+
+aim is to get: $\mathbb{E}(savings|income)=\beta_0+\beta_1 income$
 
 
 ```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
 knitr::include_graphics("wool_2_2.png")
 ```
 
+##  OLS Graph: Fitted values and residuals
 
-## The Ordinary Least Squares Estimator
-
-The most basic **estimator** is the **Ordinary Least Square (OLS) estimator**.
-
-- The idea is to choose the parameter $\beta$ that minimizes the squared sum of the error $u_i$ of the model
-- By construction, we never observe $u_i$ that is unknown to us
-
-Instead we have the **sample regression model**: $y_i=\hat{y}_i + \hat{u}_i = \hat{\beta_0}+ \hat{\beta_1}x_{1i}+ \hat{u}_i$
-
-- $\hat{y}_i$ are the predicted values, $\hat{\beta}$ are estimated coefficients, and $\hat{u}_i$ are residuals
-
-
-## The Ordinary Least Squares Estimator
-
-Assume the **population regression model**:  
-
-
-$$y_i = \beta_{0} + \beta_{1}x_{1i} + u_i$$
-
-The OLS estimator has the following objective function:
-
-$$(\hat{\beta}_{0}^{OLS}, \hat{\beta}_{1}^{OLS})=\underset{(\hat{\beta}_{0}, \hat{\beta}_{1})}{argmin[\sum_i\hat{u}_i^2]}=\underset{(\hat{\beta}_{0}, \hat{\beta}_{1})}{argmin[\sum_i(\hat{y}_i-y_i)^2]}$$ 
-
-The algorithm chooses $(\hat{\beta}_{0}, \hat{\beta}_{1})$ until $\hat{u}_i^2$ reaches a global minimum
-
-## Graphical illustration OLS: Fitted Values and Residuals
+Idea: choose $(\beta_0,\beta_1)$ to minimizes the squared sum of $u_i$
 
 ```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
 knitr::include_graphics("wool_2_4.png")
 ```
 
 
-**Analytical Derivation of the OLS Estimator (Self Study)**
 
-- An implication from assumption $E(u|x)=E(u)$ is that in the population $u$ is uncorrelated with $x$.
-- Combined with $E(u)=0$ we get that the covariance between $x$ and $u$ is zero.
+## The Ordinary Least Squares Estimator
 
-$$Cov(x,u)=E(xu)=0$$
+The OLS estimator has the following objective function:
 
-- In terms of the observable variables $x$ and $y$ and the unknown parameters $\beta_0$ and $\beta_1$, the two equations $E(u)=0$ and $Cov(x,u)=E(xu)=0$ can be written as
+$$(\hat{\beta}_{0}^{OLS}, \hat{\beta}_{1}^{OLS})=\underset{(\hat{\beta}_{0}, \hat{\beta}_{1})}{argmin[\sum_i\hat{u}_i^2]}=\underset{(\hat{\beta}_{0}, \hat{\beta}_{1})}{argmin[\sum_i(\hat{y}_i-y_i)^2]}$$ 
 
-$$E(y-\beta_0-\beta_1x)=0$$
+Algorithm chooses $(\hat{\beta}_{0}, \hat{\beta}_{1})$ until $\hat{u}_i^2$ reaches global minimum
 
-and
-
-$$E[x(y-\beta_0-\beta_1x)]=0$$
-
-- The two above equations imply two restrictions on the joint probability distribution of $(x,y)$ in the population.
-- Since there are two unknown parameters to estimate, we might hope that equations the two equations can be used to obtain good estimators of $\beta_0$ and $\beta_1$.
+- $\hat{y}_i$ are the predicted values, 
+- $\hat{\beta_0}$ and $\hat{\beta_1}$ are estimated coefficients, 
+- $\hat{u}_i$ are residuals
 
 
-## **Derivation of the OLS Estimator (Self Study)**
-
-- The respective _sample_ counterparts of the two above equations are
-
-$$n^{-1}\sum_{i=1}^n(y_i-\hat\beta_0-\hat\beta_1x_i)=0$$
-
-and
-
-$$n^{-1}\sum_{i=1}^nx_i(y_i-\hat\beta_0-\hat\beta_1x_i)=0$$
-
-- The equation $n^{-1}\sum_{i=1}^n(y_i-\hat\beta_0-\hat\beta_1x_i)=0$ can then be rewritten as  
-
-$$\bar{y}=\hat\beta_0+\hat\beta_1\bar{x}$$
-
-and
-
-$$\hat\beta_0=\bar{y}-\hat\beta_1\bar{x}$$
-
-- Once we have the slope estimate $\beta_1$, it is straightforward to obtain the intercept estimate $\beta_0$, given $y$ and $x$.
-
-## Derivation of the OLS Estimator (Self Study)
-
-- Plugging the last equation into $n^{-1}\sum_{i=1}^nx_i(y_i-\hat\beta_0-\hat\beta_1x_i)=0$ and dropping the $n^{-1}$ (because it does not affect the solution) yields  
-
-$$\sum_{i=1}^nx_i[y_i-(\bar{y}-\hat\beta_1\bar{x})-\hat\beta_1x_i)]=0$$
-
- which can be rearranged to  
- 
-$$\sum_{i=1}^nx_i(y_i-\bar{y})=\hat\beta_1\sum_{i=1}^nx_i(x_i-\bar{x})$$
-
-- And because
-
-$$\sum_{i=1}^nx_i(x_i-\bar{x})=\sum_{i=1}^n(x_i-\bar{x})^2$$
-
-and 
-
-$$\sum_{i=1}^nx_i(y_i-\bar{y})=\sum_{i=1}^n(x_i-\bar{x})(y_i-\bar{y})$$
-
-
-## The simple linear regression model
-**Derivation of the OLS Estimator (Self Study)**
-
-- The estimated slope therefore is  
-
-$$\hat{\beta_1}=\frac{\sum_{i=1}^n(x_i-\bar{x})(y_i-\bar{y})}{\sum_{i=1}^n(x_i-\bar{x})^2}$$
-
- - This is simply the sample covariance between $x_i$ and $y_i$ divided by the sample variance of $x_i$.
- 
-Or:
- 
-$$\hat{\beta}_{1}=\frac{Cov[y,x_1]}{Var[x_1]}$$
-
-and
-
-$$\hat{\beta}_{0}=\bar{y}-\hat{\beta}_{1}\bar{x_1}$$
-
-## Derivation of the OLS Estimator (Self Study)
-
-- $\hat{\beta}_0$ and $\hat{\beta}_1$ are called the **ordinary least squares** estimators of the parameters.
-- The name can be justified as follows:
-- For any $\beta_0$ and $\beta_1$ define a **fitted value** for $y$ where $x$ = $x_i$ as  
-    
-$$\hat{y}_i=\hat{\beta}_0+\hat{\beta}_1x_i$$
-
-- This is the value we predict for $y$ when $x=x_i$ for the given intercept and slope.
-- There is a fitted value for each observation in the sample.
-- The **residual** for observation $i$ is the difference between the actual $y_i$ and its fitted value:
-    
-$$\hat{u}_i=y_i-\hat{y}_i=y_i-\hat{\beta}_0+\hat{\beta}_1x_i$$
-
--  Now, suppose we choose $\hat{\beta_0}$ and $\hat{\beta_1}$ to make the **sum of squared residuals**,
-
-$$\sum_{i=1}^n\hat{u}_i^2=\sum_{i=1}^n(y_i-\hat{\beta}_0+\hat{\beta}_1x_i)^2$$
-
-## Derivation of the OLS Estimator (Self study)
-
-- The conditions necessary to minimize above equation (first order conditions) are given exactly by the two equations we introduced earlier:
-
-$$n^{-1}\sum_{i=1}^n(y_i-\hat\beta_0-\hat\beta_1x_i)=0$$
-
-and
-
-$$n^{-1}\sum_{i=1}^nx_i(y_i-\hat\beta_0-\hat\beta_1x_i)=0$$
-
-- From our previous calculations we know that the solutions ot the OLS first order conditions are given by
-
-$$\hat{\beta}_{1}=\frac{Cov[y,x_1]}{Var[x_1]}$$
-
-and
-
-$$\hat{\beta}_{0}=\bar{y}-\hat{\beta}_{1}\bar{x_1}$$
-
-- The name “ordinary least squares” comes from the fact that these estimates minimize the sum of squared residuals.
-
-
-## The Simple Regression Model (Summary)
-
-We are concerned with estimating the population parameters $\beta_0$ and $\beta_1$, of the simple linear regression model  
-
-$$y=\beta_0+\beta_1x+u$$
-
-- from a random sample of $y$ and $x$. 
+## OLS: how to estimate $\beta_0$ and $\beta_1$?
 
 The ordinary least squares (OLS) estimators are  
 
@@ -385,21 +263,33 @@ Based on these estimated parameters, the OLS regression line is
 
 $$\hat{y}=\hat{\beta_0}+\hat{\beta_1}x$$
 
+Given observations $x_i$ and $y_i$, we just need to calculate 
 
-For a given sample, we just need to calculate the four statistics $\bar{y},\bar{x}, Cov(x,y)$ and $Var(x)$ and plug them into these equations. 
-
-
-## Rumour between the economist wine maverick Ashenfelter and (virtually all) wine experts
-
-<blockquote>
-There are differences in price and quality of wine from year to year that are sometimes very significant: wines are tasting better when they are older. So, there is an incentive to store young wines until they are mature. Wine experts taste the wine and then predict which ones will be the best later. But it is hard to determine the quality of the wine when it is so young just by tasting it, since the taste will change significantly by the time it will be consumed.
-</blockquote>
+- the mean of $\bar{y},\bar{x}$
+- more commonly $Cov(x,y)$ and $Var(x)$. 
 
 
-***Summary of Ashenfelter Wine Equation: The New York Times***
-<blockquote> 
-Calculate the winter rain and the harvest rain (in millimeters). Add summer heat in the vineyard (in degrees centigrade). What do you have? A very, very passionate argument over wine.
-</blockquote>
+
+## Economist Ashenfelter vs. wine experts
+
+There are differences in price and quality of wine from year to year that are sometimes very significant: 
+
+- wines are tasting better when they are older. 
+- So, there is an incentive to store young wines until they are mature. 
+- Wine experts taste the wine and then predict which ones will be the best later. 
+- But it is hard to determine the quality of the wine when it is so young just by tasting it, 
+  - since the taste will change significantly by the time it will be consumed.
+- Ashenfelter used Econometrics instead of believing experts
+
+##
+```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
+knitr::include_graphics("wine_nyt.jpg")
+```
+
+- Calculate the winter rain and the harvest rain (in millimeters). 
+- Add summer heat in the vineyard (in degrees centigrade). 
+- What do you have? 
+- A very, very passionate argument over wine.
 
 
 ##
@@ -407,15 +297,21 @@ Calculate the winter rain and the harvest rain (in millimeters). Add summer heat
 knitr::include_graphics("wine_forbes.jpg")
 ```
 
-##
-```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
-knitr::include_graphics("wine_nyt.jpg")
-```
 
 ## 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/8WMRj9mTQtI" frameborder="0" allowfullscreen></iframe>
 
-##  Have a look at this table from the research paper, and answer the questions below. 
+## Have a look at the paper and answer the following questions
+1. Which of the following predicts the prices of older, mature wines?',['Dry Summers','Humid Summers','Cold Winters','Cold Summers'],'Dry Summers')
+2. What is true about the relationship between Bordeaux wine and rain in August',['Positively correlated + statistically insignificant','Positively correlated + statistically significant','Negatively correlated + statistically insignificant','Negatively correlated + statistically significant'],'Negatively correlated + statistically significant')
+3. Which independent variable has the largest (statistically significant) effect on the price of Bordeaux wine?',['Age of the vintage','Average temperature in growing season','Rain in August','Average temperature in September'],'Average temperature in growing season
+4. With every additional year, the price of a vintage increases by (column 2)',['0.024%','0.048%','2.4%','4.8%'],'2.4%'
+5. According to the table above, the famous Ashenfelter Wine Equation can be represented as:                                      0.024 Age + 0.62 Temp. (growing season) – 0.004 August rain + 0.001 Pre-vintage rain + 0.008 Temp. (September)',['Yes','No'],'No')
+6. It is a good example for regressions because wine prices have an effect on weather but not weather on wine prices',['Yes','No','Maybe'],'No'
+7. Concluding from the question above, we do not have to care about unobserved confounding factors',['Yes','No','Maybe'],'No'
+
+
+##  Have a look at this table from the research paper. 
 
 ```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
 knitr::include_graphics("wine_table2.jpg")
@@ -434,11 +330,6 @@ knitr::include_graphics("wine_table2.jpg")
 
 ## 
 df2 = pd.read_csv("C:/Users/Anonymouse/Dropbox (CERNA)/Econometrics MINES/wine.csv")
-
-```{r radio, echo = FALSE}
-library(learnr)
-
-```
 
 ## A simple linear regression model satisfies the following relationship for all observations $t=1,...,T$
 

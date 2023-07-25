@@ -1,5 +1,5 @@
 ---
-title: "Session 3: Introduction into R and Econometrics"
+title: "Session 3+4: Introduction into R and Econometrics"
 author: "Dennis Rickert, MINES Paris-PSL University"
 date: "2023-07-17"
 output: 
@@ -93,8 +93,7 @@ Policy Papers (in German)
 
 What we do in Session 3+4
 
--   Useful background information
--   Introduction into R and RStudio
+-   Part A: Introduction into R and RStudio
 -   Refresher of Econometrics: OLS, 2SLS, and endogeneity
 -   How to estimate OLS and 2SLS in R
 -   Practice exercise: estimation of linear regression and controlling
