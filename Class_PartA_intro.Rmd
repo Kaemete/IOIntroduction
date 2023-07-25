@@ -31,6 +31,16 @@ knitr::opts_chunk$set(echo = FALSE)
 -   Session 11: Merger analysis
 -   Session 12: Merger analysis - Empirical tutorial in R
 
+## What we do in Session 3+4
+
+- Part A: Introduction into R and RStudio
+- Part B: Causality using economic and empirical models 
+- Part C: Refresher of Econometrics 
+  - mainly linear regression concept, OLS, omitted variables
+- Part D: Refresher of Econometrics 
+  - mainly endogeneity, instrument variables, 2SLS
+
+
 ## A few words about me: CV
 
 - Associate Professor MINES Paris-PSL University.
@@ -88,15 +98,6 @@ Policy Papers (in German)
 ... as ***presenter*** to 
 - DG comp of the EC
 - cartel offices in Germany, Norway, and Chile  
-
-## What we do in Session 3+4
-
-- Part A: Introduction into R and RStudio
-- Part B: Causality using economic and empirical models 
-- Part C: Refresher of Econometrics 
-  - mainly linear regression concept, OLS, omitted variables
-- Part D: Refresher of Econometrics 
-  - mainly endogeneity, instrument variables, 2SLS
 
 ## 
 
