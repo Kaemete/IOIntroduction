@@ -204,7 +204,7 @@ $$a_{t}=a_{0}+\varepsilon_{t}$$
 
 The firm’s profits are given by 
 
-$$\pi_{t}=p_{t}q_{t}-c_{t}q_{t} - F$$
+$$\pi_{t}=p_{t}q_{t}-w_{t}q_{t} - F$$
 
 - $c_{t}\geq0$ is a constant marginal cost of production in period $t$ (cost of one portion of ice cream)
 - $F$ are some fixed costs that don't depend on the price.
@@ -212,11 +212,11 @@ $$\pi_{t}=p_{t}q_{t}-c_{t}q_{t} - F$$
 
 A firm chooses a price $p_{t}$ that maximizes its profits knowing
 
-- its cost $c_{t}$, 
+- its cost $w_{t}$, 
 - the demand shock $\varepsilon_{t}$
 - the parameters $a_{0}$ and $b$
 
-## Optimal prices and output
+## Optimal Prices and output
 
 We find optimal prices and quantities are given by: 
 
@@ -264,10 +264,10 @@ q^*_{t} & = a_{0}+\varepsilon_{t} - b p_t^* \\
 
 - To get intuition about this economic model, we want to simulate in R.
 - Here and in other places I will show you some R code in the class and the steps are roughly described in the slides.
-- You will repeat similar steps in more detail in the corresponding RTutor problem sets.
-  - For that reason you won't get all the R code from class. Look at the RTutor problem set instead.
+- You will repeat similar steps in more detail in the corresponding RTutor problem sets (here the problem set for Chapter 1a).
+  - For that reason you won't get the R code from class. Look at the RTutor problem set instead.
 
-## Define our model
+## 
 
 ```{r,echo=TRUE}
 T = 10 # number of days
@@ -287,95 +287,29 @@ q = a0 + eps - b*p
 
 ## Plot the graph
 
-What do you see? What is the problem with this graph?
-
-```{r}
-plot(x=p,y=q)
-```
-
-
-## Why this positive relation? 
-
 Indeed we have a positive relationship between $p$ and $q$ 
 
 - although demand is downward sloping due to $b=1$ 
 - $b=1$ enters negatively into the demand function
 
-<br>
+```{r}
+plot(x=p,y=q)
+```
 
-The reason is the omitted variable bias
+## 
+The reason is that 
 
 - positive epsilons increase both the $p$ and the $q$ 
 - while negative epsilons decrease both the $p$ and the $q$. 
-- We omit a relevant variable affecting $p$ and the $q$  
 
-Think also of the examples of chocolate, storks, drowning 
+To do at home 
 
-## Next steps 
-
-- Increase $T$ to see a stronger relationship 
-  - How does the relationship change between $p$ and $q$?
+- Set T=1000 to see a stronger relationship 
 - Decrease epsilon to 0.0001 to see the role demand shock on the relationship between $p$ and $q$
-  - How does the relationship change between $p$ and $q$?
-- Estimate the models using function lm() in R
-  - What is the slope of demand function?
-  - Is the slope of the estimated demand functions in line with the graphs?
-
-## Increase number of observations
-
-```{r,echo=TRUE}
-T = 1000 # number of days
-a0 = 100 # market size parameter
-b = 1
-c = runif(T,min = 10, max = 20)
-  
-sigma.eps = 10 # standard deviation sigma of demand shocks
-eps = rnorm(n = T, mean = 0, sd = sigma.eps)
-
-# equation for optimal prices
-p = (a0 + eps)/(2*b)  + c / 2
-
-# demand function
-q = a0 + eps - b*p
-```
-
-## Plot the graph
-
-What do you see? Is there still a problem?
-
-```{r}
-plot(x=p,y=q)
-```
-
-## Decrease the demand shock epsilon
-
-```{r,echo=TRUE}
-T = 1000 # number of days
-a0 = 100 # market size parameter
-b = 1
-c = runif(T,min = 10, max = 20)
-  
-sigma.eps = 0.0001 # standard deviation sigma of demand shocks
-eps = rnorm(n = T, mean = 0, sd = sigma.eps)
-
-# equation for optimal prices
-p = (a0 + eps)/(2*b)  + c / 2
-
-# demand function
-q = a0 + eps - b*p
-```
-
-## Plot the graph
-
-What do you see? What is the slope of this graph?
-
-```{r}
-plot(x=p,y=q)
-```
+- How does the relationship change between $p$ and $q$?
+- What is the slope of demand function?
 
 ## Estimating the demand function
-
-Next we want to estimate this linear relationship 
 
 - Use the R function lm (stands for linear model) to estimate the following linear regression model of the demand function 
 
@@ -384,117 +318,37 @@ q_{t}=&\beta_{0}&+&\beta_{1}p_{t}&+\varepsilon_{t} \\
      (=& a_0   &+& (-b)p_t & +\varepsilon_{t})    
 \end{align*}$$
 
-## Go back to model with high epsilon
-```{r,echo=TRUE}
-T = 1000 # number of days
-a0 = 100 # market size parameter
-b = 1
-c = runif(T,min = 10, max = 20)
-  
-sigma.eps = 10 # standard deviation sigma of demand shocks
-eps = rnorm(n = T, mean = 0, sd = sigma.eps)
-
-# equation for optimal prices
-p = (a0 + eps)/(2*b)  + c / 2
-
-# demand function
-q = a0 + eps - b*p
-```
-
-## estimate demand slope with high eps
-
-What do you think of those estimates? 
-
+## via ordinary least squares (OLS).
 ```{r, echo=TRUE}
+T=1000
 lm(q~p) 
 ```
+And of course, we get inconsistent estimates representing the upward sloping relationship from the previous graph. 
 
-## we decrease again the epsilon
-```{r,echo=TRUE}
-T = 1000 # number of days
-a0 = 100 # market size parameter
-b = 1
-c = runif(T,min = 10, max = 20)
-  
-sigma.eps = 0.0001 # standard deviation sigma of demand shocks
-eps = rnorm(n = T, mean = 0, sd = sigma.eps)
+## 
 
-# equation for optimal prices
-p = (a0 + eps)/(2*b)  + c / 2
+Let's replace p with random values and calculate corresponding quantity for high T. Remember that $a_0=100$ and $b=1$
 
-# demand function
-q = a0 + eps - b*p
-```
-
-re-estimate the model with low epsilon
-
-What do you think now of our estimates? 
-
-```{r, echo=TRUE}
-lm(q~p) 
-```
-
-## Replace the p by random values
 
 ```{r,echo=TRUE}
-T = 1000 # number of days
-a0 = 100 # market size parameter
-b = 1
-c = runif(T,min = 10, max = 20)
-  
-sigma.eps = 5 # standard deviation sigma of demand shocks
-eps = rnorm(n = T, mean = 0, sd = sigma.eps)
-
-# equation for optimal prices
-#p = (a0 + eps)/(2*b)  + c / 2
+T = 10000
 p = runif(n=T,min = 30,max = 50)
-
-# demand function
 q = a0 + eps - b*p
-```
 
-
-## What do you think? 
-
-Are we close to the true values? Justify why resp. why not. 
-
-```{r,echo=TRUE}
 lm(q ~ p)
 ```
+Are we close to the true values? Justify why resp. why not. 
 
-
-## Reasoning Omitted Variable Bias
-
-Given that prices are randomly drawn, they do not depend on demand shock $a$ and we do not have an omitted variable problem. 
-
-- OVB: Omitted variable needs to affect both $p$ and $q$ to have a problem
-- Similarly, there was not problem when we decrease the epsilon to a very low value
-
-This reasoning is in line with our visual inspections of the demand function in the beginning. 
+## 
+Given that prices are randomly drawn, they do not depend on demand shock $a$ and we do not have an omitted variable problem. Thus, the effect of $p$ on $q$ is just $a_0=100$ and $b=-1$.As intuitively seen by looking at the demand function.
 
 ## Reduce number of observatins to T=10
 
 ```{r,echo=TRUE}
-T = 10 # number of days
-a0 = 100 # market size parameter
-b = 1
-c = runif(T,min = 10, max = 20)
-  
-sigma.eps = 5 # standard deviation sigma of demand shocks
-eps = rnorm(n = T, mean = 0, sd = sigma.eps)
-
-# equation for optimal prices
-#p = (a0 + eps)/(2*b)  + c / 2
+T = 10
 p = runif(n=T,min = 30,max = 50)
-
-# demand function
 q = a0 + eps - b*p
-```
 
-
-## Many observations = better estimates 
-
-```{r,echo=TRUE}
 lm(q ~ p)
 ```
 

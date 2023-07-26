@@ -16,7 +16,7 @@ editor_options:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-# Session 3+4 - Part C: Refresher of Econometrics (OLS)
+# Session 3+4 - Part B: Causality using economic and empirical models
 
 ##
 ```{r , echo=FALSE, out.width = "70%", fig.align = "center"}

@@ -40,24 +40,32 @@ knitr::opts_chunk$set(echo = FALSE)
 - Part D: Refresher of Econometrics 
   - mainly endogeneity, instrument variables, 2SLS
 
+# Who am I and what do I do? 
 
-## A few words about me: CV
+## A few words about my CV
 
 - Associate Professor MINES Paris-PSL University.
-- Before: Marie-Curie Fellow (AgreenSkills+) and Post-Doctoral Researcher at the Toulouse School of Economics (TSE)
+- Post-Doc at Toulouse School of Economics (TSE)
+  - Marie-Curie Fellow (AgreenSkills+) of ERC-Horizon 2020 
 - PhD: Duesseldorf Institute of Competition Economics (DICE)
 
 
 ## My Research
-***Field***: analysis of firm size, market power, competition, and public policies at different levels of supply chains. 
 
-***Methodology***: Structural Models for causal inference using economic theory, empirical methods, and data.
+***Field***
 
-***Research Topics***:
+- firm size, market power, public policies in (food) supply chains 
 
-- How does size + market power affect prices and variety?
+***Methodology***: Structural Models
+
+-  causal inference by economic theory, statistics, and big data.
+
+***Research Questions***
+
+- How do mergers power affect prices and variety?
 - What is the damage from illegal collusive price fixing?
-- How much of a cost increase (e.g., taxes) do firms pass-on to their consumers?
+- How to define markets when producers sell through retailers?
+- Do firms pass-on minimum wages to prices?
 
 ## Selected Academic Articles
 
@@ -67,7 +75,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 - **Upstream Collusion with Vertical Restraints: Anatomy of the German Coffee Cartel**, joint with E. Holler, *International Journal of Industrial Organization* 84, 2022
 
-## Newspaper, Blogs, Policy, 
+## Newspaper, Blogs, Policy
 
 ***Newspaper Articles***
 
@@ -75,16 +83,16 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ***Blogs***
 
-- **[A Bad Apple in the Based. Market Power in Digital Markets illustrated by the Apple-Epic Case]**, *Kluwer Competition Law Blog*, Feb 17, 2022, [Link](https://competitionlawblog.kluwercompetitionlaw.com/2022/02/17/a-bad-apple-in-the-basket-market-power-in-digital-markets-illustrated-by-the-epic-apple-case/)
+- **A Bad Apple in the Based. Market Power in Digital Markets illustrated by the Apple-Epic Case**, *Kluwer Competition Law Blog*, Feb 17, 2022, [Link](https://competitionlawblog.kluwercompetitionlaw.com/2022/02/17/a-bad-apple-in-the-basket-market-power-in-digital-markets-illustrated-by-the-epic-apple-case/)
 
-Policy Papers (in German)
+***Policy Papers*** (in German)
 
 - Determination of Buyer Power in Grocery Retailing: Theoretical Foundations and Empirical Assessment
 - Competition (Problems) in Food Retailing
 
 ## Other Services 
 
-***Scientific reviewer*** in journals, such as 
+... as ***scientific reviewer*** in journals, such as 
 
 - International Journal of Industrial Organization; 
 - American Journal of Agricultural Economics; 
@@ -96,16 +104,19 @@ Policy Papers (in German)
 - Economic expert for cartel offices and cartel victims in cases of (i) buyer power and (ii) cartel overcharges
 
 ... as ***presenter*** to 
+
 - DG comp of the EC
 - cartel offices in Germany, Norway, and Chile  
 
-## 
+# We now dig in into the actual topic
 
-***Brilliant minds expressed their scepticism regarding statistics***
+## Brilliant minds skeptic about statistics
 
-- **There are three kinds of lies: lies, damned lies, and statistics** (popularized by Mark Twain)
-- **The only statistics you can trust are those you falsified yourself** (attributed to Whinston Churchill)
-<br>
+```{r , echo=FALSE, out.width = "95%", fig.align = "center"}
+knitr::include_graphics("quotes.jpg")
+```
+
+## Where does skepticism come from? 
 
 One reason may lie in the abuse of statistics...
 
@@ -114,9 +125,14 @@ One reason may lie in the abuse of statistics...
 
 ... another in the difficulty of using statistics appropriately
 
-- **The economy is a miserable experimental design** (R. E. Lucas)
+- **The economy - a miserable experimental design** (R. E. Lucas)
 
-In this class, we learn the proper use of statistics in economics
+<br>
+
+In this class, we learn 
+
+- how to avoid intentional and unintentional abuse of statistics 
+- methods for the miserable experimental design
 
 ## What is improper use of statistics? 
 
@@ -172,13 +188,18 @@ Why is that?
 - Using Stata, Python, and R for reproducible research? 
 - You will both learn in this class!
 
-## Learning objectives of Session 3+4 Part A
+## Learning objectives: Session 3+4 
+
+***Part A***
 
 - Understand how to use GitHub, R, and RStudio 
   - for reproducible research 
   - with transparent path to final results
   - using version control for error management  
 -   Become confident to use them (no rocket science!)
+
+***Part B-D***
+
 -   Understand why we need econometrics: to have causal effects instead
     of (potentially spurious) simple correlations
 -   Revisit the standard tools of econometrics: OLS, 2SLS
@@ -186,13 +207,20 @@ Why is that?
 
 # Introduction into R and RStudio
 
-## Impressive growth of R
+## 
+
+<https://stackoverflow.blog/2017/10/10/impressive-growth-r/>
 
 ```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
 knitr::include_graphics("growth_r.png")
 ```
 
-<https://stackoverflow.blog/2017/10/10/impressive-growth-r/>
+##
+
+```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
+knitr::include_graphics("companies_r.jpg")
+```
+
 
 ## Some basics in R...
 
@@ -203,7 +231,9 @@ To be able to use R, we need to understand:
 -   Data (frames, import, export, missings)
 -   Summary statistics and graphs
 
-... which we learn in this class.
+<br>
+
+... which we learn in the rest of this class.
 
 
 ## Before using R and RStudio
@@ -222,8 +252,12 @@ Sign up for Github (for version control): <https://github.com/>
 
 ## Useful links
 
-Some introductory classes: Using R for Introductory Econometrics: -
-<http://www.urfie.net/>
+Using R for Introductory Econometrics
+
+- <http://www.urfie.net/>
+
+<br>
+
 
 If you need help:
 
@@ -232,40 +266,43 @@ If you need help:
     -   <http://stats.stackexchange.com/questions/tagged/R>
     -   <http://stackoverflow.com/questions/tagged/r>
 
-## Github for content + version control
+## Github for content + version control (skip)
 
-Once you have installed everything, and signed up for the necessary:
+Once installed everything and signed up for the necessary:
 
 -   Go to <https://github.com/DennisRickert/IOIntroduction>,
     -   click on 'fork', then 'fork' again.
-    -   then 'code', then 'Open with Github desktop'
--   Open RStudio on your computer, click on 'new project', then browse
-    to the folder that you just cloned the git repo into in Windows
--   probably: C:/Users/Username/Documents/GitHub/IOIntroduction
+    -   then 'code', 
+    - then 'Open with Github desktop'
+-   open RStudio on your computer, 
+  - click on 'new project', 
+  - open windows folder to which you cloned the git repo to
+  - e.g., C:/Users/Username/Documents/GitHub/IOIntroduction
 
-## Save your work in github
+## Save your work in github (skip)
 
 In RStudio, once you have opened your project:
 
 -   Click on 'file', 'new file', 'Rmarkdown', 'PDF', and save it
-    ('tutorial1')
 -   Click on 'knit'
 -   RMarkdown is a great way to have your report text and econometrics
     code in the same file
 
-## Trying out Git
+All changes in RSTudio can be commited to github 
 
-In RStudio:
+## Git in RStudio (skip)
 
--   Head over to git on the top right hand side, select files you'd like
-    to commit, click 'commit', add a message (e.g. 'first commit'), and
-    then click 'commit', then 'push'
--   Git is a version control system that you can use to roll back to any
-    version of your work
--   Commit frequently
--   You may want to add a branch, perhaps called 'local', so that you
-    are not working on the 'master' (production) version You can have a
-    look at your latest commit and push on github.com
+Button git on the top right hand side, 
+
+- select files you'd like to commit
+- click 'commit', add a message (e.g. 'first commit'), 
+- and then click 'commit', then 'push'
+
+Git is a version control system that you can use to roll back to any version of your work
+
+- Commit frequently
+- You may want to add a branch, perhaps called 'local', so that you are not working on the 'master' (production) version 
+- You can have a look at your latest commit and push on github.com
 
 ## Surface of RStudio (using R)
 
@@ -331,18 +368,31 @@ rbind(1:5,1:5)
 | Command    | Description                             |
 |------------|-----------------------------------------|
 | sqrt(x)    | square root of value x                  |
-| abs(x)     | absolute value of x                     |
 | exp(x)     | exponential of x                        |
 | log(x)     | natural logarithm of ln(x)              |
+| abs(x)     | absolute value of x                     |
 | round(x,s) | round x to s digits after decimal point |
 
 ## Practical Excercise
 
 2/ Type in functions with x=5.34, s=1 in console
 
-# R scripts
+# Documentation using R 
 
-## However, we prefer to use R scripts:
+## Document in R instead of ``console" 
+
+We will rely on three types of documents
+
+- RScripts: like a do-file in Stata
+- Rmarkdowns: combine text with code chunks and output
+  - for slides
+  - for homeworks, theses
+  - simple design of homepages
+  - allows to embed videos, surveys, quizzes
+- RTutor: interactive homework assignment
+
+
+## R scripts:
 
 -   Do not type commands in console, collect in them in R-scripts
 -   R-scripts: text file with file extension: .R
@@ -436,9 +486,9 @@ sqrt(x)
 
 Similarly, we can type:
 
--   abs(x)\
 -   exp(x)\
 -   log(x)\
+-   abs(x)\
 -   round(x,s)
 
 # Data
