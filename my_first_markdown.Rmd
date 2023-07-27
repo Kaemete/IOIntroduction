@@ -1,0 +1,18 @@
+---
+title: "Untitled"
+author: "Dennis Rickert"
+date: "2023-07-27"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## R Markdown
+
+```{r , echo=t}
+2+4
+5*3
+3^4
+```
