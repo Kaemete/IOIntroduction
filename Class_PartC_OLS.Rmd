@@ -18,41 +18,48 @@ knitr::opts_chunk$set(echo = FALSE)
 
 # Session 3+4 - Part C: Refresher of Econometrics (OLS)
 
+
 ##
 ```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
 knitr::include_graphics("College_NewYorker.jpg")
 ```
 
-## What we do in Session 3+4: Part B
+## What we do in Session 3+4: Part C
 
-- Intro: Intuitive examples of causality vs correlation
-- Understanding the causal effect of price on demand
-- 
+So far we learned  
 
+- difference between correlation and causality
+- to represent economic relations using graphs and regressions 
+- omitting a variable may change sign of a relation 
 
-## Learning objectives
+Here we learn 
 
-- 
+- the formal concept  of simple regression (OLS)
+- that OLS is causal as long as *ceteris paribus* holds
+- graphical intuition of the OLS estimator 
+- how to interpret coefficients and interpret the "fit"
+
+... and how to predict better prices of wine than experts!   
 
 ## Concept of Simple Regressions
 
-Assume two variables $x$ and $y$ from a population (e.g., clients) 
+Two variables $y$ and $x$ from a population (e.g., clients, firms)
 
-- "Explaining $y$ in terms of $x$," or 
+- "explaining $y$ in terms of $x$," or 
 - "studying how $y$ changes when we change $x$."
 
+<br>
 
 Some examples include:
 
 - $y$ is the *demand* of ice cream and $p$ is the price
-- $y$ is  *market value* of a footballer and $x$ the *goals* he scored
-- $y$ is the *quality of wine* and $x$ the *weather*
-- $y$ is  *soybean crop yield* and $x$ is amount of fertilizer;
-- $y$ is *hourly wage* and $x$ is *years of education*;
+- $y$ is  *market value* of a footballer and $x$ the *goals* s/he scored
+- $y$ is the *price of wine* and $x$ the *weather*
+- $y$ is *hourly wage* and $x$ is *years of education*
 
 ## The Simple Regression Model
 
-We confront three issues, if we want to “explain $y$ in terms of $x$”
+***Three issues*** if we want to “explain $y$ in terms of $x$”
 
 - Which functional relationship do we assume (e.g., linear)? 
 - How do we allow factors, other than $x$, to affect $y$? 
@@ -64,21 +71,20 @@ We confront three issues, if we want to “explain $y$ in terms of $x$”
 $$y=\beta_0+\beta_1x+u$$
 
 - Linear relation between observables $x$ and $y$ (*Issue 1*)
-- $\beta_1:$ **slope parameter** in the relation between $y$ and $x$
-- $\beta_0:$ **intercept parameter** aka the **constant term**
-- Error term $u:$ Unobservables allowed to enter (*Issue 2*)
+- $\beta_0$: **intercept parameter** aka the **constant term**
+- $\beta_1$: **slope parameter** in the relation between $y$ and $x$
+- Error term $u$: Unobservables allowed to enter (*Issue 2*)
 - Certain assumptions to get causal effect of $x$ on $y$ (*Issue 3*)  
 
-Main intuition: given we observe $x$ and $y$
+Main intuition for causality: given we observe $x$ and $y$
 
-- $\beta_1$ and $\beta_0$: estimated making assumptions on $u$
+- estimate $\beta_1$ and $\beta_0$ making assumptions on $u$
 - $\beta_1$: how changes in $x$ affect changes in $y$ given $\beta_0$ and $u$
 
 ## We get the causal effect of $x$ on $y$ 
 
-holding all else equal (using ceteris paribus notion) 
+Ceteris paribus: we hold the unobserved factors in $u$ fixed
 
-- i.e., the the unobserved factors in $u$ are held fixed, 
 - so that the change in $u$ is zero, i.e., $\Delta{u}$= 0, 
 - i.e., $u$ does not affect $y$
 $$\Delta{y}=\beta_1\Delta{x}~~~~if~~~~\Delta{u}=0$$ 
@@ -87,19 +93,6 @@ $$\Delta{y}=\beta_1\Delta{x}~~~~if~~~~\Delta{u}=0$$
 - where $\beta_1$ yields causal effect of $x$ on $y$ 
 
 
-## Example: Soybean Yield and Fertilizer
-  
-Suppose that soybean yield per land unit is determined by:  
-      
-$$yield=\beta_0+\beta_1 fertilizer + u$$
-
-where $y= yield$ and $x=fertilizer$. 
-
-- Coefficient $\beta_1$ measures the effect of fertilizer on yield, holding unobservable factors fixed  
-- Error term $u$ contains factors, such as, land quality, rainfall, ... 
-- $\beta_0$ captures factors that are constant across land units
-
-$$\Delta{yield}=\beta_1\Delta fertilizer$$
 
 ## Example: A Simple Wage Equation
   
@@ -266,20 +259,107 @@ Given observations $x_i$ and $y_i$, we just need to calculate
 - the mean of $\bar{y},\bar{x}$
 - more commonly $Cov(x,y)$ and $Var(x)$. 
 
+## SST, SSE, SSR
+```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
+knitr::include_graphics("SST.jpg")
+```
 
 
-## Economist Ashenfelter vs. wine experts
+## R2 
 
-There are differences in price and quality of wine from year to year that are sometimes very significant: 
+How much of our model is explained by the regression line? 
 
-- wines are tasting better when they are older. 
-- So, there is an incentive to store young wines until they are mature. 
-- Wine experts taste the wine and then predict which ones will be the best later. 
-- But it is hard to determine the quality of the wine when it is so young just by tasting it, 
-  - since the taste will change significantly by the time it will be consumed.
-- Ashenfelter used Econometrics instead of believing experts
+$$\frac{SSE}{SST}$$
+
+## root mean squared error
+
+The residuals are the differences between the observed values (price) and the predicted values (calculated as predicted_price <- alpha + beta * df$AGST).
+
+We square each residual, take the average (i.e., the mean of the squared residuals which gives the Mean Squared Error or MSE), and then take the square root of that average to get the RMSE.
+
+
+## Hypothesis Testing
+
+Hypothesis testing is a statistical method that allows us to make inferences or draw conclusions about a population based on a sample of data.
+
+There are two types of hypotheses in a hypothesis test: Null hypothesis (H0) and Alternative hypothesis (Ha). 
+
+- Null Hypothesis (H0): This is a statement about the population that either is believed to be true or is used to put forth an argument unless it can be shown to be incorrect beyond a reasonable doubt.
+
+- Alternative Hypothesis (Ha): This is a claim about the population that is contradictory to the null hypothesis and what we conclude when we reject the null hypothesis.
+
+In linear regression, the standard error can be used to construct confidence intervals for the coefficients, or to perform hypothesis tests.
+
+## Key Statistics
+
+- standard error 
+- confidence intervals
+- t-test
+- p-value
+- F-test
+
+### Standard Error
+
+The standard error is a measure of the variability in the mean from one sample to the next. It measures the accuracy with which a sample represents a population.
+- It's a measure of the precision of your estimate. Smaller standard errors mean you have more precise (i.e., less variable) estimates.
+- if we were to draw from a random sample and estimate our parameter of interest $N$, then the standard deviation of the estimated parameters are equal to the standard error 
+- It represents the typical amount that our estimate varies across different random samples due to sampling error. Smaller standard errors mean our estimate is more precise and varies less across different samples.
+
+ 
+Example: 
+
+### Confidence Interval
+
+The confidence interval provides a range of values, derived from the sample, that is likely to contain the true population value. It gives us an estimate of the uncertainty of our sample estimate.
+
+- A 95% confidence interval means that if we were to draw a large number of random samples from the population and construct a 95% confidence interval from each sample, approximately 95% of these intervals would contain the true population parameter.
+
+Example: 
+
+
+### t-Test
+
+The t-Test compares two averages (means) and tells us if they are different from each other. The t-Test also tells us how significant the differences are.
+
+- In the context of regression, it is used to test whether a coefficient is significantly different from zero. The test statistic for each coefficient is the coefficient estimate divided by its standard error. This measures how many standard deviations the coefficient is from 0. If the coefficient is far from zero relative to the standard error, then we can reject the null hypothesis that the true coefficient value is zero.
+ 
+- calculated as: 
+- Rule of thumb: should be la
+
+Example: 
+
+### p-value
+
+The p-value is a measure of the evidence against the null hypothesis provided by the data. 
+
+The p-value is the probability that the results of your test occurred at random. If p-value is small (less than 0.05), we reject the null hypothesis.
+
+ If we repeatedly drew a large number of random samples from a population where the null hypothesis is true, the p-value represents the proportion of those samples where we would observe a t-statistic as extreme or more extreme than the one calculated from our sample. A small p-value (typically less than 0.05) indicates that such an extreme t-statistic would be unlikely if the null hypothesis were true, so we reject the null hypothesis.
+ 
+
 
 ##
+
+F-Test: The F-test in regression compares the model with no predictors (just the intercept) to your model. The null hypothesis is that all coefficients (except the intercept) are zero, and the alternative hypothesis is that at least one is not zero. The test statistic is a ratio of mean squared error (MSE) from regression and the MSE of residuals. If the p-value for the F-test is small (typically ≤ 0.05), we reject the null hypothesis that all slope coefficients are zero, suggesting that at least one predictor is useful in the model.
+
+# Simple OLS regression applied to the case of Bordeaux wine prices
+
+## Background on Bordeaux wine prices 
+
+There are differences in price and quality of wine over time: 
+
+- wines are tasting better when they are older. 
+- incentive to store young wines until they are mature. 
+- Wine experts taste the wine and then predict future prices based on taste 
+
+Can you really predict prices of mature wine based on taste of young wine?
+
+- the taste will change significantly over time 
+
+Ashenfelter challenged "experts" using his Econometrics skills 
+
+## Maverick Ashenfelter made it into NYT
+
 ```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
 knitr::include_graphics("wine_nyt.jpg")
 ```
@@ -290,50 +370,126 @@ knitr::include_graphics("wine_nyt.jpg")
 - A very, very passionate argument over wine.
 
 
-##
+## Ashenfelter made it into Forbes 
+
 ```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
 knitr::include_graphics("wine_forbes.jpg")
 ```
 
+<br>
+
+... although few hundred observations is not really big data 
+
 ## 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/8WMRj9mTQtI" frameborder="0" allowfullscreen></iframe>
 
-## Have a look at the paper and answer the following questions
-1. Which of the following predicts the prices of older, mature wines?',['Dry Summers','Humid Summers','Cold Winters','Cold Summers'],'Dry Summers')
-2. What is true about the relationship between Bordeaux wine and rain in August',['Positively correlated + statistically insignificant','Positively correlated + statistically significant','Negatively correlated + statistically insignificant','Negatively correlated + statistically significant'],'Negatively correlated + statistically significant')
-3. Which independent variable has the largest (statistically significant) effect on the price of Bordeaux wine?',['Age of the vintage','Average temperature in growing season','Rain in August','Average temperature in September'],'Average temperature in growing season
-4. With every additional year, the price of a vintage increases by (column 2)',['0.024%','0.048%','2.4%','4.8%'],'2.4%'
-5. According to the table above, the famous Ashenfelter Wine Equation can be represented as:                                      0.024 Age + 0.62 Temp. (growing season) – 0.004 August rain + 0.001 Pre-vintage rain + 0.008 Temp. (September)',['Yes','No'],'No')
-6. It is a good example for regressions because wine prices have an effect on weather but not weather on wine prices',['Yes','No','Maybe'],'No'
-7. Concluding from the question above, we do not have to care about unobserved confounding factors',['Yes','No','Maybe'],'No'
-
-
-##  Have a look at this table from the research paper. 
+##  Look at this table from the paper 
 
 ```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
 knitr::include_graphics("wine_table2.jpg")
 ```
 
 
+## Answer the following question
+
+What predicts the prices of older, mature wines?
+
+- Dry Summers, 
+- Humid Summers,
+- Cold Summers
+
+## Answer the following question
+
+What is the relationship between wine price and rain in August?
+
+- Positively correlated + statistically insignificant 
+- Positively correlated + statistically significant 
+- Negatively correlated + statistically insignificant
+- Negatively correlated + statistically significant
+
+## Answer the following question
+Which independent variable has the largest effect on the price of Bordeaux wine? Just evaluate the magnitude of the effect
+
+- Age of the vintage
+- Average temperature in growing season
+- Rain in August
+- Average temperature in September
+
+<br>
+(we look later at t-values and p-values for statistical significance)
+
+## Answer the following question
+With every additional year, the price of a vintage increases by (column 2)
+
+- 0.024% 
+- 0.048%
+- 2.4%
+- 4.8%
+
+## Answer the following question
+According to the table above, the famous Ashenfelter Wine Equation can be represented as:                                      
+
+$$
+\begin{aligned}
++ & 0.024~~~~Age \\
++ & 0.620~~~~Avg. Temp. ~(growing~season) \\
+– & 0.004~~~~August~rain \\
++ & 0.001~~~~Pre-vintage~rain \\ 
++ & 0.008~~~~Temp. (September)
+\end{aligned}
+$$
+
+## Answer the following question
+
+It is a good example for regressions because wine prices have an effect on weather but not weather on wine prices
+
+- Yes 
+- No 
+- Maybe
+
+
+## Answer the following question
+
+Concluding from the question above, we do not have to care about unobserved confounding factors
+
+- Yes 
+- No
+- Maybe
+
+## Solutions
+
+1. Dry Summers
+2. Negatively correlated + statistically significant
+3. Average temperature in growing season
+4. 2.4\%
+5. No
+6. No
+7. No
+
+## 
+to do: log prices
+R2
+Root mean squared error
+Standard errors 
+
+not reported: p-values, t-test, F-test
+
 ## Let's have a look how the magic wine equation works
 
 1. Load the data set ('wine.csv').
-2. Calculate the average price of wine. Explain why this is not a good predictor for future prices. 
-3. Explain under which circumstances OLS is the preferred choice and why.  
-4. Regress average temperature in the growing season on prices. What do you see? How do you interpret the slope?
+2. Regress average temperature in the growing season on prices. What do you see? How do you interpret the slope?
+3. Calculate OLS by hand using the formula from class
+4. Add the other control variables
 5. How do you measure the "fit" of a model? Which of the two models has the better fit? 
-6. And are there even better models?
-7. Show if OLS assumptions are violated
 
 ## 
 Regression of Average Temperature in Growing Season on Price 
-```{r}
+```{r, echo=TRUE}
 library("rio")
 df <- import("wine.csv")
 
-lm(Price ~ AGST, ,data=df) 
+lm(Price ~ AGST, data=df) 
 ```
-
 ## 
 ```{r, echo=FALSE}
 y <-df$Price
@@ -355,6 +511,100 @@ summary(fit)
 
 ```
 
+## OLS by hand
+```{r, echo=TRUE}
+# Load necessary library
+library(dplyr)
+
+# Assume df is your dataframe and it has columns price and AGST
+
+# Calculate number of observations
+n <- nrow(df)
+
+# Calculate means
+mean_price <- mean(df$Price)
+mean_AGST <- mean(df$AGST)
+
+# Calculate the parts of the formula for Beta
+beta_numerator <- sum((df$Price - mean_price) * (df$AGST - mean_AGST))
+beta_denominator <- sum((df$AGST - mean_AGST)^2)
+
+# Calculate Beta (slope)
+beta <- beta_numerator / beta_denominator
+
+# Calculate Alpha (intercept)
+alpha <- mean_price - beta * mean_AGST
+
+# Print the coefficients
+cat("Alpha: ", alpha, "\n")
+cat("Beta: ", beta, "\n")
+
+```
+## 
+
+- SSE: This is the sum of the squares of the residuals. It measures the unexplained variability by the model.
+- SST: This is the total sum of squares, which measures the total variability in the dependent variable, price.
+- SSR: This is the sum of squares due to regression, which measures the variability explained by the regression model. It is calculated as the difference between SST and SSE.
+
+In a simple linear regression model, the sums of squares satisfy the equation: SST = SSR + SSE.
+
+##  
+```{r}
+# Using the previously calculated alpha and beta
+
+# Predicted values
+predicted_price <- alpha + beta * df$AGST
+
+# Residuals
+residuals <- df$Price - predicted_price
+
+# Sum of Squares Error (SSE)
+SSE <- sum(residuals^2)
+
+# Total Sum of Squares (SST)
+SST <- sum((df$Price - mean_price)^2)
+
+# Sum of Squares Regression (SSR)
+SSR <- SST - SSE
+
+# Print the sums of squares
+cat("SSE: ", SSE, "\n")
+cat("SST: ", SST, "\n")
+cat("SSR: ", SSR, "\n")
+```
+## RMSE
+
+The residuals are the differences between the observed values (price) and the predicted values (calculated as predicted_price <- alpha + beta * AGST).
+
+We square each residual, take the average (i.e., the mean of the squared residuals which gives the Mean Squared Error or MSE), and then take the square root of that average to get the RMSE.
+
+RMSE is a useful measure because it's in the same units as the dependent variable and lower values indicate better fit to the data.
+
+## 
+```{r}
+# Calculate the Root Mean Squared Error (RMSE)
+RMSE <- sqrt(mean(residuals^2))
+
+# Print the RMSE
+cat("RMSE: ", RMSE, "\n")
+```
+
+## 
+The R-squared value is a statistical measure that represents the proportion of the variance for a dependent variable that's explained by the independent variable(s) in a regression model.
+
+R-squared values range from 0 to 1. A value of 0 indicates that the dependent variable cannot be predicted from the independent variable. A value of 1 indicates the dependent variable can be predicted without error from the independent variable. An R-squared between 0 and 1 indicates the extent to which the dependent variable is predictable. An R-squared of 0.20 means that 20 percent of the dependent variable, price, can be explained by the independent variable, AGST.
+
+## 
+```{r, echo=TRUE}
+# Calculate R-squared
+R_squared <- SSR / SST
+
+# Print the R-squared
+cat("R-squared: ", R_squared, "\n")
+```
+
+
+
 ## 
 OLS by construction minimizes the distance from the observation point to the regression line, which allows us to exploit some information from it:
 
@@ -372,11 +622,6 @@ Goodness if fit:
 measured by explained part of our model in relation
 R2: the fraction of explained variation and total variation (R2=SSR/SST)
 
-## Check the two properties of OLS
-
-The zero conditional mean assumption implies: E(x,u)=0 and E(u|x)=E(u)=0
-
-We do not know expectation, but can use sample averages as analog: Thus, cov(x,u)=0, avg u=0
 
 ## 
 For now, we only regress prices on average temperature in the growing season
@@ -393,20 +638,37 @@ fit <- lm(Price ~ AGST + WinterRain + HarvestRain + Age, data=df)
 summary(fit)
 
 ```
-## 
-Robert Parker, the world’s most influential wine expert said:
 
-Ashenfelter is an absolute total sham. His methods are "Neanderthal" not to mention ludicrous and absurd. He is like a movie critic who never goes to see the movie but tells you how good it is based on the actors and the director.
-However Orley Ashenfelter's model proved quite succesfull regarding auction prices and many times he beat experts' opinions. There is even an app now called shiny app used to evaluate wine quality.
+## Robert Parker, the world’s most influential wine expert said:
 
-## 
-Ashenfelter responds (http://www.liquidasset.com/feature1.html)
 
-"I won't have much influence on (the industry) at all," he said. "Their goal now is to ignore us." The professor, however, laments a silent type of copycat syndrome among wine writers, noting many connoisseurs agree privately with him but refuse to say so publicly. He has yet to receive support from professional wine tasters, despite the accuracy of his methods. "Everyone now says the same thing I do," he said. Years ago, many tasters criticized Dr. Ashenfelter when he announced that his data indicated the 1986 vintage would be average, despite the belief of many tasters the wine would age incredibly well. History has supported his claims. Today, many people consider the 1986 vintages to be average wines.
+```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
+knitr::include_graphics("RobParker.jpg")
+```
 
-##
+
+## Ashenfelter responds
+
+```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
+knitr::include_graphics("Ashenfelter.jpg")
+```
+
+## So who is right?
+
+Years ago, many tasters criticized Prof. Ashenfelter when he announced that his data indicated the 1986 vintage is average, 
+
+- despite the belief of many tasters the wine would age incredibly well. 
+
+History has supported his claims. 
+
+- Today, many people consider the 1986 vintages to be average wines.
+
 
 ## There is even an app now
 ```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
 knitr::include_graphics("shinyapp.jpg")
 ```
+
+## What have we learned?
+
+- 

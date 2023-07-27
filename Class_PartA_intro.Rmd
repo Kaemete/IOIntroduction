@@ -52,9 +52,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## My Research
 
-***Field***
-
-- firm size, market power, public policies in (food) supply chains 
+***Field***: firm size, market power, public policies in supply chains 
 
 ***Methodology***: Structural Models
 
@@ -68,6 +66,8 @@ knitr::opts_chunk$set(echo = FALSE)
 - Do firms pass-on minimum wages to prices?
 
 ## Selected Academic Articles
+
+about three key topics of Industrial Economics 
 
 - **Vertical Restraints, Pass-Through, and Market Definition: Evidence from Grocery Retailing**, *International Journal of Industrial Organization* 74, 2021.
 
@@ -108,7 +108,9 @@ knitr::opts_chunk$set(echo = FALSE)
 - DG comp of the EC
 - cartel offices in Germany, Norway, and Chile  
 
-# We now dig in into the actual topic
+# We start with the class
+
+... Now that you know I am qualified to teach you 
 
 ## Brilliant minds skeptic about statistics
 
@@ -118,21 +120,21 @@ knitr::include_graphics("quotes.jpg")
 
 ## Where does skepticism come from? 
 
-One reason may lie in the abuse of statistics...
+One reason may lie in the *intentional* abuse of statistics...
 
 - **Torture the data until it confesses** (Mancur Olson)
+
 <br>
 
-... another in the difficulty of using statistics appropriately
+Another reason in the *unintentional* abuse of statistics
 
 - **The economy - a miserable experimental design** (R. E. Lucas)
 
 <br>
-
 In this class, we learn 
 
 - how to avoid intentional and unintentional abuse of statistics 
-- methods for the miserable experimental design
+- methods to counter miserable experimental designs
 
 ## What is improper use of statistics? 
 
@@ -140,6 +142,8 @@ Indeed, we all do honest mistakes due to
 
 - time pressure (deadlines for bachelor, master, PhD) 
 - loosing track in the **garden of forking paths** (A. Gelman)
+
+<br>
 
 Sometimes there are illegitimate attempts for fame  
 
@@ -156,6 +160,7 @@ Only 23-33% of studies in leading Psychology journal replicated:
 - [Group Author: Open Science Collaboration](https://mfr.osf.io/render?url=https://osf.io/jq7v6/?action=download%26mode=render>)
 - [Link to article in Nature](https://www.nature.com/articles/nature.2015.17433)
 
+<br>
 
 Standard theory of social priming not at all reproducible:
 
@@ -170,23 +175,30 @@ Only 11-30% of cancer studies could be replicated:
 - [Link to article in Science](https://www.sciencemag.org/news/2018/07/plan-replicate-50-high-impact-cancer-papers-shrinks-just-18)
 - [Link to article in Nature](https://www.nature.com/articles/483531a)
 
+<br>
+
 J. Ioannidis' drastic conclusion: Most Clinical Research Not Useful
 
 - [Why Most Clinical Research Is Not Useful](https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1002049)
 
 
-## This led to replication crisis: economics
+## Replication crisis in economics?
 
 60-70% of studies in major journals could be replicated:
 
 - [Link 1 to article in Science](https://science.sciencemag.org/content/351/6280/1433)
 - [Link 2 to article in Science](https://www.sciencemag.org/news/2016/03/about-40-economics-experiments-fail-replication-survey)
 
+<br>
 Why is that?
 
-- Combining economic theory, rigorous econometrics, and good data? Aka Structural Econometrics?
+- Combining economic theory, econometrics, and data
+  - A model makes your assumption explicit 
+  - Econometrics sophisticated tools for causal effects
+  - With data you can test your assumptions and hypotheses
 - Using Stata, Python, and R for reproducible research? 
-- You will both learn in this class!
+
+***You will learn all this in this class!***
 
 ## Learning objectives: Session 3+4 
 
@@ -222,21 +234,7 @@ knitr::include_graphics("companies_r.jpg")
 ```
 
 
-## Some basics in R...
-
-To be able to use R, we need to understand:
-
--   Surface of R and RStudio
--   Packages
--   Data (frames, import, export, missings)
--   Summary statistics and graphs
-
-<br>
-
-... which we learn in the rest of this class.
-
-
-## Before using R and RStudio
+## Before using R and RStudio (skip)
 
 R is a free software (GNU license)
 
@@ -250,7 +248,7 @@ Sign up for Github (for version control): <https://github.com/>
 
 - and download Github desktop: <https://desktop.github.com/>
 
-## Useful links
+## Useful links (skip)
 
 Using R for Introductory Econometrics
 
@@ -266,7 +264,7 @@ If you need help:
     -   <http://stats.stackexchange.com/questions/tagged/R>
     -   <http://stackoverflow.com/questions/tagged/r>
 
-## Github for content + version control (skip)
+## Github for version control (skip)
 
 Once installed everything and signed up for the necessary:
 
@@ -304,11 +302,17 @@ Git is a version control system that you can use to roll back to any version of 
 - You may want to add a branch, perhaps called 'local', so that you are not working on the 'master' (production) version 
 - You can have a look at your latest commit and push on github.com
 
+## Screenshot of surface of R Studio
+
+```{r , echo=FALSE, out.width = "105%", fig.align = "center"}
+knitr::include_graphics("Rstudio_surface.jpg")
+```
+
 ## Surface of RStudio (using R)
 
 The surface of RStudio consists of four windows
 
--   Script file (upper left)
+-   Script file / Rmarkdown (upper left)
     -   write reproducible code
 -   Console (lower left)
     -   output is shown
@@ -317,11 +321,6 @@ The surface of RStudio consists of four windows
 -   Auxiliary (lower right): files, plots, packages, ...
     -   nice help function but otw rarely used
 
-## Screenshot of surface of R Studio
-
-```{r , echo=FALSE, out.width = "105%", fig.align = "center"}
-knitr::include_graphics("Rstudio_surface.jpg")
-```
 
 ## Console = similar to calculator:
 
@@ -409,10 +408,10 @@ We will rely on three types of documents
     -   Mouse click: -\> run (all or selection)
     -   Menu: code -\> run (all or selection)
     -   ctrl + enter (all or selection)
+      - define section by: Ctrl+Shift+R
 -   You should comment the scripts.
     -   Each line starting with \# will be ignored by R
-    -   Helps for documentation and to remember why you did what (for
-        yourself and others)
+    -   Helps for documentation and to remember why you did what (for yourself and others)
 
 ```{r , echo=t}
 # This is a comment for 3*8
@@ -497,7 +496,7 @@ Similarly, we can type:
 
 -   Data: collection of **vectors** into columns and rows
     -   just like matrices and tables
--   **Vectors** often are our variables c();
+-   Variables often are **Vectors**;
     -   the first row is the variable name x1,x2, ...
 -   Function data.frame(x1,x2,...)
     -   creates a data set consisting of vectors x1,x2,...
@@ -510,8 +509,8 @@ Similarly, we can type:
 ```{r, echo=TRUE}
 # create fake vectors
 year <- c(2001:2010)
-revenues <- sample.int(100, 10)
-costs <- sample.int(10, 10)
+revenues <- runif(10,min = 50, max = 100) 
+costs <- runif(10,min = 10, max = 50) 
 
 # gather fake vectors in data frame
 my_df <- data.frame(year,revenues,costs)
@@ -532,13 +531,22 @@ my_df$revenues
 # simulate new revenue and store as new variable
 new_revenue = 5 + my_df$revenues
 new_revenue
+```
 
+## Create data: Application contd.
+
+```{r, echo=TRUE}
 # add variable to data frame
 my_df$new_revenue <- new_revenue 
 
 # add variable directly to data frame
 my_df$profit <- my_df$revenues - my_df$cost
+my_df$profit
 ```
+
+<br>
+
+Those variables and the data frame can also be accessed through the variable manage (environment) on the upper right. 
 
 
 ## Useful functions for data frames (df)
@@ -550,6 +558,13 @@ my_df$profit <- my_df$revenues - my_df$cost
 | ncol(df)  | number of columns (i.e., variable names) |
 | head(df)  | first 6 rows of data frame               |
 | tail(df)  | last 6 rows of data frame                |
+
+## Most common function
+
+```{r, echo=TRUE}
+head(my_df)
+```
+
 
 ## Brief digression: Packages
 
