@@ -1,12 +1,12 @@
 ---
-title: "Session 3+4: Introduction into R and Econometrics. Part D"
+title: "Session 3+4: Introduction into R and Econometrics"
 author: "Dennis Rickert, MINES Paris-PSL University"
 date: "2023-07-17"
 output: 
   ioslides_presentation: 
-#  html_document: 
-#    number_sections: yes
-#    toc: yes
+  html_document: 
+    number_sections: yes
+    toc: yes
 editor_options: 
   markdown: 
     wrap: 72
@@ -16,7 +16,7 @@ editor_options:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-# Session 3+4 - Part C: Refresher of Econometrics (IV)
+# Session 3+4 - Part D: Refresher of Econometrics (IV)
 
 
 ## What we do in Session 3+4 - Part D
@@ -34,8 +34,8 @@ knitr::opts_chunk$set(echo = FALSE)
 
 If five assumptions hold, then the OLS estimator $\hat{\beta}_1$ is the **B**est **L**inear **U**nbiased **E**stimator (BLUE)
 
-- *U*nbiased: If we run OLS with different random samples, the expected value of the estimated parameter equals the true (unknown) 
-- *B*est = Most efficient: OLS has the lowest variance of all estimators in the linear class 
+- *U*nbiased: If we run OLS with different random samples, the expected value of the estimated parameter equals the true
+- *B*est: Most efficient: OLS has the lowest variance of all estimators in the linear class 
 - *L*inear: OLS is in the class of linear models
 - *E*stimator: From a sample, we try to make inference about the true value in the population parameter
 
@@ -49,7 +49,7 @@ For future reference, it is useful to number these assumptions using the prefix 
 - SLR.4: Zero conditional mean: $E(u|x)=E(u)=0$
 - SRL.5: The error $u$ has the same variance given any value of the explanatory variable (homoscedasticity): $Var(u|x)=\sigma^2$
 
-## Unbiased + Best (=efficient)
+## $U$nbiased + $B$est (=efficient)
 
 In a simulation of T random draws, OLS parameters will be 
 
@@ -74,7 +74,7 @@ and not other violations: heteroskedasticity or autocorrelation
 
 Those are moderately important. If one of the two is violated 
 
-- the OLS estimator $\hat{\beta}$ is still consistent but not efficient 
+- the OLS estimator $\hat{\beta}$ is still unbiased but not efficient 
 - calculate standard errors using an appropriate formulas
 
 
@@ -83,7 +83,7 @@ Those are moderately important. If one of the two is violated
 
 The most important assumption is exogeneity of variables $x$. 
 
-- excluded variables not systematically correlated with $x$ 
+- excluded variables in $u$ not systematically correlated with $x$ 
 - $x$ is **exogenous**, 
   - if uncorrelated with $u$, i.e., $\mbox{cor}(x_t,u_t)=0$
 - We say $x$ is **endogenous** 
@@ -117,9 +117,9 @@ Ice cream example:
 
 For real world data, we never observe $u$
 
-- , i.e. we cannot simply see in the data that there is an endogeniety problem. 
-- if we compute the correlation between $p$ and $\hat{u}$ (the OLS residual), 
-  - we see that it is always 0
+- we cannot simply see in the data if is endogeniety 
+- if we compute the correlation between $p$ and $u$ 
+  - we see that it is always 0 by construction
   - even if $u$ and $p$ are correlated.
 - So arguing that there is endogeneity is a verbal exercise
 
@@ -130,17 +130,18 @@ However, we now use simulated data to outline the issue.
 We consider again our simulated data for ice cream demand 
 
 - case 1: prices depend on unobserved demand shocks  
-  - Is the OLS estimator biased? Is there endogeneity?
-  - Hint: think of correlation between $u$ and $p$ 
-
 - case 2: eliminating the demand shocks 
-- case 3: firms charge constant markups 
+- case 3: constant markups of always 10% above cost
+
+In which cases is the OLS estimator biased due to endogeneity?
+
+  - Hint: think of correlation between $u$ and $p$ 
 
 ## First define the model
 ```{r, echo=TRUE}
 T=1000
-b1 = 100
-b2 = -1
+b1 = 100 # we called this a before
+b2 = -1 # we called this b before
 
 # demand shock
 eps = rnorm(n = T,mean = 0,sd = 5)
@@ -169,6 +170,7 @@ By construction the error term $u$
 
 - is zero on average
 - has zero correlation with $p$
+
 ```{r, echo=TRUE}
 model <- lm(q~p)
 u <- residuals(model)
@@ -184,7 +186,7 @@ But we do know that $p$ depends on demand shock $eps$.
 ```{r, echo=TRUE}
 cor(p,eps)
 ```
-And indeed we find a negative correlation. 
+And indeed we find a correlation which is not zero. 
 
 - This $eps$ is in error term creating a bias
 - We can rewrite: $u=eps+v$
@@ -194,14 +196,13 @@ And indeed we find a negative correlation.
 
 ## We reduce the the demand shock $eps$ 
 
-Consider in your simulation the limit case that $\sigma_{u}\rightarrow 0$. 
+Let us now decrease the eps towards 0. 
 
 - What is then the main source of variation in prices? 
 - To which value will $cor(p,eps)$ converge? 
-- To which value will $cor(p,u)$ converge? 
-  - (the real $u$ not the constructed $u$)
+- Will there still be correlation with the error term?
 
-We study in the simulation whether the OLS estimator of prices seems to be unbiased in this limit case.
+We study whether the OLS estimator is biased in this case.
 
 ## Set demand shock equal to zero
 
@@ -212,7 +213,7 @@ b1 = 100
 b2 = -1
 
 # demand shock
-eps = rnorm(n = T,mean = 0,sd = 0.0005)
+eps = rnorm(n = T,mean = 0,sd = 0.0001)
 
 # costs
 c=runif(T,min = 10,max = 30)
@@ -224,7 +225,7 @@ p = (b1 + eps)/(2*b2)  + c / 2
 q = b1 + eps - b2*p
 ```
 
-Prices affected by market size, price sensitivity, and costs and not the demand shock
+Prices affected by $b1$, $b2$, and $c$ but not by $eps$
 
 ## Set demand shock equal to zero
 
@@ -250,7 +251,7 @@ we get consistent parameters of $b0$ and $b1$
 
 ## Constant markup model
 
-We now assume prices $p$ always set 10% above the cost $c$ 
+Now assume prices $p$ are always set 10% above the cost $c$ 
 
 - prices are just a constant markup above costs 
 - and uncorrelated with the demand shock
@@ -294,14 +295,14 @@ lm(q~p)
 ## Summary: what have we learned?
 
 
-## Some methods to consistently estimate causal effects
+## Methods to estimate causal effects
 
-We will discuss several methods that could be used to overcome endogeniety problems in order consistently estimate regression parameters that describe causal effects (like the slope of a demand function).
+Methods to overcome endogeniety problems to have causal and unbiased effects (like the slope of a demand function)
 
-- Conduct a randomized experiment.
+- Conduct a randomized experiment
 - Add control variables
 - Sample split regressions
-- Use instrumental variable estimation.
+- Use instrumental variable estimation
 
 
 ## Conduct a Randomized Experiment
@@ -329,7 +330,7 @@ However, not always possible, or too costly, to randomize
 Assume the demand function for ice is given by the following (***long***) regression formula with two explanatory variables:
 
 $$q_t = \beta_0 + \beta_1 p_t + \beta_2 s_t + v_t$$
-where $s_t$ is a dummy variable that is 1 if the day is sunny and 0 otherwise and $u_t$ are unobserved demand shocks.
+where $s_t$ is a dummy variable equal to 1 if the day is sunny and 0 otherwise, and $v_t$ is our error term
   
 Assume we estimate the (***short***) regression model:
 $$q_t = \beta_0 + \beta_1 p_t +u_t$$
@@ -352,7 +353,7 @@ b0 = 100
 b1 = -1
 b2 = 20
 
-# create uncorrelated + independent error term v 
+# create error term v 
 v = rnorm(T,0,5)
 
 # seasonality (random variable of 0/1 for hot or not hot)
@@ -362,7 +363,7 @@ s = sample(x = c(0,1),size = T,replace = TRUE)
 p = 10*s + runif(T,20,30)
   
 # demand function
-q = b0 + b1*p + b2*s + u
+q = b0 + b1*p + b2*s + v
 
 # error term with omitted variable seasonal dummy
 u = b2*s + v
@@ -381,17 +382,27 @@ cor(p,u)
 
 Are coefficients biased and do we have $cor(p,u)=0$?
 
-```{r}
+```{r,echo=TRUE}
 # long regression
 lm(q~p + s)
 ```
-## Random price experiment
+## Randomized price experiment
 
-it is not important that excluded variables are correlated with dependent variable of demand, 
+We now conduct a randomized experiment. 
 
-it is important that none of the stuff we leave out is correlated with prices
+- That is, prices are randomly set across seasons
+- This means that prices do not depend on the season $s$
+- Demand, however, is still a function of $s$
 
-## To see that create uncorrelated prices
+<br>
+
+Lessons to be learned 
+
+- we can exclude variables that are correlated with demand
+- we should not exclude factors correlated with price
+
+
+## We create randomized prices
 
 ```{r,echo=TRUE}
 T=1000
@@ -419,13 +430,17 @@ q = b0 + b1*p + b2*s + v
 lm(q~p )
 ```
 
-we see it is important that prices are not correlated with unobserved factors in the error term
+<br>
 
-## Control variables
+we get unbiased estimates if prices are not correlated with unobserved factors in the error term
+
+## Summary: Control variables
 
 if observed variables are correlated with the error term
 
   - We can now just include them in the regression as controls 
+
+<br>
 
 By adding control variables, we 
 
@@ -452,17 +467,41 @@ $p$ is exogenous if uncorrelated with $v$, even if correlated with $s$.
 
 ## Which control variables to add?
 
-Assume you want to study the size of wage *discrimination* against females.
+Assume you want to study the gender pay gap *discrimination* 
 
-- the regression is wage on female dummy variable 
-- add as control variable type of job to your regression?
+- the regression is wage a dummy variable for gender 
+- use a cross-sample of all men and all woman from all jobs
+- you find that men are payed 10\% more than women
 
-Assume you want to analyse the effect of obtaining a university degree on wages.
+<br>
 
-- the regression is wage on university degree
+Can you conclude a causal effect? 
+
+- Or would you include control variables?
+- If so, which?
+
+
+## Causal gender paygap? 
+```{r , echo=FALSE, out.width = "100%", fig.align = "center"}
+knitr::include_graphics("gender_paygap.jpg")
+```
+
+... or do we need to correct for hours worked?
+
+## Higher wages from Ivy-League college?
+
+You analyse how obtaining a degree from Harvard affects wages
+
+- the regression is wage a dummy for being from Harvard
+- would you get a causal effect?
 - add as control variable the high-school grades?
 
+<br>
 
+Angrist and Pischke exploit an experiment where it is randomized whether similar students 
+
+- are admitted to Harvard or go to a public college
+- what is your expectation on wages?
 
 ## Separate regressions for subsets
 
@@ -518,10 +557,11 @@ lm(q~p , dat1)
 
 As discussed, omitting variables which are correlated with our $x$
 
-- results in a violation of $\mathbb{E}(u|x)=\mathbb{E}(u)=0)$
-- but sometimes we do not have a good control variable
-- e.g., we do not observe high/low demand shocks
+- results in a violation of $\mathbb{E}(u|x)=\mathbb{E}(u)=0$
+- sometimes we do not have a good control variable
+  - e.g., we do not observe high/low demand shocks
 
+<br>
 
 **Instrumental variables (IV)** solve the endogeneity issues
 
@@ -533,9 +573,16 @@ As discussed, omitting variables which are correlated with our $x$
 
 To understand how IV regression works, think of the variation in $x$ as having two parts:
 
-  - one part that, for whatever reason, is correlated with $u$ (this is the part that causes the problems) and
-  - a second part that is uncorrelated with $u$.
-- If you had information that allowed you to isolate the second part, you could focus on those variations in $x$ that are uncorrelated with $u$ and disregard the variations in $x$ that bias the OLS estimates.
+- one part that, for whatever reason, is correlated with $u$ 
+  - this is the part that causes the problems
+- and a second part that is uncorrelated with $u$.
+
+<br> 
+
+If you can isolate the second part, 
+
+- then you could use variations of this uncorrelated part of $x$  
+- disregard the variations in the problematic part of $x$  
 
 ## Grapical illustration 1
 
@@ -544,6 +591,10 @@ knitr::include_graphics("IV_idea1.jpg")
 ```
 
 ## Grapical illustration 2
+
+if there is a variable correlated with our endogenous variable, but uncorrelated with the problematic part, 
+
+- then we could isolate the unprobematic part
 
 ```{r , echo=FALSE, out.width = "105%", fig.align = "center"}
 knitr::include_graphics("IV_idea2.jpg")
@@ -564,33 +615,43 @@ Per endogenous variable in the regression model,
 
 
 
-## Graphical illustration of the two conditions
+## Two conditions graphically  
+
+<br> 
+<br> 
 
 ```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
 knitr::include_graphics("instr_req.png")
 ```
 
+<br>
+
+Problem: $u$ affects both $x$ and $y$
+
+Solution: find $z$ which is correlated with $x$ but not with $y$
 
 ## Sketch of 2SLS
 
-- If the instrument $z$ satisfies the conditions of instrument relevance and exogeneity, the coefficient $\beta_1$ can be estimated using an IV estimator called **two stage least squares (2SLS)**.
-- As the name suggests, the two stage least squares estimator is calculated in two stages:
-    - The first stage decomposes $x$ into two components: 
-      - a problematic component that may be correlated with the regression error 
-      - and another, problem-free component that is uncorrelated with the error.
-    - The second stage uses the problem-free component to estimate $\beta_1$.
+If the instrument $z$ satisfies the conditions of instrument relevance and exogeneity, the coefficient $\beta_1$ can be estimated 
+
+We can use an estimator called **two stage least squares (2SLS)**.
+
+- First stage decomposes $x$ into two components: 
+    - a problematic component that may be correlated with the regression error 
+    - and another, problem-free component that is uncorrelated with the error.
+- Second stage: use problem-free component to estimate $\beta_1$.
 
 ## Implementation of 2SLS
 
 First stage: 
 
-- Estimate $x_{1}=\gamma_0 + \gamma_1z$ 
+- Estimate $x=\gamma_0 + \gamma_1z$ 
 - (ALL coviariates that are used in the main estimation have to be included in this step!)
-- Save $\hat{x}_{1}$, the first stage estimate of $x_{1} $
+- Save $\hat{x}$, the first stage estimate of $x$
 
 Second stage: 
 
-- Regress $y=\beta_0+\beta_{1}\hat{x}_{1}+u$ 
+- Regress $y=\beta_0+\beta_{1}\hat{x}+u$ 
 - Note $z$ only appears in the first stage, not in the second stage
 - This is called the **exclusion restriction**
 
@@ -603,11 +664,12 @@ knitr::include_graphics("structure.jpg")
 
 ## Instruments in Ice Cream Example
 
-$$q = \beta_0 + \beta_1 p + \beta_2 s + \varepsilon$$
+$$q = \beta_0 + \beta_1 p + \varepsilon$$
 
-- Check that both $c$ and $s$ are instruments for $p$ (both satisfy the relevance and exogeneity condition)
+- Check if $c$ is instruments for $p$  
+  - satisfies the relevance and exogeneity condition?
 
-- $c$ is the required excluded instrument that is not part of the demand function.
+$c$ is the required excluded instrument that is not part of the demand function.
 
 
 
@@ -615,16 +677,16 @@ $$q = \beta_0 + \beta_1 p + \beta_2 s + \varepsilon$$
 
 Perform 2SLS running two OLS estimations. 
 
-1. Regress the $p$ on instrument $z$ and observed $s$.
+1. Regress the $p$ on instrument $z$
   
-  $$p = \gamma_0 + \gamma_1 c + \gamma_2 s + \eta$$
+  $$p = \gamma_0 + \gamma_1 c + \eta$$
 
   - Then compute the *predicted values* of this regression 
-    $$\hat{p}=\hat \gamma_0 + \hat \gamma_1 c + \hat \gamma_2 s$$
+    $$\hat{p}=\hat \gamma_0 + \hat \gamma_1 c$$
     
 2. Estimate the original regression but substitute in the $\hat{p}$1.
 
-  $$q=\beta_{0}+\beta_{1}\hat{p}+\beta_2 s+u$$
+  $$q=\beta_{0}+\beta_{1}\hat{p}+u$$
 
 $\hat \beta$ of this second stage is a unbiased estimator of $\beta$.
 

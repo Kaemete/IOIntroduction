@@ -18,11 +18,26 @@ knitr::opts_chunk$set(echo = FALSE)
 
 # Session 3+4 - Part C: Refresher of Econometrics (OLS)
 
+## Intro
 
-##
+We start with two simple examples that outline
+
+- relevant research questions in economics
+- the interest in establishing causal relations 
+- when we can use simple regressions for causality
+
+## Example 1: More money by education?
+
 ```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
 knitr::include_graphics("College_NewYorker.jpg")
 ```
+
+## Example 2: What affects wine prices?
+
+```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
+knitr::include_graphics("wine_forbes.jpg")
+```
+
 
 ## What we do in Session 3+4: Part C
 
@@ -39,7 +54,22 @@ Here we learn
 - graphical intuition of the OLS estimator 
 - how to interpret coefficients and interpret the "fit"
 
-... and how to predict better prices of wine than experts!   
+## Some words before we start
+
+First we do some nitty-gritty formulas
+
+- We need some theory in order to
+  - make our assumptions transparent
+  - derive testable hypotheses
+  - avoid bad research
+
+<br>
+
+But do not forget why we do it
+
+- answer fun research questions (education, wine, ice cream) 
+
+And I will use graphs for illustration whenever possible
 
 ## Concept of Simple Regressions
 
@@ -53,9 +83,9 @@ Two variables $y$ and $x$ from a population (e.g., clients, firms)
 Some examples include:
 
 - $y$ is the *demand* of ice cream and $p$ is the price
-- $y$ is  *market value* of a footballer and $x$ the *goals* s/he scored
 - $y$ is the *price of wine* and $x$ the *weather*
 - $y$ is *hourly wage* and $x$ is *years of education*
+- $y$ is  *market value* of a footballer and $x$ the *goals* s/he scored
 
 ## The Simple Regression Model
 
@@ -70,27 +100,40 @@ Some examples include:
 
 $$y=\beta_0+\beta_1x+u$$
 
-- Linear relation between observables $x$ and $y$ (*Issue 1*)
+where 
+
 - $\beta_0$: **intercept parameter** aka the **constant term**
 - $\beta_1$: **slope parameter** in the relation between $y$ and $x$
+
+and
+
+- Linear relation between observables $x$ and $y$ (*Issue 1*)
 - Error term $u$: Unobservables allowed to enter (*Issue 2*)
-- Certain assumptions to get causal effect of $x$ on $y$ (*Issue 3*)  
+- Assumptions on $u$ to get causal effect of $x$ on $y$ (*Issue 3*)  
+
+## How to get causality?
+
+$$y=\beta_0+\beta_1x+u$$
+<br>
 
 Main intuition for causality: given we observe $x$ and $y$
 
 - estimate $\beta_1$ and $\beta_0$ making assumptions on $u$
-- $\beta_1$: how changes in $x$ affect changes in $y$ given $\beta_0$ and $u$
+- $\beta_1$: how changes in $x$ affect changes in $y$ 
+  - given $\beta_0$ and $u$
 
 ## We get the causal effect of $x$ on $y$ 
 
 Ceteris paribus: we hold the unobserved factors in $u$ fixed
 
-- so that the change in $u$ is zero, i.e., $\Delta{u}$= 0, 
-- i.e., $u$ does not affect $y$
+- so that the change in $u$ is zero (no effect on $y$) 
+- i.e., $\Delta{u}$= 0, 
+
 $$\Delta{y}=\beta_1\Delta{x}~~~~if~~~~\Delta{u}=0$$ 
 
 - then $x$ has a linear effect on $y$ 
 - where $\beta_1$ yields causal effect of $x$ on $y$ 
+- because constant $\beta_0$ cancels out $\Delta \beta_0=0$ 
 
 
 
@@ -120,21 +163,58 @@ $$quantity=\beta_0+\beta_1 price + u$$
 
 if we hold unobservable factors in $u$ fixed, 
 
-- e.g., seasonality has no systematic impact on quantity
+- e.g., seasonality has no systematic impact on prices
+- similarly for advertising and quality
+
+<br>
 
 Only then we get the causal effect: 
 
 $$\Delta{quantity}=\beta_1\Delta price$$
 
-## Zero conditional mean assumption
+## Two questions you may ask yourself
+
+Is this the sufficient to obtain causality? No! 
 
 How can we learn about the causal effect of $x$ on $y$, holding other factors fixed, if we ignore all those other factors?
 
+- We can only do so if a certain assumption holds
+- This assumption is called: Zero conditional mean assumption
+
+<br> 
+
+We use now the fance terminology: expected value
+
+- often expected value is just the average of our sample
+- so just think of average value when I say expected value
+
+
+## Zero conditional mean assumption
+
 We assume: $\mathbb{E}[u|x]=\mathbb{E}[u]=0$
 
-Take the expected value of $y|x$.   
+- the average of $u$ needs to be the same for all slice of $x$
+- which we normalize to $0$ for convenience
+- we can also say that $cor(u,x)=0$
+
+Example: Bob's ice cream business.  
+
+- if we observe $x=prices$ are high, then average demand shock $u$ is the same as if we observe $x=prices$ are low
+- where we normalize the average $u=0$: demand shock is zero for high price and for low price
+- But we know: given prices are high, we more likely are in a state of high demand
+
+
+## Zero conditional mean assumption
+
+To see why we get causality, take the expected value of $y|x$.   
+
+- What is the average value of $y$ for each slice of the data $x$?
+
+<br>
 
 Then: $\mathbb{E}[y|x]= \mathbb{E}[\beta_0 +\beta_1x + u|x] = \beta_0 +\beta_1x + \mathbb{E}[u|x]$
+
+<br>
 
 which yields
 
@@ -142,14 +222,35 @@ $$\mathbb{E}(y|x)=\beta_0+\beta_1x$$
 
 $\beta_1$ is causal due to this *zero conditional mean assumption*
 
-## Harmless assumption $E(u)=0$
 
-.. says nothing about the relation between $u$ and $x$, but simply makes a statement about the distribution of unobservables
+## What does this actually imply?
+
+Zero conditional mean assumption $\mathbb{E}[u|x]=\mathbb{E}[u]=0$ implies
+
+$$\mathbb{E}(y|x)=\beta_0+\beta_1x$$
+
+We get this expression by two assumptions on error term $u$:
+
+- $E(u)=0$ (harmless)
+- $E(u|x)= u$ (less harmless)
+
+- When assumption $E(u|x)=E(u)$ holds, we say that $u$ is **mean independent** of $x$. 
+- When we combine mean independence with assumption $\mathbb{E}(u)=0$, we obtain the **zero conditional mean assumption**, $E(u|x)=0$.
+
+## $u$ is equal to 0 on average 
+
+Harmless assumption: $E(u)=0$
+
+... says nothing about the relation between $u$ and $x$, but simply makes a statement about the distribution of unobservables
 
 We can always redefine the intercept in $y=\beta_0+\beta_1x+u$ to make $\mathbb{E}(u)=0$ true.
 
-  - Soybean example: we can normalize the unobserved factors affecting soybean yield, such as land quality, to 0
-  - Wage example: We can assume that things such as average ability are zero in the population of all working people.
+- we do not care about the causal relation of the constant $\beta_0$
+- if $u=2$, then we get the same values of $y$ with $\beta_0-2$.  
+- and $\beta_1x$ remains the same
+
+Ice cream: we can normalize the unobserved factors affecting demand in $u$, such as season, to 0 without changing $\beta_1x$
+
 
 
 ## Less harmless: mean independence
@@ -158,15 +259,14 @@ or $\mathbb{E}(u|x)=u$
 
 - for any $x$, we can obtain the expected (or average) value of $u$ for that slice of the population described by the value of $x$.
 - The crucial assumption is that the average value of $u$ does not depend on the value of $x$.
-- When assumption $E(u|x)=E(u)$ holds, we say that $u$ is **mean independent** of $x$. 
-- When we combine mean independence with assumption $\mathbb{E}(u)=0$, we obtain the **zero conditional mean assumption**, $E(u|x)=0$.
 
-## Wage example with $u=abil$
 
-Equation $\mathbb{E}(u|x)=\mathbb{E}(u)$ requires that the average level of ability is the same, regardless of years of education $x$.
+## Wage example: $u=abil,x=educ$
+
+Equation $\mathbb{E}(u|x)=\mathbb{E}(u)$ requires that the average level of ability $u$ is the same, regardless of years of education $x$.
   
-- For example, if $E(abil|8)$ denotes the average ability for the group of all people with eight years of education, 
-- and $E(abil|16)$ denotes the average ability among people in the population with sixteen years of education, 
+- $E(abil|8)$: average ability for all with 8 years of education, 
+- $E(abil|16)$: average ability for all with 16 years of education, 
 - $E(u|x)=E(u)$ implies that $E(abil|8)=E(abil|18)$
 
 Thus, the average ability the same for all education levels.
@@ -180,7 +280,7 @@ If, for example, we think that average ability increases with years of education
 - As we cannot observe innate ability, we have no way of knowing whether or not average ability is the same for all education levels.
 - But: this is an issue that we must address before relying on simple regression analysis!
 
-## Bob's ice cream business 
+## Bob's ice cream (more formally) 
 
 For equation $\mathbb{E}(u|x)=\mathbb{E}(u)$ with
 
@@ -198,11 +298,12 @@ it must hold $\mathbb{E}(summer|price)=\mathbb{E}(winter|price)$
 
 ## The Ordinary Least Squares Estimator
 
-How to estimate the parameters $\beta_0$ and $\beta_1$ in equation $y=\beta_0+\beta_1x+u$?
+How to estimate the parameters $\beta_0$ and $\beta_1$ in equation 
 
-- To do this, we need a sample from the population.
-- Let {($x_i,y_i):i=1,...,n$} denote a random sample of size $n$ from the
-population.
+$$y=\beta_0+\beta_1x+u$$
+
+- To do this, we need a random sample from the population.
+- Let {($x_i,y_i):i=1,...,n$} denote a sample of size $n$.
 - We can write $y_i=\beta_0+\beta_1x_i+u_i$ for each $i$.
 
 As an example, $x_i$ might be the annual income and $y_i$ the annual savings for family $i$ during a particular year.
@@ -221,13 +322,15 @@ knitr::include_graphics("wool_2_2.png")
 
 ##  OLS Graph: Fitted values and residuals
 
-Idea: choose $(\beta_0,\beta_1)$ to minimizes the squared sum of $u_i$
+For each $x$, we can decompose $y$ into fitted value and residual. 
+
+- Idea: choose $(\beta_0,\beta_1)$ to minimizes the squared sum of $u_i$
 
 ```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
 knitr::include_graphics("wool_2_4.png")
 ```
 
-
+(NB: we square because the sign of $u$ does not matter)
 
 ## The Ordinary Least Squares Estimator
 
@@ -259,88 +362,243 @@ Given observations $x_i$ and $y_i$, we just need to calculate
 - the mean of $\bar{y},\bar{x}$
 - more commonly $Cov(x,y)$ and $Var(x)$. 
 
-## SST, SSE, SSR
+
+## Next steps
+
+Now that we know the intuition behind OLS, we 
+
+- revisit the fit of a model 
+  - how well do we predict?
+- look at hypothesis testing
+  - how confident can we be that our estimates are correct?
+- practice what we learned using an applied example
+
+## Model fit: SST, SSE, SSR
+
 ```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
 knitr::include_graphics("SST.jpg")
 ```
 
+## Model fit
 
-## R2 
+In a simple linear regression model, the sums of squares satisfy the equation: SST = SSR + SSE.
 
-How much of our model is explained by the regression line? 
+- SSE: This is the sum of the squares of the residuals. It measures the unexplained variability by the model.
+- SST: This is the total sum of squares, which measures the total variability in the dependent variable, price.
+- SSR: This is the sum of squares due to regression, which measures the variability explained by the regression model. It is calculated as the difference between SST and SSE.
 
-$$\frac{SSE}{SST}$$
 
-## root mean squared error
 
-The residuals are the differences between the observed values (price) and the predicted values (calculated as predicted_price <- alpha + beta * df$AGST).
+## Coefficient of determination $R^2$
 
-We square each residual, take the average (i.e., the mean of the squared residuals which gives the Mean Squared Error or MSE), and then take the square root of that average to get the RMSE.
+Two interpretation: 
 
+- How much of the variance of $y$  is explained by variance of $x$?
+
+- How much of our model is explained by the regression line? 
+
+Formula
+
+$$R^2=\frac{SSE}{SST}$$
+
+## Root Mean Squared Error (RMSE) 
+
+a commonly used metric to evaluate the prediction error 
+
+- the square root of the mean of the squared residuals.
+  - We square each residual, 
+  - take the average of the squared residuals 
+  - and then take the square root of that average
+
+- RMSE is a useful measure because it's in the same units as the dependent variable and lower values indicate better fit to the data.
 
 ## Hypothesis Testing
 
-Hypothesis testing is a statistical method that allows us to make inferences or draw conclusions about a population based on a sample of data.
+The coefficients in a linear regression model represent the change in the response variable for a one-unit change in the corresponding predictor variable, assuming all other variables are held constant.
 
-There are two types of hypotheses in a hypothesis test: Null hypothesis (H0) and Alternative hypothesis (Ha). 
+For each coefficient, we test the null hypothesis that the true coefficient value is zero, against the alternative hypothesis that the coefficient is not zero.
 
-- Null Hypothesis (H0): This is a statement about the population that either is believed to be true or is used to put forth an argument unless it can be shown to be incorrect beyond a reasonable doubt.
+## Hypothesis Testing
 
-- Alternative Hypothesis (Ha): This is a claim about the population that is contradictory to the null hypothesis and what we conclude when we reject the null hypothesis.
+The null and alternative hypotheses for a particular regression coefficient (let's call it $\beta_1$) are often stated as follows:
 
-In linear regression, the standard error can be used to construct confidence intervals for the coefficients, or to perform hypothesis tests.
+- Null Hypothesis ($H0$): $\beta_1 = 0$ 
+  - (The predictor has no effect on the outcome)
 
-## Key Statistics
+- Alternative Hypothesis ($Ha$): $\beta_1 \neq 0$ 
+  - (The predictor has an effect on the outcome)
 
-- standard error 
+In essence, we test whether there is enough evidence to conclude that $x$ has an effect $y$.
+
+
+## Crucial role of standard errors
+
+In linear regression, standard errors is used to construct confidence intervals for the coefficients or to test hypotheses
+
+Using standard errors, we can construct the following statistics 
+
 - confidence intervals
 - t-test
 - p-value
 - F-test
 
-### Standard Error
+which are related. Here we just look at p-values and t-Test
 
-The standard error is a measure of the variability in the mean from one sample to the next. It measures the accuracy with which a sample represents a population.
-- It's a measure of the precision of your estimate. Smaller standard errors mean you have more precise (i.e., less variable) estimates.
-- if we were to draw from a random sample and estimate our parameter of interest $N$, then the standard deviation of the estimated parameters are equal to the standard error 
-- It represents the typical amount that our estimate varies across different random samples due to sampling error. Smaller standard errors mean our estimate is more precise and varies less across different samples.
+## Standard Errors
 
- 
-Example: 
+It's a measure of the precision of your estimate. 
 
-### Confidence Interval
+- It represents the typical amount that our estimate varies across different random samples due to sampling error. 
+- Smaller standard errors mean you have more precise (i.e., less variable) estimates.
 
-The confidence interval provides a range of values, derived from the sample, that is likely to contain the true population value. It gives us an estimate of the uncertainty of our sample estimate.
+If we draw random samples from a population and estimate our parameter of interest $N$ times, 
 
-- A 95% confidence interval means that if we were to draw a large number of random samples from the population and construct a 95% confidence interval from each sample, approximately 95% of these intervals would contain the true population parameter.
-
-Example: 
+- then standard error is measured by the standard deviation of the estimated parameters  
 
 
-### t-Test
 
-The t-Test compares two averages (means) and tells us if they are different from each other. The t-Test also tells us how significant the differences are.
+## Coefficient divided by standard error   
 
-- In the context of regression, it is used to test whether a coefficient is significantly different from zero. The test statistic for each coefficient is the coefficient estimate divided by its standard error. This measures how many standard deviations the coefficient is from 0. If the coefficient is far from zero relative to the standard error, then we can reject the null hypothesis that the true coefficient value is zero.
- 
-- calculated as: 
-- Rule of thumb: should be la
+This is known as the t-Test
 
-Example: 
+- used to test if a coefficient significantly different from 0 
+- The test statistic is the coefficient estimate divided by its standard error
+- Reject the null hypothesis $\beta_1=0$ which means no effect 
+  - with high values, i.e., estimated coefficient needs to be sufficiently larger than the error that we make 
+  - Rule of thumb: result significant with 95\% confidence if coefficient divided by standard error is larger than 2
 
-### p-value
+## p-values
 
 The p-value is a measure of the evidence against the null hypothesis provided by the data. 
 
-The p-value is the probability that the results of your test occurred at random. If p-value is small (less than 0.05), we reject the null hypothesis.
+- The p-value is the probability that the results of your test occurred at random. 
+- If p-value is small (less than 0.05), we reject the null hypothesis.
 
- If we repeatedly drew a large number of random samples from a population where the null hypothesis is true, the p-value represents the proportion of those samples where we would observe a t-statistic as extreme or more extreme than the one calculated from our sample. A small p-value (typically less than 0.05) indicates that such an extreme t-statistic would be unlikely if the null hypothesis were true, so we reject the null hypothesis.
- 
+A p-value of less than 0.05 corresponds to the rule of thumb above for the t-Test
 
 
-##
+## p-values
 
-F-Test: The F-test in regression compares the model with no predictors (just the intercept) to your model. The null hypothesis is that all coefficients (except the intercept) are zero, and the alternative hypothesis is that at least one is not zero. The test statistic is a ratio of mean squared error (MSE) from regression and the MSE of residuals. If the p-value for the F-test is small (typically ≤ 0.05), we reject the null hypothesis that all slope coefficients are zero, suggesting that at least one predictor is useful in the model.
+If the p-value is $<0.05$ it does not mean that your result is true. 
+
+It means that you reject the null hypothesis (i.e., it is not 0) with a ***certain probability***. 
+
+- naive (and wrong) interpretation: 
+  - if you draw a random sample, then it your estimate would be correct 95% of the time and 5% not correct
+- better (and correct) interpretation: 
+  - if you fix your parameter at the estimated value, then 95\% of the estimated confidence intervals include the estimated parameter
+
+## 
+
+This statistic is wildly abused   
+
+## p-hacking
+```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
+knitr::include_graphics("FINALLYsignificant.png")
+```
+
+## Can people predict the future?
+
+```{r , echo=FALSE, out.width = "20%", fig.align = "center"}
+knitr::include_graphics("bem.png")
+```
+
+```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
+knitr::include_graphics("ESPisREAL.png")
+```
+
+## 
+
+The 2011 article "*Feeling the Future: Experimental Evidence for Anomalous Retroactive Influences on Cognition and Affect*" offered statistical evidence for precognition and the psi effect.
+
+- In other words: proof that people can see into the future
+- published in reputable *Journal of Personality and Social Psychology* 
+- Appeared wildly on media, such as NBC, NYT, and the [Colbert Report](www.cc.com/video/bhf8jv/the-colbert-report-time-traveling-porn-daryl-bem)
+
+
+## From the Experiment Instructions:
+
+```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
+knitr::include_graphics("BEM_instructions.png")
+```
+
+## **Three categories:**
+```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
+knitr::include_graphics("bem_cat.png")
+```
+
+## For each of the categories 
+
+Participants guessed where a certain picture would appear
+
+```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
+knitr::include_graphics("bem_exp.png")
+```
+
+## If students guessed correctly, 
+
+it was considered as a hit
+
+```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
+knitr::include_graphics("bem_exp_res.png")
+```
+
+## Now you: 
+
+To claim that people can predict the future, 
+
+- what needs to be the percentage of correct guesses?
+
+## Let us look at the results
+```{r , echo=FALSE, out.width = "60%", fig.align = "center"}
+knitr::include_graphics("Bem_Results.png")
+```
+
+<br>
+
+Although this effect seems statistically significant, we should be suspicious 
+
+- because the effect size is very low (close to null $H_0=50\%$, in the null would be $H_0=0$)
+- and he did a mistkake in calculating the standard errors
+
+
+## This is the full article from before
+
+```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
+knitr::include_graphics("ESPisREAL_broken.png")
+```
+
+<br>
+
+The very same author also proved that 
+
+- studying after an exam can improve your grades!
+
+## My main concerns I: Researchers' Degrees of Freedom (DoF) 
+
+Students were shown three categories: neutral, negative, porn 
+
+ - Cherry picking: Only significant effect for porn category (53%)
+ - Low effect size (not economically significant): 
+  - "extraordinary claims require extraordinary evidence"
+ - False positives: Results could have been obtained by chance
+ - The more Researchers DoF, the higher the probability of false positives  (results that indicate a significant result by chance)
+
+## My main concerns II:  HARKing
+
+Hypothesis after Results Known (HARK): 
+
+- Ex post explanation for why there is only an effect for porn
+
+<br>
+
+Imagine you have coins with different colours (red, blue, green) 
+
+- You let people guess if the coin lands on heads or tail
+- Only for red you find that people get it right 53\% whether it is heads or tail (statistically significant).
+  - but not for blue and green
+- Your explanation is that red has always been a magic colour because blood is red, bla, bla, bla. 
+
 
 # Simple OLS regression applied to the case of Bordeaux wine prices
 
@@ -370,15 +628,6 @@ knitr::include_graphics("wine_nyt.jpg")
 - A very, very passionate argument over wine.
 
 
-## Ashenfelter made it into Forbes 
-
-```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
-knitr::include_graphics("wine_forbes.jpg")
-```
-
-<br>
-
-... although few hundred observations is not really big data 
 
 ## 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/8WMRj9mTQtI" frameborder="0" allowfullscreen></iframe>
@@ -419,7 +668,7 @@ Which independent variable has the largest effect on the price of Bordeaux wine?
 (we look later at t-values and p-values for statistical significance)
 
 ## Answer the following question
-With every additional year, the price of a vintage increases by (column 2)
+With every additional year, the price of a vintage increases by
 
 - 0.024% 
 - 0.048%
@@ -427,7 +676,7 @@ With every additional year, the price of a vintage increases by (column 2)
 - 4.8%
 
 ## Answer the following question
-According to the table above, the famous Ashenfelter Wine Equation can be represented as:                                      
+The famous Ashenfelter Wine Equation can be represented as:                                      
 
 $$
 \begin{aligned}
@@ -466,90 +715,75 @@ Concluding from the question above, we do not have to care about unobserved conf
 6. No
 7. No
 
-## 
-to do: log prices
-R2
-Root mean squared error
-Standard errors 
-
-not reported: p-values, t-test, F-test
-
-## Let's have a look how the magic wine equation works
+## Behind the magic wine equation
 
 1. Load the data set ('wine.csv').
-2. Regress average temperature in the growing season on prices. What do you see? How do you interpret the slope?
+2. Regress average temperature in the growing season on prices. What do you see? 
+3. Plot your regression line against the observations. How do you interpret the slope?
 3. Calculate OLS by hand using the formula from class
-4. Add the other control variables
-5. How do you measure the "fit" of a model? Which of the two models has the better fit? 
+4. How do you get the predicted price and the residuals?
+5. Calculate SST, SSE, and SSR by hand
+6. Calculate the R2 by hand
+7. Re-run the regression with relevant controls. Which to add? 
+8. How do you measure the "fit" of a model? 
+9. How to you choose between models? Which is the best model?
 
-## 
+## Load Data + first regression 
+
 Regression of Average Temperature in Growing Season on Price 
 ```{r, echo=TRUE}
 library("rio")
 df <- import("wine.csv")
-
-lm(Price ~ AGST, data=df) 
-```
-## 
-```{r, echo=FALSE}
 y <-df$Price
 x <-df$AGST
 
-# Add regression line
+fit <- lm(y ~ x)
+fit
+```
+
+## 
+```{r, echo=TRUE}
 plot(x, y, main = "Regression of AGST on Price",
      xlab = "AGST (Average Temperature in Growing Season)", ylab = "Prices",
      pch = 19, frame = FALSE)
 abline(lm(y ~ x, data = df), col = "blue")
-
 ```
 
 ## 
-
-```{r}
-fit <- lm(Price ~ AGST, ,data=df) 
+```{r,echo=TRUE,message=FALSE}
+# More Detailed results
 summary(fit)
-
 ```
 
 ## OLS by hand
-```{r, echo=TRUE}
+```{r, echo=TRUE,message=FALSE}
 # Load necessary library
 library(dplyr)
 
-# Assume df is your dataframe and it has columns price and AGST
-
-# Calculate number of observations
-n <- nrow(df)
-
 # Calculate means
-mean_price <- mean(df$Price)
-mean_AGST <- mean(df$AGST)
+mean_price <- mean(y)
+mean_AGST <- mean(x)
 
 # Calculate the parts of the formula for Beta
-beta_numerator <- sum((df$Price - mean_price) * (df$AGST - mean_AGST))
-beta_denominator <- sum((df$AGST - mean_AGST)^2)
+beta_numerator <- sum((y - mean_price) * (x - mean_AGST))
+beta_denominator <- sum((x - mean_AGST)^2)
 
 # Calculate Beta (slope)
 beta <- beta_numerator / beta_denominator
 
 # Calculate Alpha (intercept)
 alpha <- mean_price - beta * mean_AGST
+```
 
+## Print the coefficients
+```{r,echo=TRUE}
 # Print the coefficients
 cat("Alpha: ", alpha, "\n")
 cat("Beta: ", beta, "\n")
-
 ```
-## 
 
-- SSE: This is the sum of the squares of the residuals. It measures the unexplained variability by the model.
-- SST: This is the total sum of squares, which measures the total variability in the dependent variable, price.
-- SSR: This is the sum of squares due to regression, which measures the variability explained by the regression model. It is calculated as the difference between SST and SSE.
-
-In a simple linear regression model, the sums of squares satisfy the equation: SST = SSR + SSE.
-
-##  
-```{r}
+##  Calculate SST, SSE, SSR
+```{r,echo=TRUE}
 # Using the previously calculated alpha and beta
 
 # Predicted values
@@ -566,35 +800,18 @@ SST <- sum((df$Price - mean_price)^2)
 
 # Sum of Squares Regression (SSR)
 SSR <- SST - SSE
+```
 
+## Printing our results
+```{r,echo=TRUE}
 # Print the sums of squares
 cat("SSE: ", SSE, "\n")
 cat("SST: ", SST, "\n")
 cat("SSR: ", SSR, "\n")
 ```
-## RMSE
 
-The residuals are the differences between the observed values (price) and the predicted values (calculated as predicted_price <- alpha + beta * AGST).
 
-We square each residual, take the average (i.e., the mean of the squared residuals which gives the Mean Squared Error or MSE), and then take the square root of that average to get the RMSE.
-
-RMSE is a useful measure because it's in the same units as the dependent variable and lower values indicate better fit to the data.
-
-## 
-```{r}
-# Calculate the Root Mean Squared Error (RMSE)
-RMSE <- sqrt(mean(residuals^2))
-
-# Print the RMSE
-cat("RMSE: ", RMSE, "\n")
-```
-
-## 
-The R-squared value is a statistical measure that represents the proportion of the variance for a dependent variable that's explained by the independent variable(s) in a regression model.
-
-R-squared values range from 0 to 1. A value of 0 indicates that the dependent variable cannot be predicted from the independent variable. A value of 1 indicates the dependent variable can be predicted without error from the independent variable. An R-squared between 0 and 1 indicates the extent to which the dependent variable is predictable. An R-squared of 0.20 means that 20 percent of the dependent variable, price, can be explained by the independent variable, AGST.
-
-## 
+## R2
 ```{r, echo=TRUE}
 # Calculate R-squared
 R_squared <- SSR / SST
@@ -602,25 +819,21 @@ R_squared <- SSR / SST
 # Print the R-squared
 cat("R-squared: ", R_squared, "\n")
 ```
+An R-squared between 0 and 1 indicates the extent to which the dependent variable is predictable.
+
+- R-squared of 0.20 means that 20 percent of the variable price, can be explained by the variable AGST.
 
 
 
-## 
-OLS by construction minimizes the distance from the observation point to the regression line, which allows us to exploit some information from it:
+## How to measure the "fit" of a model?
 
-- SSE: the distance from observation point to regression line is the error that our model makes. The part that is not explained by the model
-- SSR: the sum of the differences between the predicted value and the mean of the dependent variable SSR=(1-SSE)
-a measure that describes how well our line fits the data
-- SST: is the difference between the observed dependent variable and its mean a measure of total variation
+Every model makes errors.These residuals are sometimes used to measure how good is a model and to compare models against each other.
 
-## How do you measure the "fitness" of a model?
+Goodness if fit: measured by explained part of our model in relation
 
-Every model makes errors.
-These residuals are sometimes used to measure how good is a model and to compare models against each other.
-Goodness if fit:
+- R2: the fraction of explained variation and total variation 
 
-measured by explained part of our model in relation
-R2: the fraction of explained variation and total variation (R2=SSR/SST)
+$$R2=SSR/SST$$
 
 
 ## 
@@ -632,12 +845,22 @@ What else can we include into the model?
 head(df)
 ```
 
-## 
-```{r}
-fit <- lm(Price ~ AGST + WinterRain + HarvestRain + Age, data=df) 
-summary(fit)
+## Now we run the following 
 
+```{r,echo=TRUE,results='hide'}
+fit<-lm(Price ~ AGST + WinterRain + HarvestRain + Age, data=df) 
+summary(fit)
 ```
+
+## 
+```{r,echo=FALSE}
+fit<-lm(Price ~ AGST + WinterRain + HarvestRain + Age, data=df) 
+summary(fit)
+```
+
+## Model evaluation
+
+Is this model better than the one with only one variable?
 
 ## Robert Parker, the world’s most influential wine expert said:
 
@@ -668,7 +891,5 @@ History has supported his claims.
 ```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
 knitr::include_graphics("shinyapp.jpg")
 ```
-
-## What have we learned?
 
 - 

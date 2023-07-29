@@ -56,4 +56,5 @@ The licences for this repository follow those of Prof. Kranz:
 
  - You can also use and share the RTutor problem sets similar to the (CC BY-NC-SA 4.0) license with one restriction: You are not allowed to use or share the problem sets if you make or plan to make publicly available or provide a link to any solutions of these problem sets. (To motivate students to solve the problem sets, they are grade-relevant to a small extent. Therefore I don't want solutions too easily available.)
 
-
+# Packages
+Install all packages from "0 starthere.R"

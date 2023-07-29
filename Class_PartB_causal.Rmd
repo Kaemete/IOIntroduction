@@ -4,9 +4,9 @@ author: "Dennis Rickert, MINES Paris-PSL University"
 date: "2023-07-17"
 output: 
   ioslides_presentation: 
-#  html_document: 
-#    number_sections: yes
-#    toc: yes
+  html_document: 
+    number_sections: yes
+    toc: yes
 editor_options: 
   markdown: 
     wrap: 72
@@ -221,8 +221,8 @@ A firm chooses a price $p_{t}$ that maximizes its profits knowing
 
 We find optimal prices and quantities are given by: 
 
-$$p^*_{t} = \frac{a_0+\varepsilon_t}{2b}+\frac{w_{t}}{2}$$ 
-$$q^*_{t} = \frac{a_{0}+\varepsilon_{t}}{2}-\frac{b w_{t}}{2}$$
+$$p^*_{t} = \frac{a_0+\varepsilon_t}{2b}+\frac{c_{t}}{2}$$ 
+$$q^*_{t} = \frac{a_{0}+\varepsilon_{t}}{2}-\frac{b c_{t}}{2}$$
 
 which both depend on $a_t=a_0+\epsilon_t$ 
 
@@ -233,31 +233,31 @@ which both depend on $a_t=a_0+\epsilon_t$
 Plug in demand function into profits
 
 $$\begin{align*}
-\pi(p_t) & = q_t(p_t)(p-w_{t}) - F\\
- & =(a_{t}-bp_t)(p_t-w_{t}) - F\\
- & =a_{t}p-a_{t}w_t-bp_t^{2}+bp_tw_{t} - F
+\pi(p_t) & = q_t(p_t)(p-c_{t}) - F\\
+ & =(a_{t}-bp_t)(p_t-c_{t}) - F\\
+ & =a_{t}p-a_{t}c_t-bp_t^{2}+bp_t c_{t} - F
 \end{align*}$$
 
 The first order condition is given by
 
-$$\frac{\partial \pi(p_t)}{\partial p_t} = a_t-2bp_t+bw_t = 0$$
+$$\frac{\partial \pi(p_t)}{\partial p_t} = a_t-2bp_t+b c_t = 0$$
 
 Solving for price $p$
 
-$$p_t = \frac{a_{t}}{2b}+\frac{w_{t}}{2}$$
+$$p_t = \frac{a_{t}}{2b}+\frac{c_{t}}{2}$$
 
 ## Proof (to look at home)
 
 If we plug in $a_t=a_0+\varepsilon_t$, we get
 $$\begin{align*}
-p^*_{t} & =\frac{a_{0}+\varepsilon_{t}}{2b}+\frac{w_{t}}{2}
+p^*_{t} & =\frac{a_{0}+\varepsilon_{t}}{2b}+\frac{c_{t}}{2}
 \end{align*}$$
 
 Plug this expression into $q$ to get the equilibrium quantity
 
 $$\begin{align*}
 q^*_{t} & = a_{0}+\varepsilon_{t} - b p_t^* \\
-        & = \frac{a_{0}+\varepsilon_{t}}{2}-\frac{b w_{t}}{2}
+        & = \frac{a_{0}+\varepsilon_{t}}{2}-\frac{b c_{t}}{2}
 \end{align*}$$
 
 
