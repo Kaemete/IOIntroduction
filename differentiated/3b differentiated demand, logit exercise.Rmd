@@ -1,0 +1,498 @@
+---
+title: "Differentiated demand, logit exercise"
+output:
+  word_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# 1 Import & clean data, produce descriptive statistics
+
+## Import data
+
+First, import the data into a data frame, called 'cameras_raw', and use the 'dim', 'str' and 'head' functions to describe the dataset:
+
+```{r import}
+library(haven)
+cameras_raw <- read_dta("differentiated.dta")
+
+```
+
+## create population variable
+
+Next, create the population variable, and save a new dataframe, 'cameras':
+
+```{r population, echo=FALSE}
+library(dplyr)
+cameras <- cameras_raw %>%
+  mutate(population = 0,
+         population = case_when(country=="AUSTRIA" ~ 8451900,
+                                country=="BELGIUM" ~ 11161600,
+                                country=="BULGARIA" ~ 7284600,
+                                country=="CZECH REPUBLIC" ~ 10516100,
+                                country=="DENMARK" ~ 5602600,
+                                country=="FRANCE" ~ 65633200,
+                                country=="FINLAND" ~ 5426700,
+                                country=="GERMANY" ~ 80523700,
+                                country=="GREAT BRITAIN"~ 63730100,
+                                country=="GREECE"~ 11062500,
+                                country=="HUNGARY"~ 9908800,
+                                country=="ITALY"~ 59685200,
+                                country=="IRELAND"~ 4591100,
+                                country=="NETHERLANDS"~ 16779600,
+                                country=="POLAND"~ 38533300,
+                                country=="PORTUGAL"~ 10487300,
+                                country=="ROMANIA"~ 20057500,
+                                country=="SLOVAKIA"~ 5410800,
+                                country=="SLOVENIA"~ 2058800,
+                                country=="SPAIN"~ 46704300,
+                                country=="SWEDEN"~ 9555900),
+        population = population/1000) %>%
+        rename(Brand = brand,
+               Country = country)
+
+```
+
+## Tabulating sales by brand and country
+
+
+```{r tables}
+library(flextable)
+cameras %>%
+  group_by(Country) %>%
+  summarise(Sales = sum(salesunits),
+            "Average price" = mean(priceur)) %>%
+  ungroup() %>%
+  flextable()
+  
+```
+
+```{r brand_group}
+
+cameras %>%
+  group_by(Brand) %>%
+  summarise("Sales" = sum(salesunits),
+            "Average price" = mean(priceur)) %>%
+  ungroup() %>%
+  flextable()
+
+```
+
+```{r brand_country_group}
+
+cameras %>%
+  group_by(Brand, Country) %>%
+  summarise("Sales" = sum(salesunits),
+            "Average price" = mean(priceur)) %>%
+  ungroup() %>%
+  flextable()
+
+```
+
+
+## Create country dummies
+
+```{r country, echo=FALSE}
+
+library(sjmisc)
+cameras <- cameras %>% 
+  to_dummy(Country, suffix = "label") %>% 
+  bind_cols(cameras)
+
+```
+
+## Create logs of prices and quantities
+
+Basic plot of tea price against time:
+
+```{r logs, echo=FALSE}
+cameras <- cameras %>% 
+  mutate(lpriceur=log(priceur),
+         lsalesunits=log(salesunits))
+
+```
+
+## Hedonic price regression
+
+
+```{r hedonic_model}
+model1_data <- cameras %>%
+  select(lsalesunits, lpriceur, Country_BELGIUM, Country_BULGARIA, `Country_CZECH REPUBLIC`, Country_DENMARK, Country_FINLAND , Country_FRANCE, Country_GERMANY,
+         `Country_GREAT BRITAIN` , `Country_GREECE` , Country_HUNGARY ,  Country_IRELAND , Country_ITALY ,  Country_NETHERLANDS , Country_POLAND , Country_PORTUGAL,
+         Country_ROMANIA , Country_SLOVAKIA , Country_SLOVENIA , Country_SPAIN , Country_SWEDEN , type , slr , elect , optical , pixeltot)
+
+```
+
+```{r hedonic1}
+colnames(cameras)
+hedonic1 <- lm(lpriceur ~ . -lsalesunits -type -slr -elect -optical -pixeltot, data = model1_data)
+summary(hedonic1)
+```
+
+```{r hedonic2}
+hedonic2 <- lm(lsalesunits ~ . -type -slr -elect -optical -pixeltot, data = model1_data)
+summary(hedonic2)
+
+```
+
+
+```{r hedonic3}
+hedonic3 <- lm(lpriceur ~ . -lsalesunits, data = model1_data)
+summary(hedonic3)
+
+```
+
+```{r hedonic4}
+hedonic4 <- lm(lsalesunits ~ ., data = model1_data)
+summary(hedonic4)
+
+```
+
+
+
+
+## Create a list of characteristics variables
+
+```{r characteristics}
+characteristics <- c("variables", "type", "slr", "elect", "optical", "pixeltot")
+```
+
+
+## Check uniqueness of brand+model
+
+```{r unique, echo=FALSE}
+cameras <- cameras %>%
+  group_by(model, Brand) %>%
+  mutate(product = cur_group_id()) %>%
+  ungroup()
+  
+
+```
+
+```{r unique_check}
+cameras %>%
+  group_by(product, Country) %>%
+  summarise(count = n(), 
+            sum = sum(salesunits), 
+            mean = mean(salesunits)) %>%
+  ungroup()
+```
+
+
+
+## Rescaling sales
+
+
+```{r rescale}
+
+cameras <- cameras %>%
+  mutate(salesunits = salesunits / 1000,
+    group = elect)
+
+```
+
+## Nesting variable - segment
+
+Consider the price of coffee and wages:
+
+```{r nest}
+
+
+```
+
+## Create variables: total sales, market size and dependent variable for MNL, nested logit
+
+
+```{r derived_variables}
+country_sales <- cameras %>%
+  group_by(Country) %>%
+  mutate(salesunits_t = sum(salesunits)) %>%
+  ungroup()
+
+cameras <- cameras %>%
+  inner_join(country_sales) %>%
+  mutate(MSIZE = 0.4 * population,
+         share = salesunits / MSIZE,
+         share0 = (MSIZE - salesunits_t)/MSIZE,
+         ls=log(share/share0))
+
+```
+
+## Nested logit - shares within a segment
+
+
+```{r nest_shares}
+country_nest <- cameras %>%
+  group_by(Country, group) %>%
+  mutate(salesunits_g = sum(salesunits)) %>%
+  ungroup()
+
+cameras <- cameras %>%
+  inner_join(country_nest) %>%
+  mutate(lsj_g = log(salesunits / salesunits_g)) %>%
+  mutate(con = 1)
+
+```
+
+## define instrumental variables  
+
+
+```{r instruments, echo=FALSE, include = FALSE }
+country_char <- cameras %>%
+  group_by(Country) %>%
+  mutate(sum1_con = sum(con),
+         sum1_type = sum(type),
+         sum1_slr = sum(slr),
+         sum1_elect = sum(elect),
+         sum1_optical = sum(optical),
+         sum1_pixeltot = sum(pixeltot))
+
+country_brand_char <- cameras %>%
+  group_by(Country, Brand) %>%
+  mutate(sum2_con = sum(con),
+         sum2_type = sum(type),
+         sum2_slr = sum(slr),
+         sum2_elect = sum(elect),
+         sum2_optical = sum(optical),
+         sum2_pixeltot = sum(pixeltot))
+
+
+country_group_char <- cameras %>%
+  group_by(Country, group) %>%
+      mutate(sum3_con = sum(con),
+        sum3_type = sum(type),
+         sum3_slr = sum(slr),
+         sum3_elect = sum(elect),
+         sum3_optical = sum(optical),
+         sum3_pixeltot = sum(pixeltot))
+
+country_group_brand_char <- cameras %>%
+  group_by(Country, group, Brand) %>%
+        mutate(sum4_con = sum(con),
+               sum4_type = sum(type),
+         sum4_slr = sum(slr),
+         sum4_elect = sum(elect),
+         sum4_optical = sum(optical),
+         sum4_pixeltot = sum(pixeltot))
+
+
+cameras <- cameras %>%
+  inner_join(country_char) %>%
+  inner_join(country_brand_char) %>%
+  inner_join(country_group_char) %>%
+  inner_join(country_group_brand_char)
+
+```
+
+## Create brand dummies
+
+```{r brands}
+cameras <- cameras %>%
+  mutate(i1_type = sum2_type - type,
+         i2_type = sum1_type - sum2_type,
+         i3_type = sum4_type - type,
+	       i4_type = sum3_type - sum4_type,
+	       i7_type = type^2
+         )
+
+```
+
+```{r for_example}
+
+cameras <- cameras %>%
+  relocate(con, type, slr, elect, optical, pixeltot) 
+colnames(cameras) # find the cameras characteristics variables
+
+for (var in names(cameras[1:6])) { # loop over all of the variable names
+  cameras %>% 
+    count(.data[[var]]) %>% print() # '.data' is a pronoun that calls the 'cameras' dataset
+}
+
+
+for (var in names(cameras[1:6])) {
+  # create our summation variables dynamically from the variable name
+  sumvar1 = paste0("sum1_",var) # paste0 is the same as paste but assumes 'sep = ""'
+  sumvar2 = paste0("sum2_",var)
+  sumvar3 = paste0("sum3_",var)
+  sumvar4 = paste0("sum4_",var)
+  # create our new characteristics instrument name dynamically from the variable name
+  newvar1 = paste0("i1_",var)
+  newvar2 = paste0("i2_",var)
+  newvar3 = paste0("i3_",var)
+  newvar4 = paste0("i4_",var)
+  newvar5 = paste0("i7_",var)
+  # create our instruments and assign our dynamic variable name
+  cameras <- cameras %>% 
+    mutate(!!newvar1 := .data[[sumvar2]] - .data[[var]], # the !! means use the dynamic variable name created above
+           !!newvar2 := .data[[sumvar1]] - .data[[sumvar2]], 
+           !!newvar3 := .data[[sumvar4]] - .data[[var]],
+           !!newvar4 := .data[[sumvar3]] - .data[[sumvar4]],
+           !!newvar5 := .data[[var]]^2
+    )
+}
+
+```
+
+## Create brand dummies
+
+```{r brand_dummy}
+
+cameras <- cameras %>%
+  to_dummy(Brand, suffix = "label") %>%
+  bind_cols(cameras)
+
+```
+
+
+
+## Logit regression
+
+```{r logit_reg}
+
+colnames(cameras)
+model2_data <- cameras %>%
+  select(c("ls",
+           starts_with("Brand_"),
+           starts_with("Country_"),
+           "priceur",
+           "type", "slr", "elect", "optical", "pixeltot"))
+
+logit1 <- lm(ls ~ . -Brand_CANON -Country_AUSTRIA, data = model2_data)
+summary(logit1)
+  
+library("AER")
+
+
+```
+
+```{r iv1}
+model3_data <- cameras %>%
+  select(c("ls",
+           starts_with("Brand_"), 
+           starts_with("Country_"),
+           "priceur",
+           "type", "slr", "elect", "optical","pixeltot",
+           starts_with("i1"),
+           starts_with("i2"),
+           starts_with("i7"))) 
+colnames(model3_data)
+```
+```{r iv2}
+
+ivlogit1 <- ivreg(ls ~  Brand_FUJIFILM + Brand_KODAK + Brand_NIKON + Brand_OLYMPUS + Brand_PANASONIC + Brand_SAMSUNG + Brand_SONY  
+                +Country_BELGIUM + Country_BULGARIA + `Country_CZECH REPUBLIC` + Country_DENMARK + Country_FINLAND + Country_FRANCE + Country_GERMANY 
+                + `Country_GREAT BRITAIN` + Country_GREECE + Country_HUNGARY + Country_IRELAND + Country_ITALY + Country_NETHERLANDS + Country_POLAND + Country_PORTUGAL 
+                + Country_ROMANIA + Country_SLOVAKIA + Country_SLOVENIA + Country_SPAIN + Country_SWEDEN+ priceur + type + slr + elect+optical + pixeltot + priceur | 
+                Brand_FUJIFILM + Brand_KODAK + Brand_NIKON + Brand_OLYMPUS + Brand_PANASONIC + Brand_SAMSUNG + Brand_SONY 
+                + Country_BELGIUM + Country_BULGARIA + `Country_CZECH REPUBLIC` + Country_DENMARK + Country_FINLAND + Country_FRANCE + Country_GERMANY 
+                + `Country_GREAT BRITAIN` + Country_GREECE + Country_HUNGARY + Country_IRELAND + Country_ITALY + Country_NETHERLANDS + Country_POLAND + Country_PORTUGAL 
+                + Country_ROMANIA + Country_SLOVAKIA + Country_SLOVENIA + Country_SPAIN + Country_SWEDEN + type + slr + elect+optical + pixeltot  
+                  #instruments start here 
+                + i1_con + i2_con + i7_con + i1_type + i2_type + i7_type + i1_slr + i2_slr + i7_slr + i1_elect + i2_elect + i7_elect 
+                + i1_optical + i2_optical + i7_optical + i1_pixeltot + i2_pixeltot + i7_pixeltot 
+                , data = model3_data) # excluded Brand_CANON + Country_AUSTRIA
+
+summary(ivlogit1)
+
+```
+
+
+
+## Nested logit
+
+
+```{r nlogit_reg, echo= FALSE}
+
+model4_data <- cameras %>%
+  select(c("ls","lsj_g",
+           starts_with("Brand_"), 
+           starts_with("Country_"),
+           "priceur",
+           "type", "slr", "elect", "optical","pixeltot")) 
+colnames(model4_data)
+
+logit2 <- lm(ls ~  . -Brand_CANON -Country_AUSTRIA , data = model4_data)
+summary(logit2)
+
+```
+
+```{r nlogit3}
+
+model5_data <- cameras %>%
+  select(c("ls","lsj_g",
+           starts_with("Brand_"), 
+           starts_with("Country_"),
+           "priceur",
+           "type", "slr", "elect", "optical","pixeltot",
+           starts_with("i"))) 
+colnames(model5_data)
+
+ivlogit2 <- ivreg(ls ~ Brand_FUJIFILM + Brand_KODAK + Brand_NIKON + Brand_OLYMPUS + Brand_PANASONIC + Brand_SAMSUNG + Brand_SONY  
+                +Country_BELGIUM + Country_BULGARIA + `Country_CZECH REPUBLIC` + Country_DENMARK + Country_FINLAND + Country_FRANCE + Country_GERMANY 
+                + `Country_GREAT BRITAIN` + Country_GREECE + Country_HUNGARY + Country_IRELAND + Country_ITALY + Country_NETHERLANDS + Country_POLAND + Country_PORTUGAL 
+                + Country_ROMANIA + Country_SLOVAKIA + Country_SLOVENIA + Country_SPAIN + Country_SWEDEN+ priceur + type + slr + elect+optical + pixeltot + (priceur +
+                lsj_g) | # need to include again all the regressors in the ivreg function
+                Brand_FUJIFILM + Brand_KODAK + Brand_NIKON + Brand_OLYMPUS + Brand_PANASONIC + Brand_SAMSUNG + Brand_SONY 
+                + Country_BELGIUM + Country_BULGARIA + `Country_CZECH REPUBLIC` + Country_DENMARK + Country_FINLAND + Country_FRANCE + Country_GERMANY 
+                + `Country_GREAT BRITAIN` + Country_GREECE + Country_HUNGARY + Country_IRELAND + Country_ITALY + Country_NETHERLANDS + Country_POLAND + Country_PORTUGAL 
+                + Country_ROMANIA + Country_SLOVAKIA + Country_SLOVENIA + Country_SPAIN + Country_SWEDEN + type + slr + elect+optical + pixeltot  
+                  #instruments start here 
+                 + i1_con + i2_con +  i3_con + i4_con +  i7_con + i1_type + i2_type + i3_type + i4_type + i7_type +   i1_slr +  i2_slr +   i3_slr +  i4_slr +    i7_slr +
+                  i1_elect +  i2_elect +  i3_elect +  i4_elect +  i7_elect +  i1_optical +    i2_optical + i3_optical +  i4_optical +  i7_optical +  i1_pixeltot +
+                  i2_pixeltot +   i3_pixeltot + i4_pixeltot + i7_pixeltot 
+                , data = model5_data) # excluded Brand_CANON + Country_AUSTRIA
+summary(ivlogit2)
+
+```
+
+
+## Price elasticities based on logit
+
+```{r elasticities}
+library("broom")
+
+sum <- tidy(ivlogit1)
+sum()
+
+alpha = coef(summary(ivlogit1))["priceur","Estimate"]
+cameras$own = alpha*cameras$priceur*(1-cameras$share)
+cameras$cross = -alpha*cameras$priceur*cameras$share
+
+```
+
+```{r neat}
+cameras %>%
+  group_by(Country, Brand) %>%
+  summarise(mean_own = mean(own)) %>%
+  tidyr::pivot_wider(id_cols= Country, names_from = Brand, values_from = mean_own) %>%
+  ungroup() %>%
+  flextable()
+
+```
+
+
+```{r elasticities_cross}
+
+cameras %>%
+  group_by(Country, Brand) %>%
+  summarise(mean_cross = mean(cross)) %>%
+  tidyr::pivot_wider(id_cols= Country, names_from = Brand, values_from = mean_cross) %>%
+  ungroup() %>%
+  flextable()
+
+
+```
+
+## Merger simulation
+
+```{r antitrust}
+
+
+```
+
+
+
+

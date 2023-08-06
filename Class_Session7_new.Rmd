@@ -1,0 +1,733 @@
+---
+title: "Session 7: Tutorial on Conduct Estimation"
+author: "Dennis Rickert, MINES Paris-PSL University"
+date: "2023-07-17"
+output: 
+  ioslides_presentation: 
+#  html_document: 
+#    number_sections: yes
+#    toc: yes
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Overview of QEC9X01
+
+-   Session 1: Oligopolistic Competition Refresher
+-   Session 2: Oligopolistic Competition Refresher (cont.)
+-   Session 3: Introduction into R and Econometrics
+-   Session 4: Introduction into R and Econometrics (cont.)
+-   Session 5: Estimation of Demand for Homogenous Goods
+-   Session 6: Identification of Conduct and Collusion
+-   ***Session 7: Econometrics Tutorial: Conduct Estimation***
+-   Session 8: Product Differentiation, Multinomial Logit
+-   Session 9: Differentiated Demand Workshop
+-   Session 10: Market Structure and Entry
+-   Session 11: Merger analysis
+-   Session 12: Merger analysis - Empirical tutorial in R
+
+## What we do in Session 7
+
+Firms sometimes want to collude to raise their profits
+
+- independent firms behave like one single entity (monopolist)
+- internalize demand loss after price raise lost otherwise
+
+No empirical challenge if we know when collusion took place 
+
+- quantify consumer damage, e.g., by DiD 
+- quantify cartel profits by assuming conduct (cf. lecture)
+
+Big challenges for cartel offices, consulting, research are
+
+- do firms illegally raise prices?
+- what's the damage (how close to full collusion/monopoly)?
+
+## Our goal is to screen for collusive prices
+
+```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
+knitr::include_graphics("BV_prices.jpg")
+```
+
+Analysis of real data from real research paper
+
+- we have a time series of (coffee) price data
+- we see a sharp increase in prices
+- is this increase due to collusion? 
+
+
+
+## Data preparation for analysis
+```{r import, echo=TRUE, message=FALSE}
+library(dplyr)
+library(zoo)
+
+# load data
+coffee_raw <- read.csv("dutch_coffee.csv")
+
+# deflate all variables for better comparison before/after
+coffee <- coffee_raw %>%
+  mutate(cprice = cprice/oprice,
+         tprice = tprice/oprice,
+         bprice = bprice/oprice,
+         wprice = wprice/oprice,
+         incom = incom/oprice)
+
+# Convert year/month variable into R time format
+coffee <- coffee_raw %>%
+  mutate(date = as.Date(as.yearmon(month)))
+```
+
+
+
+## Research question: do firms collude? 
+
+```{r cprice, echo=TRUE}
+plot(cprice ~ date, coffee)
+```
+
+## What other factors could drive prices?
+| Variable     | Description      |
+|-----------|-----------------------------------------|
+| qu | per capita consumption of roasted coffee in kg |
+| cprice | price of roasted coffee per kg in current guilders |
+| tprice | price of per kg tea in current guilders |
+| oprice | price index for other goods |
+| incom | income per capita in current quilders |
+| bprice | price of coffee beans per kg in current guilders |
+| wprice | price of labor per man hours (work 160 hours per month) |
+
+
+
+## 
+Basic plot of tea price against time:
+
+```{r tprice, echo=TRUE}
+
+plot(tprice ~ date, coffee)
+
+```
+
+## 
+Plot of wage prices over time:
+
+```{r wprice, echo=TRUE}
+plot(wprice ~ date, coffee)
+
+```
+
+## 
+Basic plot of income against time:
+
+```{r income, echo=TRUE}
+plot(incom ~ date, coffee)
+
+```
+
+## 
+Plot of other prices over time:
+
+```{r oprice, echo=TRUE}
+plot(oprice ~ date, coffee)
+```
+
+## 
+Basic plot of coffee bean price over time.
+
+```{r bprice, echo=TRUE}
+plot(bprice ~ date, coffee)
+```
+
+
+## 
+Now plot coffee retail price against the bean price:
+
+```{r wholesale_retail, echo=TRUE}
+library(ggplot2)
+ggplot(coffee, aes(date)) +
+  geom_line(aes(y = cprice), colour="red") + 
+    geom_line(aes(y = bprice), colour="green")
+```
+
+## Theory informs us that ... 
+
+ pass-through rates contain information on competition
+
+- Perfect competition: $\frac{d p}{d c}=$ 100%
+- Monopoly: $\frac{d p}{d c}=$ 50% 
+- Oligopoy: 50% $<\frac{d p}{d c}<$ 100%
+
+## So we can regress costs on prices 
+
+```{r, echo=TRUE}
+lm(log(cprice) ~ log(bprice), data=coffee)
+```
+
+... and conclude that we have collusion?
+
+## 
+```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
+knitr::include_graphics("BV_title.jpg")
+knitr::include_graphics("BV_intro.jpg")
+```
+
+
+## Roadmap
+
+Investigate competition in Dutch coffee market (i.e., price spike).
+
+- discriminate between two hypotheses of incomplete pass-on
+- using monthly data on Dutch coffee market 1990-1996 
+
+<br>
+
+To explain competition, we estimate conduct + Lerner Index
+
+- theoretical concept of conduct + markup estimation
+- markups depends on cost and demand functions 
+  - reasonable explanatory variables 
+  - instrumental variables
+
+
+## Monopoly problem
+
+Starting with a quantity-setting monopolist facing 
+
+- a known inverse demand curve P(Q) 
+- and costs C(Q)
+
+$$\pi (Q) = P(Q) \cdot Q-C(Q)-F$$
+Take the FOC $\pi'(Q)=0$ and derive the Lerner Index 
+
+$$\underbrace{\overbrace{\frac{\partial P(Q)}{\partial Q} \cdot Q}^{Monopoly \\ Distortion}+P(Q)}_{MR}=\underbrace{C'(Q)}_{MC}$$
+Without monopoly distortion, we are just at $P=MC$
+
+## MR has two components
+
+$MR=\frac{\partial P(Q)}{\partial Q} \cdot Q + P(Q)$ 
+
+- When I sell an extra unit, I collect price $P$ on that unit
+- Selling an extra unit changes the market-clearing price $\frac{\partial P(Q)}{\partial Q}$
+  - change in market-clearing price applied to all units $Q$
+
+Monopoly prices given by $p=MC+\frac{\partial P(Q)}{\partial Q} Q$
+
+$\frac{\partial P(Q)}{\partial Q}<0$, monopolist restricts output to collect a higher price. 
+
+## Lerner Index in Monopoly
+
+We take the optimality condition: 
+$$\frac{\partial P(Q)}{\partial Q} \cdot Q+P(Q)=C'(Q)$$
+
+Rearrange and divide by P(Q): 
+
+$$\frac{P(Q)-C'(Q)}{P(Q)}=-\frac{\partial P(Q)}{\partial Q} \cdot \frac{Q}{P(Q)}\equiv \frac{1}{|\epsilon_D|}$$
+<br>
+
+Neat: infer monopoly markup from estimating elasticity $\epsilon_D$ 
+
+- estimate a demand model to obtain elasticity ($|\epsilon_D|>1$) 
+
+## Cournot Model / Nash in quantities
+
+We consider profits $\pi_i(q_i) = (P(Q)-C_i(q_i))\cdot q_i$
+
+- where $Q=\sum_{i=1}^{N}q_i$ is the total industry output
+
+We take the FOC
+
+$$\frac{\partial \pi_i(q_i)}{\partial q_i}=(P(Q)-C'(q_i))+q_i \cdot \frac{\partial P(Q)}{\partial Q} \cdot \frac{\partial Q}{\partial q_i} = 0$$
+
+
+Cournot competition implies $\frac{\partial Q}{\partial q_i}=1$ and $\frac{\partial q_j}{\partial q_i}=0$ for $i \neq j$
+
+- when I produce 1 more unit, total output increases by 1 unit
+- My opponent cannot react to me producing 1 more unit (simultaneous move)
+
+## Cournot optimality and Lerner Index
+
+Under symmetry, all firms produce equal quantities $q_i=\frac{Q}{N}$
+
+$$\underbrace{\overbrace{\frac{\partial P(Q)}{\partial Q}*\frac{Q}{N}}^{Cournot \\ Distortion}+P(Q)}_{MR}=\underbrace{C'(Q)}_{MC}$$
+
+- in Monopoly, we had the same thing with $n=1$
+
+Rearrange to form Lerner Index
+
+$$\frac{P-mc}{P}=-\frac{1}{N}\frac{Q}{P}\frac{\partial P(Q)}{\partial Q}=-\frac{1}{N \cdot \epsilon_D}$$
+
+## Complaint about Cournot:
+
+If I change my quantity, why doesn't my rival react? 
+
+Assume competitors react in $q$, then $\frac{\partial Q}{\partial q_i}=1+\frac{\partial Q_{-i}}{\partial q_i}$ 
+
+Marginal Revenue becomes: $P(Q)+\frac{\partial P(Q)}{\partial Q} \cdot q_i \cdot (\underbrace{1+\frac{\partial Q_{-i}}{\partial q_i}}_{Conduct~\theta_i})$
+
+- $\frac{\partial Q_{-i}}{\partial q_i}= -1$: Perfect competition (no change of aggregate Q ) 
+- $\frac{\partial Q_{-i}}{\partial q_i}= 0$: Cournot with simultaneous moves
+- $\frac{\partial Q_{-i}}{\partial q_i}= N-1$: Collusion (increase by $N$ if I increase by 1)
+
+$\theta_i$ conjecture (=belief) about how my rival is going to respond
+
+## Estimation of conduct parameter 
+
+... using conjectures (=beliefs about my rivals behavior)
+
+We know that this relation holds in optimum: 
+
+$$P(Q)+\frac{\partial P(Q)}{\partial Q} \cdot q_i \cdot (\underbrace{1+\frac{\partial Q_{-i}}{\partial q_i}}_{Conduct~\theta_i})= C'(Q)$$
+
+We can obtain conduct $\theta_i$ if we 
+
+- know prices $P$ and quantities $q_i$
+- have information on marginal costs $C'(Q)$
+- and estimate how prices change with quantity 
+- (or how quantity change with price)
+
+
+## 
+
+We can rewrite the above expression byand multiply by $\frac{Q}{Q}$ to get
+
+$$P(Q)+\frac{\partial P(Q)}{\partial Q} \cdot Q  \underbrace{\frac{q_i}{Q} \cdot (1+\frac{\partial Q_{-i}}{\partial q_i}}_{Normalized~Conduct~\phi_i})= C'(Q)$$
+
+- where conduct is weigthted by market share: $0\leq\phi\leq 1$
+- with symmetry: $\frac{q_i}{Q}=\frac{1}{N}$
+
+The conduct parameter can take the following values:
+
+- $\phi  = 0$ for perfect competition
+- $0 < \phi < 1$ for oligopoly
+- $\phi = 1$ for monopoly or collusion
+
+## We can rearrange this expression 
+
+in terms of Lerner Index and solve for conduct $\phi$: 
+
+$$ \phi  = −\eta  \frac{P-c}{P} \equiv L_{\eta}$$
+
+$\eta$ is the elasticity of demand and $L_{\eta}$ is the Lerner index adjusted for elasticity (Genesove and Mullin, 1998).
+
+We can thus estimate conduct if we have information on 
+
+- market clearing price $P$
+- marginal costs $c$ 
+- elasticities $\eta=\frac{\partial Q}{\partial P} \cdot \frac{P}{Q}$
+
+
+## Empirical model 
+
+## Demand function
+
+- log linear demand
+
+Market demand is assumed to take the following form:
+
+$$Q_T = \beta(\alpha − P_t )\gamma + \varepsilon_t$$
+assuming that $\alpha = 0$ and $\gamma < 0$ we have a log-linear demand function:
+
+$$ln(Q_t) = ln(−\beta) + \gamma ln(P_t) + \varepsilon_t$$
+
+where $Q_t$ is total is total output in the market and $P_t$ is the market price, and \varepsilon_t is the error term. 
+
+
+##  Refresher: elasticities in different demand models
+
+| Model     | Demand                                  | Transformed demand                        | Own-price elasticity          | 
+|-----------|-----------------------------------------|-------------------------------------------|-------------------------------|
+| Linear    | $Q = \alpha + \beta P + \gamma X$       | $Q = \alpha + \beta P + \gamma X$         | $\varepsilon = \beta ∗ P/Q$   |
+| Semi-log  | $Q = exp(\alpha + \beta P + \gamma X)$  | $lnQ = \alpha + \beta P + \gamma X$       | $\varepsilon = \beta ∗ P$     |
+| Log-log   | $Q = exp(\alpha)P \beta X\gamma$        | $lnQ = \alpha + \beta lnP + \gamma ln X$  | $\varepsilon = \beta$         |
+ 
+## Production technology
+
+The coffee market is characterized by a relatively simple production technology with constant marginal cost:
+
+$$c = c_0 + k P_{coffeebeans}$$ 
+
+where $c_0$ represents all variable costs other than those related to coffee beans, i.e., labour and packages; and $k$ is a parameter that measures the fixed technology in production. It is estimated that one kg of roasted coffee requires 1.19 kg of beans. The $c_0$ is estimated to be around 4 guilders. 
+  
+
+## Solving for the conduct parameter
+
+If we have access to information about costs, conduct parameter $\theta$ can be expressed in the following way:
+$$ \theta  = − \gamma \frac{P-c}{P} \equiv L_{\eta}$$
+
+where $\theta(P)$ is the elasticity of demand and $L_{\eta}$ is the adjusted Lerner index, i.e. Lerner index adjusted for elasticity (Genesove and Mullin, 1998).
+
+## Prices, costs and the conduct parameter
+
+The market price can be written as a function of the conduct parameter $\theta$, the estimated demand, and cost parameters:
+
+$$P(c) = \frac{\gamma}{\gamma + \theta} c$$
+
+where $\gamma$ is the estimated demand elasticity in log-linear demand specification
+
+## 
+
+Obtaining $\theta$ from our coefficient on cost (b)
+
+Rearranging:
+
+$$b=\frac{\gamma}{\gamma + \theta}$$
+
+$$\gamma=b(\gamma + \theta)$$
+
+$$b\theta = \gamma − b\gamma $$
+
+
+$$\theta = \frac{\gamma(1 − b)}{b}$$
+
+## Example: Bettendorf & Verboven
+
+```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
+knitr::include_graphics("BV_abstract.jpg")
+```
+
+
+# 1 Import & clean data, produce descriptive statistics
+
+## Import data
+
+
+
+
+## Make some nice line graphs
+
+Create simple line graphs of key price and income variables over time.
+
+
+
+
+## Summary statistics
+
+```{r summary, echo=TRUE}
+
+coffee %>%
+  select(qu, cprice, tprice, wprice, bprice, incom) %>%
+  summary()
+
+```
+
+## 
+Now consider summary statistics for quarter 1 alone:
+
+```{r summary_q1, echo=TRUE}
+coffee %>%
+  filter(q1 == 1) %>%
+  select(qu, cprice, tprice, wprice, bprice, incom) %>%
+  summary()
+
+```
+
+## 
+Now do the same for q2, q3, and q4.
+
+```{r summary_q2, echo=TRUE}
+coffee %>%
+  filter(q2 == 1) %>%
+  select(qu, cprice, tprice, wprice, bprice, incom) %>%
+  summary()
+
+```
+
+##
+
+Produce a scatter graph of prices and quantities:
+
+```{r p_q, echo=FALSE, echo=TRUE}
+
+coffee %>%
+  ggplot(aes(x = qu)) +
+    geom_point(aes(y = cprice))
+```
+
+## 
+Now do the same thing but only for the first quarter:
+
+```{r filter, echo=TRUE}
+
+coffee %>%
+  filter(q1 == 1) %>%
+  ggplot(aes(x = qu)) +
+    geom_point(aes(y = cprice))
+
+```
+
+## 
+Now consider for q2, q3 and q4.
+
+```{r filter1, echo=TRUE}
+
+coffee %>%
+  filter(q2 == 1) %>%
+  ggplot(aes(x = qu)) +
+    geom_point(aes(y = cprice))
+
+```
+
+## 
+```{r filter2, echo=TRUE}
+
+coffee %>%
+  filter(q3 == 1) %>%
+  ggplot(aes(x = qu)) +
+    geom_point(aes(y = cprice))
+
+```
+
+##
+
+Relation between tea price and coffee demand
+
+
+```{r tprice_q, echo=TRUE}
+
+coffee %>%
+  ggplot(aes(x = qu)) +
+    geom_point(aes(y = tprice))
+
+```
+
+## 
+
+Price of coffee and labor costs (wage)
+
+```{r cprice_w, echo=TRUE}
+coffee %>%
+  ggplot(aes(x = wprice)) + 
+    geom_point(aes(y = cprice))
+
+```
+
+## 
+
+Price of coffee and price of tea
+
+```{r tprice_cprice, echo=TRUE}
+coffee %>%
+  ggplot(aes(x = tprice)) + 
+    geom_point(aes(y = cprice))
+```
+## 
+```{r tprice_cprice2, echo=TRUE}
+coffee %>%
+  filter(q4==1) %>%
+  ggplot(aes(x = tprice)) + 
+    geom_point(aes(y = cprice))
+
+```
+
+## Overall correlations
+
+Produce a correlation matrix for qu, cprice, tprice, wprice, bprice, incom: 
+
+```{r cor, echo=TRUE}
+coffee %>%
+  select(qu, cprice, tprice, wprice, bprice, incom) %>%
+  cor()
+
+```
+
+## create log variables  
+
+We need our variables to be in logs:
+
+```{r logs, echo=TRUE }
+coffee <- coffee %>%
+  mutate(ln_qu=log(qu),
+         ln_cprice=log(cprice),
+         ln_tprice=log(tprice),
+         ln_bprice=log(bprice),
+         ln_wprice=log(wprice),
+         ln_incom=log(incom))
+```
+
+# Considering the basic relationships
+
+## 
+
+Basic demand regressions
+
+```{r q_p, echo=TRUE}
+q_p1 <- lm(ln_qu ~ ln_cprice + q2 + q3 + q4 , coffee)
+summary(q_p1)
+
+```
+
+## 
+Including tea price, save as q_p2:
+
+```{r q_p2, echo=TRUE}
+q_p2 <- lm(ln_qu ~ ln_cprice + q2 + q3 + q4 + tprice, coffee)
+summary(q_p2)
+
+```
+
+## 
+Include income, save as q_p3:
+
+```{r q_p3, echo=TRUE}
+q_p3 <- lm(ln_qu ~ ln_cprice + q2 + q3 + q4 + tprice + incom, coffee)
+summary(q_p3)
+
+```
+
+# Estimating theta
+
+## Instrumental variable regressions
+
+Run an instrumental variable regression, using prices, quantities, seasonal dummies and instrument, first without tea and income, and secondly with tea and income:
+
+##
+```{r iv1, echo=TRUE, message=FALSE}
+library("AER")
+
+iv1 <- ivreg(ln_qu ~ q2 + q3 + q4 + ln_cprice | ln_bprice + q2 + q3 + q4 , data = coffee)
+summary(iv1)
+
+```
+## 
+```{r iv2, echo=TRUE}
+
+iv2 <- ivreg(ln_qu ~ q2 + q3 + q4 + incom + tprice + ln_cprice | ln_bprice + q2 + q3 + q4 + incom + tprice , data = coffee)
+summary(iv2)
+
+```
+## Calculate adjusted learner index
+
+... using our cost information and our estimate of $\gamma$:
+
+```{r lerner_adj, echo= TRUE}
+k = 1.19 # kg of beans per kg of coffee
+c0= 4 # by assumption (4 guilders)
+gamma = -0.276
+
+# obtain the cost function    
+cost = c0 + k*coffee$bprice
+
+# compute Lerner index
+coffee$Ln= (coffee$cprice - cost) / coffee$cprice
+  
+# now compute adjusted Lerner index  
+coffee$Ln_adj = -gamma * coffee$Ln 
+
+# summary statistics for our adjusted Lerner index  
+summary(coffee$Ln_adj)
+
+# consider adjusted lerner for only q1, using filter
+coffee %>%
+  filter(q4 == 1) %>%
+  select(Ln_adj) %>%
+  summary(coffee$Ln_adj)
+
+
+```
+
+Now, consider for q2, q3, and q4.
+
+## Estimating conduct parameter
+
+First, regress prices on costs
+
+```{r conduct, echo=TRUE}
+conduct1 <- lm(cprice ~ cost + q1 + q2 + q3 -1, data = coffee) # omits intercept
+summary(conduct1)
+
+conduct2 <- lm(cprice ~ cost -1, data = coffee) # omits intercept
+summary(conduct2)
+```
+
+## 
+
+From the FOC we have: $p=\frac{\gamma}{(\gamma+\theta)}c$
+
+This is the estimated coefficient for cost.
+
+```{r theta1, echo=TRUE}
+
+b=1.47
+theta=gamma*(1-b)/b
+summary(theta)
+
+n=1/theta
+summary(n)    
+
+```
+
+## Linear demand 
+
+$Q=\beta(\alpha-P)$
+
+```{r, echo=TRUE}
+linear1 <- ivreg(qu ~ cprice + incom + q1 + q2 + q3 | bprice + incom + q1 + q2 + q3, data = coffee)
+summary(linear1)
+```
+## 
+
+```{r, echo=TRUE}
+linear2 <- ivreg(qu ~ cprice + q1 + q2 + q3 | bprice + q1 + q2 + q3, data = coffee)
+summary(linear2)
+```
+
+## 
+Compute adjusted learner index:
+
+```{r lerner_adj2, echo=TRUE}
+coffee$gamma_l=-0.015*coffee$cprice/coffee$qu
+coffee$Ln_adj_l=-coffee$gamma_l*coffee$Ln
+```
+
+##
+Now summarise the lerner indices:
+
+```{r l_adj1_summary, echo=TRUE}
+coffee %>%
+  select(Ln_adj_l) %>%
+  summary()
+```
+Now summarise by quarters.
+
+## Demand rotaters
+
+Create seasonal demand rotators:
+
+```{r rotators, echo=TRUE}
+coffee <- coffee %>%
+  mutate(cprice_q1=cprice*q1,
+         bprice_q1=bprice*q1,
+         cprice_q2=cprice*q2,
+         bprice_q2=bprice*q2,
+         cprice_q3=cprice*q3,
+         bprice_q3=bprice*q3,
+         cprice_q4=cprice*q4,
+         bprice_q4=bprice*q4
+  )
+
+```
+
+## 
+Can also use use demand rotators in regression:
+
+```{r lm_rotators, echo=TRUE}
+rotator <- ivreg(qu ~  q1 + q2 + q3 + (cprice + cprice_q1) | 
+                   (bprice + bprice_q1) + q1 + q2 + q3 , data = coffee)
+summary(rotator)
+
+```
+
+## Critique 
+
+so we hold supply fixed and move around the demand curve (shocks). 
+
+given that supply is fixed, we can draw supply curve at different points when demand changes
+
+but we need to assume that conduct is fixed (e.g., collusion) which is a difficult assumption (Corts critique) 
+
+- collusive conduct could be difficult to sustain with higher demand shocks (Corts critique)

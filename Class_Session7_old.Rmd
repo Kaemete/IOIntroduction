@@ -1,0 +1,289 @@
+---
+title: "Session 7: Econometrics Tutorial on Conduct Estimation"
+author: "Dennis Rickert, MINES Paris-PSL University"
+date: "2023-07-17"
+output: 
+  ioslides_presentation: 
+#  html_document: 
+#    number_sections: yes
+#    toc: yes
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Overview of QEC9X01
+
+-   Session 1: Oligopolistic Competition Refresher
+-   Session 2: Oligopolistic Competition Refresher (cont.)
+-   Session 3: Introduction into R and Econometrics
+-   Session 4: Introduction into R and Econometrics (cont.)
+-   Session 5: Estimation of Demand for Homogenous Goods
+-   Session 6: Identification of Conduct and Collusion
+-   ***Session 7: Econometrics Tutorial: Conduct Estimation***
+-   Session 8: Product Differentiation, Multinomial Logit
+-   Session 9: Differentiated Demand Workshop
+-   Session 10: Market Structure and Entry
+-   Session 11: Merger analysis
+-   Session 12: Merger analysis - Empirical tutorial in R
+
+## What we do in Session 7
+
+- homogenous demand
+- identification of conduct, 
+
+Do a DiD?
+
+- why do we have to estimate demand? 
+- why do we have to infer collusion and not just look at prices?
+  - when prices of two firms move together what looks like collusion might be correlation due to higher marginal costs 
+  - retailers set their own prices which often softens downstream competition which may look like collusion 
+  - just looking at how prices move together would not be causal 
+
+## History of IO 
+
+Early 20th century Agricultural Economics 
+
+- How can we estimate demand and supply from data?
+- Mostly homogeneous agricultural products
+- Early discussion of simultaneity/endogeneity in econometrics
+
+Complaint: everything assumed to be perfectly competitive
+
+## Today: Game Theory revolution
+
+Since 1980ies: Strategic decision making, Nash equilibrium
+
+- Lots of intuitive and sometimes counter-intuitive clean theoretical models
+- Hard to know which model is the right model for the industry we are looking at
+
+Since 1990ies: New EIO
+- joined with econometics, data, and computation 
+
+## 
+
+This session, we focus on homogeneous products
+
+- Monopoly pricing
+
+- Cournot Model (1883), Nash in quanities
+
+- Bertrand-Nash pricing (boring case because of Bertrand paradox)
+
+## Monopoly problem
+
+Starting with a quantity-setting monopolist facing 
+
+- a known inverse demand curve P(Q) 
+- and costs C(Q)
+
+$$\pi (Q) = P(Q)*Q-C(Q)-F$$
+Take the FOC $\pi'(Q)=0$ and derive the Lerner Index 
+
+$$\underbrace{\overbrace{P'(Q)*Q}^{Monopoly \\ Distortion}+P(Q)}_{MR}=\underbrace{C'(Q)}_{MC}$$
+Without monopoly distortion, we are just at $P=MC$
+
+## Marginal Revenue has two components
+
+$MR=P'(Q)*Q + P(Q)$ 
+
+- When I sell an extra unit, I am going to collect price $P$ on that unit
+- When I am going to sell an extra unit, it is going to change the market clearing price $P'$
+  - this change in market clearing price is going to be applied to all infra-marginal units $Q$
+
+P'(Q) is negative, monopolist restricts output in order to collect a higher price. Monopoly prices given by
+
+$$p=MC+P'(Q)Q$$
+
+## Lerner Index in Monopoly
+
+We take the optimality condition: 
+$$P'(Q)*Q+P(Q)=C'(Q)$$
+Rearrange and divide by P(Q): 
+
+$$\frac{P(Q)-C'(Q)}{P(Q)}=-\frac{P'(Q)*Q}{P(Q)}\equiv \frac{1}{|\epsilon_D|}$$
+Neat: infer monopoly markup from estimating elasticity $\epsilon_D$ 
+
+- usually $|\epsilon_D|>1$ 
+- easier / more reliable than obtaining informatin on marginal costs, marginal revenues,  and/or profits 
+
+## Cournot Model / Nash in quantities
+
+Assume constant marginal costs $c_i=c$ and $n$ equal sized firms. Let $Q=\sum_{i=1}^{N}q_i$ be the total output in the industry
+
+We consider profits $\pi_i(q_i) = (P(Q)-C_i(q_i))\cdot q_i$ with FOC
+
+$$\frac{\partial \pi_i(q_i)}{q_i}=(P(Q)-C'(q_i))+q_i \cdot P'(Q) \cdot \frac{\partial Q}{\partial q_i} = 0$$
+
+Cournot competition implies $\frac{\partial Q}{\partial q_i}=1$ and $\frac{\partial q_j}{\partial q_i}=0$ for $i \neq j$
+
+- the quantity of my competitors $q_j$ do not react to my change of output $q_i$ because it is a simultaneous move game
+- when I produce 1 more unit, total output increases by 1 unit
+  - My opponent cannot react to me producing 1 more unit
+
+## Cournot optimality and Lerner Index
+
+Under symmetry, all firms produce equal quantities $q_i=\frac{Q}{n}$
+
+$$\underbrace{\overbrace{P'(Q)*\frac{Q}{N}}^{Cournot \\ Distortion}+P(Q)}_{MR}=\underbrace{C'(Q)}_{MC}$$
+
+- in Monopoly, we had the same thing with $n=1$
+
+Rearrange to form Lerner Index
+
+$$\frac{P-mc}{P}=-\frac{1}{N}\frac{Q}{P}P'(Q)=-\frac{1}{N \cdot \epsilon_D}$$
+
+## Conjectural Variation against complaint
+
+... about Cournot: If I change my quantity, why doesn't my rival? 
+
+Assume competitors react in $q$, then $\frac{\partial Q}{\partial q_i}=1+\frac{\partial Q_{-i}}{\partial q_i}$ 
+
+Marginal Revenue becomes: $P(Q)+P'(Q) \cdot q_i \cdot (\underbrace{1+\frac{\partial Q_{-i}}{\partial q_i}}_{Conduct~\theta_i})$
+
+- $\frac{\partial Q_{-i}}{\partial q_i}= -1$: Perfect competition (no change of aggregate Q ) 
+- $\frac{\partial Q_{-i}}{\partial q_i}= 0$: Cournot with simultaneous moves
+- $\frac{\partial Q_{-i}}{\partial q_i}= N-1$: Collusion (increase by $N$ if I increase by 1)
+
+$\theta_i$ conjecture (=belief) about how my rival is going to respond
+
+## 
+We know that this relation holds in optimum: 
+
+$$P(Q)+P'(Q) \cdot q_i \cdot (\underbrace{1+\frac{\partial Q_{-i}}{\partial q_i}}_{Conduct~\theta_i})= C'(Q)$$
+
+We need to specify a demand function, an optimal pricing rule, and a marginal cost function
+
+## 
+
+We can rewrite the above expression byand multiply by $\frac{Q}{Q}$ to get
+
+$$P(Q)+P'(Q) \cdot Q  \underbrace{\frac{q_i}{Q} \cdot (1+\frac{\partial Q_{-i}}{\partial q_i}}_{Normalized~Conduct~\phi_i})= C'(Q)$$
+where conduct is weigthted by market share and thus lies between 0 and 1. 
+
+- with symmetry: $\frac{q_i}{Q}=\frac{1}{N}$
+
+The conduct parameter can take the following values:
+
+- $\phi  = 0$ for perfect competition
+- $0 < \phi < 1$ for oligopoly
+- $\phi = 1$ for monopoly or collusion
+
+## 
+If we have access to information about costs, conduct parameter $\theta$ can be expressed in the following way:
+$$ \theta  = − \gamma \frac{P-c}{P} \equiv L_{\eta}$$
+
+where $\theta(P)$ is the elasticity of demand and $L_{\eta}$ is the adjusted Lerner index, i.e. Lerner index adjusted for elasticity (Genesove and Mullin, 1998).
+
+We can thus estimate conduct using information on costs and elasticities
+
+## Example: Bettendorf & Verboven
+
+```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
+knitr::include_graphics("BV_abstract.jpg")
+```
+
+## Bettendorf & Verboven: Prices
+
+```{r , echo=FALSE, out.width = "70%", fig.align = "center"}
+knitr::include_graphics("BV_prices.jpg")
+```
+
+is this price gap due to collusion? 
+
+
+
+## Identification of conduct
+
+- Our task is to investigate competition in Dutch coffee market.
+- Time-series monthly data contains information about the Dutch coffee market during the period 1990-1996 
+- (more information in Bettendorf and Verboven (1998)).
+
+## The data 
+
+... includes the following variables
+
+- month: year and month of observation;
+- qu: per capita consumption of roasted coffee in kg;
+- cprice: price of roasted coffee per kg in current guilders;
+- tprice: price of per kg tea in current guilders;
+- oprice: price index for other goods;
+- incom: income per capita in current quilders;
+- q1-q4: dummy variables for seasons 1 to 4;
+- bprice: price of coffee beans per kg in current guilders;
+- wprice: price of labor per man hours (work 160 hours per month).
+
+## Empirical model - log linear demand
+
+Market demand is assumed to take the following form:
+
+$$Q_T = \beta(\alpha − P_t )\gamma + \varepsilon_t$$
+assuming that $\alpha = 0$ and $\gamma < 0$ we have a log-linear demand function:
+
+$$ln(Q_t) = ln(−\beta) + \gamma ln(P_t) + \varepsilon_t$$
+
+where $Q_t$ is total is total output in the market and $P_t$ is the market price, and \varepsilon_t is the error term. 
+
+
+##  Refresher: elasticities in different demand models
+
+| Model     | Demand                                  | Transformed demand                        | Own-price elasticity          | 
+|-----------|-----------------------------------------|-------------------------------------------|-------------------------------|
+| Linear    | $Q = \alpha + \beta P + \gamma X$       | $Q = \alpha + \beta P + \gamma X$         | $\varepsilon = \beta ∗ P/Q$   |
+| Semi-log  | $Q = exp(\alpha + \beta P + \gamma X)$  | $lnQ = \alpha + \beta P + \gamma X$       | $\varepsilon = \beta ∗ P$     |
+| Log-log   | $Q = exp(\alpha)P \beta X\gamma$        | $lnQ = \alpha + \beta lnP + \gamma ln X$  | $\varepsilon = \beta$         |
+ 
+## Production technology
+
+The coffee market is characterized by a relatively simple production technology with constant marginal cost:
+
+$$c = c_0 + k P_{coffeebeans}$$ 
+
+where $c_0$ represents all variable costs other than those related to coffee beans, i.e., labour and packages; and $k$ is a parameter that measures the fixed technology in production. It is estimated that one kg of roasted coffee requires 1.19 kg of beans. The $c_0$ is estimated to be around 4 guilders. 
+  
+## Solving for the conduct parameter
+
+
+## Prices, costs and the conduct parameter
+
+The market price can be written as a function of the conduct parameter $\theta$, the estimated demand, and cost parameters:
+
+$$P(c) = \frac{\gamma}{\gamma + \theta} c$$
+
+where $\gamma$ is the estimated demand elasticity in log-linear demand specification
+
+## 
+
+Obtaining $\theta$ from our coefficient on cost (b)
+
+Rearranging:
+
+$$b=\frac{\gamma}{\gamma + \theta}$$
+
+$$\gamma=b(\gamma + \theta)$$
+
+$$b\theta = \gamma − b\gamma $$
+
+
+$$\theta = \frac{\gamma(1 − b)}{b}$$
+
+## Our task
+
+- Analyse data by computing simple statistics and provide graphical illustration.
+- Estimate demand for roasted coffee using reasonable explanatory variables and instrumental variables.
+- Explain what allows for identification of conduct in this model.
+- Estimate Lerner index adjusted for elasticity and conduct parameter, and provide interpretation.
+
+## Critique 
+
+so we hold supply fixed and move around the demand curve (shocks). 
+
+given that supply is fixed, we can draw supply curve at different points when demand changes
+
+but we need to assume that conduct is fixed (e.g., collusion) which is a difficult assumption (Corts critique) 
+
+- collusive conduct could be difficult to sustain with higher demand shocks (Corts critique)
