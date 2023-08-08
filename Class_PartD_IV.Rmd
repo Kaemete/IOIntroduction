@@ -21,13 +21,13 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## What we do in Session 3+4 - Part D
 
-- Properties of OLS
-- Endogeneity and exogeneity
+- ***Properties of OLS***
+- ***Endogeneity and exogeneity***
 - Solutions to overcome endogeniety problems
   - Randomized experiments
   - Control variables
   - Sample split regressions
-  - Instrument variables and 2SLS
+  - ***Instrument variables and 2SLS***
 
 
 ## Properties of OLS
@@ -51,7 +51,7 @@ For future reference, it is useful to number these assumptions using the prefix 
 
 ## $U$nbiased + $B$est (=efficient)
 
-In a simulation of T random draws, OLS parameters will be 
+In a simulation of $T$ random draws, OLS parameters will be 
 
 - correct on average (estimated $\hat{\beta_1}$ centered around true $\beta_1$)
 - closest to the true values most often (lowest variance)
@@ -63,7 +63,7 @@ knitr::include_graphics("BiasVariance.png")
 
 ## Focus on assumption of unbiasedness 
 
-and not other violations: heteroskedasticity or autocorrelation
+not other violations, e.g., heteroskedasticity, autocorrelation
 
 **Heteroskedasticity**: (non-constant) variance of $u$ depends on $x$
 
@@ -71,6 +71,8 @@ and not other violations: heteroskedasticity or autocorrelation
 - summer: high variation of shock and price (sunny / rainy)
 
 **Autocorrelation**: persistent demand shocks across periods
+
+<br>
 
 Those are moderately important. If one of the two is violated 
 
@@ -94,7 +96,7 @@ The most important assumption is exogeneity of variables $x$.
 This is related to assumption SLR.4 $\mathbb{E}(u|x)=\mathbb{E}(u)=0$ 
 
 - can only be satisfied if $x$ is exogenous.
-
+- we discussed this in the last lecture
 
 ## The problem of endogeniety
 
@@ -102,7 +104,7 @@ If $x$ is endogenous, the OLS estimator $\hat{\beta}$ is biased.
 
 - We typically check endogeniety as follows (intuitively):
   - Think which factors are part of the random shock $u$
-  - Check if your $x$ is correlated with factors in $u$.
+  - Reason if your $x$ is correlated with factors in $u$.
   
 <br>
 
@@ -129,13 +131,33 @@ However, we now use simulated data to outline the issue.
 
 We consider again our simulated data for ice cream demand 
 
-- case 1: prices depend on unobserved demand shocks  
-- case 2: eliminating the demand shocks 
-- case 3: constant markups of always 10% above cost
+- demand depends on prices and unobserved demand shocks 
+- ***case 1***: prices depend on unobserved demand shocks  
+- ***case 2***: there are not unobserved demand shocks 
+- ***case 3***: constant markups of always 10% above cost
+
+<br>
 
 In which cases is the OLS estimator biased due to endogeneity?
 
   - Hint: think of correlation between $u$ and $p$ 
+
+## A simple economic model
+
+... of the data generating process 
+
+<br>
+
+Demand in period $t$ is given by the following function 
+
+$$q_{t}=a_{t}-bp_{t}$$
+
+<br>
+
+We find optimal prices and quantities are given by: 
+
+$$p^*_{t} = \frac{a_0+\varepsilon_t}{2b}+\frac{c_{t}}{2}$$ 
+
 
 ## First define the model
 ```{r, echo=TRUE}
@@ -302,7 +324,11 @@ Methods to overcome endogeniety problems to have causal and unbiased effects (li
 - Conduct a randomized experiment
 - Add control variables
 - Sample split regressions
-- Use instrumental variable estimation
+- ***Use instrumental variable estimation***
+
+<br>
+
+We only focus on IV but you can self study the remainder 
 
 
 ## Conduct a Randomized Experiment
@@ -552,12 +578,14 @@ lm(q~p, dat0 )
 lm(q~p , dat1)
 ```
 
+# IV regression to control for endogenbeity
 
 ## Endogeneity without observing control
 
 As discussed, omitting variables which are correlated with our $x$
 
 - results in a violation of $\mathbb{E}(u|x)=\mathbb{E}(u)=0$
+- error term correlated with observable: $cor(u,x)\neq 0$
 - sometimes we do not have a good control variable
   - e.g., we do not observe high/low demand shocks
 
@@ -566,7 +594,6 @@ As discussed, omitting variables which are correlated with our $x$
 **Instrumental variables (IV)** solve the endogeneity issues
 
 - unbiased estimator of the unknown causal coefficients 
-  - when $x$ is correlated with the error term $u$.
 
 
 ## Instrumental Variable Regression
@@ -576,29 +603,24 @@ To understand how IV regression works, think of the variation in $x$ as having t
 - one part that, for whatever reason, is correlated with $u$ 
   - this is the part that causes the problems
 - and a second part that is uncorrelated with $u$.
-
+  - this is the part we want to use
 <br> 
 
-If you can isolate the second part, 
+If you can isolate the second part from the first, 
 
 - then you could use variations of this uncorrelated part of $x$  
 - disregard the variations in the problematic part of $x$  
 
-## Grapical illustration 1
+## Grapical illustration
 
 ```{r , echo=FALSE, out.width = "100%", fig.align = "center"}
 knitr::include_graphics("IV_idea1.jpg")
 ```
 
-## Grapical illustration 2
-
 if there is a variable correlated with our endogenous variable, but uncorrelated with the problematic part, 
 
-- then we could isolate the unprobematic part
+- then we could isolate the unproblematic part
 
-```{r , echo=FALSE, out.width = "105%", fig.align = "center"}
-knitr::include_graphics("IV_idea2.jpg")
-```
 
 ## An instrumental variable...
 
@@ -643,13 +665,13 @@ We can use an estimator called **two stage least squares (2SLS)**.
 
 ## Implementation of 2SLS
 
-First stage: 
+***First stage***: 
 
 - Estimate $x=\gamma_0 + \gamma_1z$ 
 - (ALL coviariates that are used in the main estimation have to be included in this step!)
 - Save $\hat{x}$, the first stage estimate of $x$
 
-Second stage: 
+***Second stage***: 
 
 - Regress $y=\beta_0+\beta_{1}\hat{x}+u$ 
 - Note $z$ only appears in the first stage, not in the second stage

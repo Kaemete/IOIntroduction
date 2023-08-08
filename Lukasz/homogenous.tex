@@ -1,0 +1,114 @@
+\documentclass[11pt]{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{color}
+%\usepackage{lscape}
+\usepackage{graphicx}
+%\usepackage{caption2}
+%\usepackage{epic,eepicemu}
+%\input{epsfig}
+%\usepackage{endnotes}
+
+\renewcommand{\baselinestretch}{1.5}
+%\pagestyle{plain}
+%\pagestyle{empty}
+\topmargin=0cm
+\oddsidemargin=0cm
+%\evensidemargin=-cm
+\textwidth=16cm \textheight=21cm
+%\parindent=0.0cm
+\newcommand{\tdc}[1]{\textcolor{red}{\textsc{#1}}}
+\newtheorem{lemma}{Lemma}
+\newtheorem{prop}{Proposition}
+
+\begin{document}
+\section*{Exercize 1: Identification of conduct}
+
+\begin{itemize}
+\item The task is to investigate competition in Dutch coffee market.
+\item Time-series monthly data contains information about the Dutch coffee
+market during the period 1990-1996 (more information in Bettendorf and Verboven (1998)).
+\item The data include the following variables:
+\begin{itemize}
+\item month: year and month of observation;
+\item qu: per capita consumption of roasted coffee in kg;
+\item cprice: price of roasted coffee per kg in current guilders;
+\item tprice: price of per kg tea in current guilders;
+\item oprice: price index for other goods;
+\item incom: income per capita in current quilders;
+\item q1-q4: dummy variables for seasons 1 to 4;
+\item bprice: price of coffee beans per kg in current guilders;
+\item wprice: price of labor per man hours (work 160 hours per month).
+\end{itemize}
+\end{itemize}
+
+\section*{Empirical model}
+
+\begin{itemize}
+\item Market demand is assumed to be linear:
+\begin{equation}
+Q_t=\beta (\alpha - P_t)^\gamma+\epsilon_t
+\end{equation}
+which assuming that $\alpha=0$ and $\gamma<0$ is a log-linear demand function:
+\begin{equation}
+ln(Q_t)=ln(-\beta)+\gamma ln(P_t)+\epsilon_t
+\end{equation}
+where $Q_t$ is total output in the market and $P_t$ is the market price and $\epsilon_t$ is an
+error term, $\epsilon_t\sim N(0,\sigma^{2})$
+\item The coffee market is characterized by a relatively simple production technology
+with constant marginal cost:
+\begin{equation}
+c=c_0+kP_{coffe beans},
+\end{equation}
+where $c_0$ represents all variable costs other than those related to coffee beans,
+i.e., labor and packages; and k is a parameter that measures the fixed technology in production.
+It is estimated that
+one kg of roasted coffee requires 1.19 kg of beans. The $c_0$ is estimated to be
+around 4 guilders.
+\item The profit for firm i is given by:
+\begin{equation}
+\pi(q_i,q_{-i})=(P(Q)-c)q_i
+\end{equation}
+where $Q=\sum_J{q_i}$. The first order condition of profit maximization
+in the Cournot model implies:
+\begin{equation}
+\frac{\partial\pi(q_i,q_{-i})}{\partial q_i}=0\Rightarrow P(Q)+\lambda_i q_i\frac{\partial P(Q)}{\partial Q}=c
+\end{equation}
+where $\lambda_i=1+\sum_{j\neq i}\frac{\partial q_j}{\partial q_i}$ represents conjectural variation.
+\begin{equation}
+P(Q)+\lambda_i \frac{q_i}{Q}Q\frac{\partial P(Q)}{\partial Q}=c
+\end{equation}
+In the case of N identical firms we have: $\frac{q_i}{Q}=\frac{1}{N}$:
+\begin{equation}
+P(Q)+\theta Q\frac{\partial P(Q)}{\partial Q}=c
+\end{equation}
+\item The conduct parameter can take the following values:
+\begin{itemize}
+\item $\theta=0$ for perfect competition
+\item $0<\theta<1$ for oligopoly
+\item $\theta=1$ for for monopoly or collusion
+\end{itemize}
+\item If we have access to information
+about costs, conduct parameter $\theta$ can be expressed in the following way:
+\begin{equation}
+\theta=-\gamma\frac{P-c}{P}\equiv L_{\eta}
+\end{equation}
+where $\eta (P)$ is the elasticity of demand and $L_{\eta}$ is the adjusted Lerner index,
+i.e., Lerner index adjusted for elasticity (Genesove and Mullin, 1998).
+\item The market price can be written as a function of the conduct parameter $\theta$, the
+estimated demand, and cost parameters:
+\begin{equation}
+P(c)=\frac{\gamma}{\gamma+\theta}c
+\end{equation}
+where $\gamma$ is the estimated demand elasticity in log-linear demand specification.
+\end{itemize}
+
+\section*{Your task}
+\begin{itemize}
+\item Analyze data by computing simple statistics and graphical illustration.
+\item Estimate demand for roasted coffee using reasonable explanatory variables and instrumental variables.
+\item Explain what allows for identification of conduct in this model.
+\item Estimate Lerner index adjusted for elasticity and conduct parameter, and provide interpretation.
+\end{itemize}
+
+\end{document} 
