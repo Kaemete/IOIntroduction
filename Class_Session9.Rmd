@@ -1,0 +1,342 @@
+---
+title: "Session 9: Tutorial Differentiated Demand"
+author: "Dennis Rickert, MINES Paris-PSL University"
+date: "2023-07-17"
+output: 
+  ioslides_presentation: 
+#  html_document: 
+#    number_sections: yes
+#    toc: yes
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Overview of QEC9X01
+
+-   Session 1: Oligopolistic Competition Refresher
+-   Session 2: Oligopolistic Competition Refresher (cont.)
+-   Session 3: Introduction into R and Econometrics
+-   Session 4: Introduction into R and Econometrics (cont.)
+-   Session 5: Estimation of Demand for Homogenous Goods
+-   Session 6: Identification of Conduct and Collusion
+-   Session 7: Econometrics Tutorial: Conduct Estimation
+-   Session 8: Product Differentiation, Multinomial Logit
+-   ***Session 9: Differentiated Demand Workshop***
+-   Session 10: Market Structure and Entry
+-   Session 11: Merger analysis
+-   Session 12: Merger analysis - Empirical tutorial in R
+
+## What we do in Session 9
+
+Why do we estimate demand? 
+
+- 
+- sole focus on price equation does not give full picture
+- hedonic pric regressions
+
+How do we estimate demand? 
+
+- homogeneous demand
+- elasticities: red bus / blue bus
+- heterogeneous demand AIDS
+- characteristics space
+
+
+## Overview
+
+- Introduction to Empirical Industrial Organization (IO)
+- Homogenous vs. Heterogenous Demand
+- Importance of Flexible Elasticities
+- Estimating Markups
+- Case Studies
+
+## Intro 
+
+One of the earliest exercises in econometrics is estimation of demand and supply for a homogenous product
+
+- First IV regression appeared in a book by Phillip G. Wright in 1928: The tariff on Animal and Vegetable Oil, Appendix B
+- Many similar studies accounting for simultaneity of demand and supply in agriculatural markets 
+
+## Homogenous Demand
+
+### Definition
+
+- All consumers have the same preferences
+- Price elasticity is constant across consumers
+
+### Modeling Approach
+
+- Linear demand model
+- log-lin
+- log log
+
+Examples were given in last lecture 
+
+- we had just one parameter and one elasticity for all products
+- firms were single product firms (no cross elasticity)
+
+### Limitations
+
+- Does not capture consumer heterogeneity
+- Implications for market power estimation
+
+## Heterogenous Demand
+
+### Definition
+
+- Consumers have different preferences
+- Price elasticity varies across consumers
+
+### Modeling Approach
+
+- Random-coefficient logit model
+- Nested logit model
+- Example code here (e.g., `mlogit` package)
+
+### Importance of Capturing Heterogeneity
+
+- Better fits real-world markets
+- Allows for more accurate policy analysis
+
+## Motivating example 
+
+Bertrand pricing game when 
+
+- consumers have different tastes 
+- such that products are differentiated
+- and firms may own multiple products 
+
+bla bla
+
+## 
+**Consider multi-product Bertrand where firms solve**: 
+$$
+\begin{align*}
+& \arg \max_{p \in \mathcal{J}_f} \pi_f (\mathbf{p}) = \sum_{j \in \mathcal{J}_f} (p_j - c_j) \cdot q_j(\mathbf{p}) \\
+& 0 = q_j(\mathbf{p}) + \sum_{k \in \mathcal{J}_f} (p_k - c_k) \frac{\partial q_{k}}{\partial p_j}(\mathbf{p}) \\
+\rightarrow BR: p_j(p_{-j}) = & c_{j} + q_{j}(\mathbf{p}) \left[-\frac{\partial q_{j}}{\partial p_{j}}(\mathbf{p})\right]^{-1} \\
++ & \sum_{k \in \mathcal{J}_{f} \setminus j} \left(p_{k}-c_{k}\right) \underbrace{\frac{\partial q_{k}}{\partial p_{j}}(\mathbf{p})\left[-\frac{\partial q_{j}}{\partial p_{j}}(\mathbf{p})\right]^{-1}}_{D_{jk}(\mathbf{p})} \\
+\end{align*}
+$$
+
+We call $D_{jk}(\mathbf{p}) = \frac{\frac{\partial q_{k}}{\partial p_j}(\mathbf{p})}{\left| \frac{\partial q_{j}}{\partial p_j}(\mathbf{p}) \right|}$ the diversion ratio; $D_{jk} \in [0,1]$.
+
+## 
+
+We can also re-write the best-response in the Lerner Index form:
+
+$$p_j(p_{-j}) = \underbrace{\frac{1}{1+1/\epsilon_{jj}(\mathbf{p})}}_{\text{Markup}} \left[ c_j + \underbrace{\sum_{k \in \mathcal{J}_{f} \setminus j}  (p_k-c_k) \cdot  D_{jk} (\mathbf{p})}_{Opportunity~Costs} \right]$$
+
+- we have usual Lerner markup given by inverse elasticity
+- multi-product firm has additional market power from opportunity costs of raising the price $p_j$, 
+  - possible if clients switch to other products $k$ of same firm 
+  - $D_{jk}$ gives proportion of clients that stay within firm
+  - for which firm gets the markup $p_k-c_k$
+  
+## Differentiated Products Bertrand
+
+We take the FOC w.r.t. price for all $j$ and stack them up
+$$
+\begin{gather}
+	\begin{pmatrix} 
+		q_{j=1} \\
+		 \vdots \\
+		q_{j=J} 
+	\end{pmatrix}
+	+
+	\begin{pmatrix} 
+		\frac{\partial q_{j=1}}{\partial p_{j=1}} & ... & \frac{\partial q_{j=J}}{\partial p_{j=1}} \\
+		 \vdots & \ddots & \vdots \\
+		\frac{\partial q_{j=1}}{\partial p_{j=J}} & ... & \frac{\partial q_{j=J}}{\partial p_{j=J}} 
+	\end{pmatrix}
+	\begin{pmatrix} 
+		p_{j=1}-c_{j=1} \\
+		 \vdots \\
+		p_{j=J}-c_{j=J}
+	\end{pmatrix}
+	=0	
+\end{gather}
+$$
+
+## 
+which we can solve for the price cost margin: 
+$$
+\begin{gather}
+	\begin{pmatrix} 
+		p_{j=1}-c_{j=1} \\
+		 \vdots \\
+		p_{j=J}-c_{j=J}
+	\end{pmatrix}
+= -   
+	\begin{pmatrix} 
+		\frac{\partial q_{j=1}}{\partial p_{j=1}} & ... & \frac{\partial q_{j=J}}{\partial p_{j=1}} \\
+		 \vdots & \ddots & \vdots \\
+		\frac{\partial q_{j=1}}{\partial p_{j=J}} & ... & \frac{\partial q_{j=J}}{\partial p_{j=J}} 
+	\end{pmatrix}
+\end{gather}^{-1}
+	\begin{pmatrix} 
+		q_{j=1} \\
+		 \vdots \\
+		q_{j=J} 
+	\end{pmatrix}
+$$
+... which we can also solve for marginal costs
+
+
+## Differentiated Products Bertrand
+
+It is helpful to define the matrix \( \Delta \) with entries of demand derivatives (not elasticities):
+
+\[
+\Delta_{(j,k)}(\mathbf{p}) = \left\{\begin{array}{lr}
+         - \frac{\partial q_{j}}{\partial p_k}(\mathbf{p}) & \text{for }  (j,k) \in \mathcal{J}_f\\
+       	  \quad 0 & \text{for } (j,k) \notin \mathcal{J}_f
+        \end{array} \right\}
+\]
+
+- $\Delta$ is a matrix full of ones in case of monopoly/full collusion  
+- $\Delta$ is a diagonal matrix in case of single-product firms 
+
+<br>
+We can re-write the FOC in matrix form:
+
+\[
+q(\mathbf{p}) = \Delta(\mathbf{p})\cdot(\mathbf{p}-\mathbf{mc})
+\]
+
+
+## Ownership Matrix Example
+
+Assume we have 3 products controlled by 2 firms. We can represent the ownership matrix \( \Delta \) as follows:
+
+$$
+\Delta = \left\{
+  \begin{matrix}
+    - \frac{{\partial q_1}}{{\partial p_1}} & - \frac{{\partial q_1}}{{\partial p_2}} & 0 \\
+    - \frac{{\partial q_2}}{{\partial p_1}} & - \frac{{\partial q_2}}{{\partial p_2}} & 0 \\
+    0 & 0 & - \frac{{\partial q_3}}{{\partial p_3}}
+  \end{matrix}
+\right\}
+$$
+
+- Products 1 and 2 are controlled by firm 1, so we have non-zero entries in the first two rows and first two columns.
+- Product 3 is controlled by firm 2, so we have non-zero entry in the last row and last column.
+- The zeros represent the fact that there's no ownership relationship for the corresponding product pairs.
+
+## What to learn from demand systems?
+
+We can solve this system of linear equations analytically  
+
+- We can recover markups 
+$$(\mathbf{p}-\mathbf{c}) = \mathbf{\Omega (p)}^{-1} \mathbf{q(p)}$$
+and marginal costs:
+$$\mathbf{c} = \mathbf{p}+\mathbf{\Omega (p)}^{-1} \mathbf{q(p)}$$
+
+such that we have real marginal costs (not accounting costs) obtained just with information on $p$, $q$, ownership along with estimated demand derivatives and assumption on conduct
+
+
+## Overview
+Multiproduct Demand system estimation is probably the most important contribution from the New Empirical IO literature:
+
+- Demand is an important primitive (think about Econ 101)
+- Welfare Analysis, Pass through of taxation, Value of Advertising, Price Effects of Mergers all rely on demand estimates.
+- Last 5-10 years has seen successful export to other fields: Trade, Healthcare, Education, Urban Economics, Marketing, Labor
+- Anywhere consumers face a number of options and ``prices'': doctors, hospitals, schools, mutual funds, potential dates, etc.
+- There are many many more applications.
+
+
+## Two Major Issues
+
+Endogeneity of Prices
+
+- Prices are not randomly determined, but set strategically by firms who observe the demand curve
+- The **simultaneity** of supply and demand creates a problem. We see the market clearing \( (P^*,Q^*) \) over several periods, but in general we do not know which curve shifted.
+
+Multiple Products/Flexibility
+
+- We want to allow for flexible (data driven) substitution across products but if we have \( J \) products, then \( \partial Q_j / \partial P_k \) might have \( J^2 \) elements.
+- We may also think that \( \partial Q_j / \partial P_k \) varies with \( P \) and with other covariates \( x \).
+
+
+
+## Taxonomy of Demand Systems
+
+Lots of different ways to classify demand systems 
+
+- Representative Consumer vs. Heterogeneous Agents?
+- Discrete Choices vs. Continuous Choices?
+- Single Product vs. Many Products?
+- Product Space vs. Characteristic Space?
+
+## Data Sources
+- We can either have **aggregate data** (market level data on \( (P_j,Q_j) \))
+  - Many supermarket "scanner" datasets: Nielsen, IRI, Dominick's
+  - NPD: video games/computers/consumer electronics.
+  - Many proprietary single firm sources
+- or **micro data** panel of data with same individuals over time.
+  - Best example is Nielsen Homescan Consumer Panel data.
+  - Visa/Mastercard datasets
+  - Medicare
+- Sometimes we have a combination of both
+  - Often we have aggregate purchase data plus some **micro data** from a survey on a subpopulation.
+  - ie: asking people who purchased GM cars which other cars they were considering.
+  - Using scanner data for alcohol purchases and comparing to consumption surveys by income and education.
+
+
+## Next we look at two different ways to estimate demand
+
+... when linear models for homogeneous goods are not suitable; focussing on aggregate data based on individual choices
+
+- Logit model 
+  - including red bus/blue bus
+- Nested Logit
+
+
+## Flexible Elasticities
+
+### Definition and Importance
+
+- Elasticity that varies with price and/or consumer characteristics
+- Importance in accurately capturing demand and market power
+
+### Modeling Elasticity
+
+- Example: BLP model (Berry, Levinsohn, and Pakes)
+- Example code here (e.g., estimation technique)
+
+## Markup Estimation
+
+### Definition
+
+- Difference between price and marginal cost
+
+### Methods of Estimation
+
+- Direct estimation from demand parameters
+- Two-step approach using supply-side information
+- Example code here (e.g., estimating markups)
+
+### Application to Market Power Analysis
+
+- Monopoly vs. oligopoly
+- Implications for regulation and competition policy
+
+## Case Studies
+
+- Provide real-world examples of these methods in action
+- Discussion of results and policy implications
+
+## Summary
+
+- Recap of key points
+- Emphasize the importance of modeling demand heterogeneity
+- Implications for empirical IO research and practice
+
+## Questions?
+
+- Any questions or further discussions?
