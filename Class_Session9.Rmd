@@ -33,94 +33,48 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## What we do in Session 9
 
-Why do we estimate demand? 
+Motivating example of Bertrand-Nash (workhorse)
 
-- 
-- sole focus on price equation does not give full picture
-- hedonic pric regressions
+- Some theory
+- Some Applications of the model
+- Relevance of good demand estimation
 
-How do we estimate demand? 
+<br>
 
-- homogeneous demand
-- elasticities: red bus / blue bus
-- heterogeneous demand AIDS
-- characteristics space
+Heterogeneous demand and differentiated products 
+
+- Problems with early models (product space)
+- Logit demand (characteristics space)
+- Nested Logit demand (characteristics space)
 
 
-## Overview
+##
 
-- Introduction to Empirical Industrial Organization (IO)
-- Homogenous vs. Heterogenous Demand
-- Importance of Flexible Elasticities
-- Estimating Markups
-- Case Studies
+***Bertrand-Nash pricing with differentiated products***
 
-## Intro 
+- derive costs as function of ownership, market share, elasticity
+- obtain markups by subtracting cost from price 
+- observe prices, market shares, and ownership 
+- need to estimate elasticity through demand function
 
-One of the earliest exercises in econometrics is estimation of demand and supply for a homogenous product
+***How do we estimate demand?***
 
-- First IV regression appeared in a book by Phillip G. Wright in 1928: The tariff on Animal and Vegetable Oil, Appendix B
-- Many similar studies accounting for simultaneity of demand and supply in agriculatural markets 
+- simple case: homogeneous demand (homogeneous products)
+- difficult: heterogeneous demand + differentiated products 
+  - consumer differ in tastes/preferences
+  - which leads to variation of elasticities across consumers
+  - and firms may introduce products depending on tase
+  - each product has different elasticity 
 
-## Homogenous Demand
-
-### Definition
-
-- All consumers have the same preferences
-- Price elasticity is constant across consumers
-
-### Modeling Approach
-
-- Linear demand model
-- log-lin
-- log log
-
-Examples were given in last lecture 
-
-- we had just one parameter and one elasticity for all products
-- firms were single product firms (no cross elasticity)
-
-### Limitations
-
-- Does not capture consumer heterogeneity
-- Implications for market power estimation
-
-## Heterogenous Demand
-
-### Definition
-
-- Consumers have different preferences
-- Price elasticity varies across consumers
-
-### Modeling Approach
-
-- Random-coefficient logit model
-- Nested logit model
-- Example code here (e.g., `mlogit` package)
-
-### Importance of Capturing Heterogeneity
-
-- Better fits real-world markets
-- Allows for more accurate policy analysis
-
-## Motivating example 
-
-Bertrand pricing game when 
-
-- consumers have different tastes 
-- such that products are differentiated
-- and firms may own multiple products 
-
-bla bla
 
 ## 
 **Consider multi-product Bertrand where firms solve**: 
 $$
 \begin{align*}
-& \arg \max_{p \in \mathcal{J}_f} \pi_f (\mathbf{p}) = \sum_{j \in \mathcal{J}_f} (p_j - c_j) \cdot q_j(\mathbf{p}) \\
-& 0 = q_j(\mathbf{p}) + \sum_{k \in \mathcal{J}_f} (p_k - c_k) \frac{\partial q_{k}}{\partial p_j}(\mathbf{p}) \\
-\rightarrow BR: p_j(p_{-j}) = & c_{j} + q_{j}(\mathbf{p}) \left[-\frac{\partial q_{j}}{\partial p_{j}}(\mathbf{p})\right]^{-1} \\
-+ & \sum_{k \in \mathcal{J}_{f} \setminus j} \left(p_{k}-c_{k}\right) \underbrace{\frac{\partial q_{k}}{\partial p_{j}}(\mathbf{p})\left[-\frac{\partial q_{j}}{\partial p_{j}}(\mathbf{p})\right]^{-1}}_{D_{jk}(\mathbf{p})} \\
+\arg \max_{p \in \mathcal{J}_f} \pi_f (\mathbf{p}) &  = \sum_{j \in \mathcal{J}_f} (p_j - c_j) \cdot q_j(\mathbf{p}) \\
+ 0 & = q_j(\mathbf{p}) + \sum_{k \in \mathcal{J}_f} (p_k - c_k) \frac{\partial q_{k}}{\partial p_j}(\mathbf{p}) \tag{1} \\
+\rightarrow BR: p_j(p_{-j}) & =  c_{j} + q_{j}(\mathbf{p}) \left[-\frac{\partial q_{j}}{\partial p_{j}}(\mathbf{p})\right]^{-1} \\
+& + \sum_{k \in \mathcal{J}_{f} \setminus j} \left(p_{k}-c_{k}\right) \underbrace{\frac{\partial q_{k}}{\partial p_{j}}(\mathbf{p})\left[-\frac{\partial q_{j}}{\partial p_{j}}(\mathbf{p})\right]^{-1}}_{D_{jk}(\mathbf{p})} \\
 \end{align*}
 $$
 
@@ -162,6 +116,12 @@ $$
 	=0	
 \end{gather}
 $$
+...where the above example corresponds to a case of monopoly
+
+- all products belong to the same firm
+- demand lost on product moves to product of the same firm
+- internalizing this "demand loss" leads to higher prices
+
 
 ## 
 which we can solve for the price cost margin: 
@@ -185,12 +145,15 @@ $$
 		q_{j=J} 
 	\end{pmatrix}
 $$
-... which we can also solve for marginal costs
+<br> 
 
+... which is related to the Lerner Index
+
+- we can also solve it for marginal costs
 
 ## Differentiated Products Bertrand
 
-It is helpful to define the matrix \( \Delta \) with entries of demand derivatives (not elasticities):
+It is helpful to define the matrix \( \Delta \) with entries of demand derivatives (not elasticities!):
 
 \[
 \Delta_{(j,k)}(\mathbf{p}) = \left\{\begin{array}{lr}
@@ -206,19 +169,19 @@ It is helpful to define the matrix \( \Delta \) with entries of demand derivativ
 We can re-write the FOC in matrix form:
 
 \[
-q(\mathbf{p}) = \Delta(\mathbf{p})\cdot(\mathbf{p}-\mathbf{mc})
+(\mathbf{p}-\mathbf{c}) = - \Delta(\mathbf{p})\cdot q(\mathbf{p}) 
 \]
 
 
 ## Ownership Matrix Example
 
-Assume we have 3 products controlled by 2 firms. We can represent the ownership matrix \( \Delta \) as follows:
+Assume we have 3 products controlled by 2 firms. We can represent the ownership matrix \( \Delta^B \) as follows:
 
 $$
-\Delta = \left\{
+\Delta^B = \left\{
   \begin{matrix}
-    - \frac{{\partial q_1}}{{\partial p_1}} & - \frac{{\partial q_1}}{{\partial p_2}} & 0 \\
-    - \frac{{\partial q_2}}{{\partial p_1}} & - \frac{{\partial q_2}}{{\partial p_2}} & 0 \\
+    - \frac{{\partial q_1}}{{\partial p_1}} &  \frac{{\partial q_1}}{{\partial p_2}} & 0 \\
+     \frac{{\partial q_2}}{{\partial p_1}} & - \frac{{\partial q_2}}{{\partial p_2}} & 0 \\
     0 & 0 & - \frac{{\partial q_3}}{{\partial p_3}}
   \end{matrix}
 \right\}
@@ -228,26 +191,40 @@ $$
 - Product 3 is controlled by firm 2, so we have non-zero entry in the last row and last column.
 - The zeros represent the fact that there's no ownership relationship for the corresponding product pairs.
 
+
 ## What to learn from demand systems?
 
-We can solve this system of linear equations analytically  
+In monopoly this matrix becomes:
+$$
+\Delta^M = \left\{
+  \begin{matrix}
+    - \frac{{\partial q_1}}{{\partial p_1}} &  \frac{{\partial q_1}}{{\partial p_2}} &  \frac{{\partial q_1}}{{\partial p_3}} \\
+     \frac{{\partial q_2}}{{\partial p_1}} & - \frac{{\partial q_2}}{{\partial p_2}} &  \frac{{\partial q_3}}{{\partial p_3}} \\
+    \frac{{\partial q_1}}{{\partial p_3}} &  \frac{{\partial q_2}}{{\partial p_3}} & - \frac{{\partial q_3}}{{\partial p_3}}
+  \end{matrix}
+\right\}
+$$
+different $p-c$ and $c$ for monopoly and competition: 
 
-- We can recover markups 
-$$(\mathbf{p}-\mathbf{c}) = \mathbf{\Omega (p)}^{-1} \mathbf{q(p)}$$
-and marginal costs:
-$$\mathbf{c} = \mathbf{p}+\mathbf{\Omega (p)}^{-1} \mathbf{q(p)}$$
+$$(\mathbf{p^*}-\mathbf{c^B}) = \mathbf{\Delta^B (p)}^{-1} \mathbf{q^*(p)}$$
 
-such that we have real marginal costs (not accounting costs) obtained just with information on $p$, $q$, ownership along with estimated demand derivatives and assumption on conduct
+$$(\mathbf{p^*}-\mathbf{c^M}) = \mathbf{\Delta^M (p)}^{-1} \mathbf{q^*(p)}$$
 
+... at observed values $p^*$ and $q^*$. 
 
-## Overview
+## Applications
 Multiproduct Demand system estimation is probably the most important contribution from the New Empirical IO literature:
 
-- Demand is an important primitive (think about Econ 101)
-- Welfare Analysis, Pass through of taxation, Value of Advertising, Price Effects of Mergers all rely on demand estimates.
-- Last 5-10 years has seen successful export to other fields: Trade, Healthcare, Education, Urban Economics, Marketing, Labor
-- Anywhere consumers face a number of options and ``prices'': doctors, hospitals, schools, mutual funds, potential dates, etc.
-- There are many many more applications.
+- Welfare analysis, pass-on of taxation, value of advertising, price effects of mergers, and many more applications
+
+Last 5-10 years has seen successful export to other fields: 
+
+- Marketing, Labor. Trade, Healthcare, Education, 
+
+Anywhere consumers face a number of options and ``prices'': 
+
+- doctors, hospitals, schools, mutual funds, etc.
+
 
 
 ## Two Major Issues
@@ -262,81 +239,443 @@ Multiple Products/Flexibility
 - We want to allow for flexible (data driven) substitution across products but if we have \( J \) products, then \( \partial Q_j / \partial P_k \) might have \( J^2 \) elements.
 - We may also think that \( \partial Q_j / \partial P_k \) varies with \( P \) and with other covariates \( x \).
 
+## Data Sources
+**Aggregate data** (market level data on \( (P_j,Q_j) \))
+
+- Many supermarket "scanner" datasets: Nielsen, IRI, ... 
+
+Or **micro data** panel of data with same individuals over time.
+
+  - Best example is Nielsen Homescan Consumer Panel data.
+  - Visa/Mastercard datasets
+  - Medicare
+
+Or **aggregate purchase data** plus **micro data** from a survey 
+
+- ie: asking people who purchased GM cars which other cars they were considering.
+- Using scanner data for alcohol purchases and comparing to consumption surveys by income and education.
 
 
 ## Taxonomy of Demand Systems
 
 Lots of different ways to classify demand systems 
 
-- Representative Consumer vs. Heterogeneous Agents?
-- Discrete Choices vs. Continuous Choices?
-- Single Product vs. Many Products?
-- Product Space vs. Characteristic Space?
+- We saw homogeneous demand + homogeneous products 
+- focus: heterogeneous demand + differentiated products 
+  - product characteristics space
 
-## Data Sources
-- We can either have **aggregate data** (market level data on \( (P_j,Q_j) \))
-  - Many supermarket "scanner" datasets: Nielsen, IRI, Dominick's
-  - NPD: video games/computers/consumer electronics.
-  - Many proprietary single firm sources
-- or **micro data** panel of data with same individuals over time.
-  - Best example is Nielsen Homescan Consumer Panel data.
-  - Visa/Mastercard datasets
-  - Medicare
-- Sometimes we have a combination of both
-  - Often we have aggregate purchase data plus some **micro data** from a survey on a subpopulation.
-  - ie: asking people who purchased GM cars which other cars they were considering.
-  - Using scanner data for alcohol purchases and comparing to consumption surveys by income and education.
-
-
-## Next we look at two different ways to estimate demand
-
-... when linear models for homogeneous goods are not suitable; focussing on aggregate data based on individual choices
-
-- Logit model 
-  - including red bus/blue bus
-- Nested Logit
-- We do not cover the famous BLP
-
-## Flexible Elasticities
-
-### Definition and Importance
-
-- Elasticity that varies with price and/or consumer characteristics
-- Importance in accurately capturing demand and market power
-
-### Modeling Elasticity
-
-- Example: BLP model (Berry, Levinsohn, and Pakes)
-- Example code here (e.g., estimation technique)
-
-## Markup Estimation
+## Homogenous Demand
 
 ### Definition
 
-- Difference between price and marginal cost
+- All consumers have the same preferences
+- Price elasticity is constant across consumers
 
-### Methods of Estimation
+### Modeling Approach
 
-- Direct estimation from demand parameters
-- Two-step approach using supply-side information
-- Example code here (e.g., estimating markups)
+- Linear demand model
+- log-lin
+- log log
 
-### Application to Market Power Analysis
+Examples were given in last lecture 
 
-- Monopoly vs. oligopoly
-- Implications for regulation and competition policy
+- we had just one parameter and one elasticity for all products
 
-## Case Studies
+## Heterogenous Demand
 
-- Provide real-world examples of these methods in action
-- Discussion of results and policy implications
+### Definition
+
+- Consumers have different preferences and elasticities
+- Elasticity varies with price and/or consumer characteristics
+
+### Modeling Approach
+- Logit Model
+- Nested logit model
+- Random-coefficient logit model
+
+### Importance of Capturing Heterogeneity
+- Accurate analysis of demand and market power
+- Allows for more accurate policy analysis
+
+
+# The Logit Model
+
+## Utility Function
+For consumer \(i\) choosing product \(j\):
+$$
+U_{ij} = X_j \beta - \alpha p_j + \xi_j + \epsilon_{ij}
+$$
+where:
+- \(X_j\) is product characteristics
+- \(p_j\) is price
+- \(\xi_j\) is unobserved product characteristics
+- \(\epsilon_{ij}\) is idiosyncratic consumer preference
+
+### Decision Making
+Consumer \(i\) chooses product \(j\) if \(U_{ij} > U_{ik}\) for all \(k \neq j\).
+
+## Choice Probabilities & Market Shares
+The probability that consumer \(i\) chooses product \(j\) is:
+$$
+s_{ij} = \frac{\exp(X_j \beta - \alpha p_j + \xi_j)}{\sum_{k=1}^J \exp(X_k \beta - \alpha p_k + \xi_k)}
+$$
+Market share for product \(j\) is the average across consumers:
+$$
+s_j = \int s_{ij} di
+$$
+
+## Estimation Equation
+For the Logit model:
+$$
+\log(s_j) - \log(s_0) = X_j \beta - \alpha p_j + \xi_j
+$$
+where \(s_0\) is the outside option's market share.
+
+## Elasticities
+Own-price elasticity:
+$$
+\eta_{jj} = \alpha \cdot p_j \cdot (1 - s_j)
+$$
+Cross-price elasticity:
+$$
+\eta_{jk} = \alpha \cdot p_k \cdot s_k \quad \text{for } j \neq k
+$$
+
+## Taste for Heterogeneous Products
+
+### Logit Model Insights
+
+- The Logit model allows for random utility maximization, capturing consumer choices among various product alternatives.
+- Each consumer derives utility from both observed and unobserved product characteristics.
+
+**Variety in Preferences**:
+
+- Not every consumer reacts the same way to a product or its features.
+- Understanding heterogeneity helps in segmenting the market and targeting effectively.
+
+### Advantages: Modelling in Product Characteristic Space
+
+## Comparing Approaches
+
+### Why Characteristic Space Over Other Methods?
+
+1. **Reduced Dimensionality**: Instead of defining every product, we define a smaller number of characteristics.
+2. **Predictive Power**: Can anticipate how changes in features or the introduction of new features will impact demand.
+3. **Generalizability**: A model built on product characteristics can predict outcomes for new products, as long as their characteristics are known.
+
+
+---
+title: "Logit vs. Nested Logit"
+output: ioslides_presentation
+---
+
+## Disadvantage of Logit
+The primary disadvantage of the standard Logit model compared to the Nested Logit model is its restrictive substitution patterns. This drawback is termed the Independence of Irrelevant Alternatives (IIA) property.
+
+1. **Independence of Irrelevant Alternatives (IIA)**
+
+- Definition: Relative odds between two choices remain constant regardless of other choices.
+-  In other words, the inclusion or exclusion of other alternatives does not affect the relative odds of choosing between any two given alternatives.
+- Implication: Unrealistic substitution patterns.
+
+Example: For instance, consider a model predicting transportation choices between a car, a bus, and a bicycle. If bicycles were to suddenly become unavailable, the standard Logit model would predict that those who previously chose bicycles would now split between cars and buses in proportion to their original shares, even though it's more likely that most bicycle riders would shift to buses rather than cars.
+
+
+## Nested Logit as a Solution
+
+1. **Relaxing IIA**: Allows correlated error terms within groups of similar alternatives ("nests").
+
+***Nesting Structure***: In our transportation example, cars and buses might be in one nest (motorized transport) while bicycles are in another nest. Within the motorized transport nest, the model recognizes higher substitutability between cars and buses than between either of those and bicycles.
+
+***Benefit***: This structure allows for more realistic substitution patterns that can capture the higher likelihood of a bicycle rider switching to a bus over a car.
 
 ## Summary
 
-- Recap of key points
-- Emphasize the importance of modeling demand heterogeneity
-- Implications for empirical IO research and practice
+- Standard Logit: Simple, but has restrictive IIA property.
+- Nested Logit: More flexible substitution patterns but needs correct nesting structures and is more complex.
 
-## Questions?
 
-- Any questions or further discussions?
+
+# The Nested Logit Model
+
+## Utility Function
+The Nested Logit divides products into \(G\) groups. For consumer \(i\) choosing product \(j\) in group \(g\):
+$$
+U_{ij} = X_j \beta - \alpha p_j + \xi_j + \sigma \cdot \eta_{ig} + \epsilon_{ij}
+$$
+where \(\eta_{ig}\) captures correlation in utility across products in group \(g\).
+
+
+## Estimation Equation
+
+For the Nested Logit model, the estimation equation becomes: 
+$$
+\log(s_j) - \log(s_0) = X_j \beta - \alpha p_j + \xi_j + \sigma \cdot \log s_{j|g(j)}
+$$
+
+- where $s_{j|g(j)}$ is the share of product $j$ in group $g$ 
+- the within group market share is again endogenous as it depends on price
+- thus we need an additional instrument, usually the number of products within each nest
+
+- which captures the nested structure 
+- and reflects the increased utility from products within the same group \(g\).
+
+## Elasticities
+
+1. **Own-price elasticity** for product \(j\) in group \(g\):
+$$
+\eta_{jj} = \alpha \cdot p_j \cdot \left(1 - s_{j|g} - \sigma \cdot s_{j|g} \cdot s_g\right)
+$$
+
+2. **Cross-price elasticity** for products \(j\) and \(k\) both in group \(g\):
+$$
+\eta_{jk} = \alpha \cdot p_k \cdot s_{k|g} \cdot (s_{j|g} + \sigma \cdot s_{j|g} \cdot s_g) \quad \text{for } j \neq k
+$$
+
+3. **Cross-price elasticity** for product \(j\) in group \(g\) and product \(k\) in group \(h\):
+$$
+\eta_{jk} = \alpha \cdot p_k \cdot s_{k|h} \cdot s_{j|g} \quad \text{for } g \neq h
+$$
+
+Main takeaway: unlike the simple Logit, the Nested Logit allows for different cross-price elasticities depending on whether the products are in the same group or not.
+
+
+
+
+
+
+# Differentiated demand, logit exercise
+
+## 1. Import data
+
+import the data into a data frame, called 'cameras_raw', 
+
+```{r import, echo=TRUE}
+#install.packages("flextable")
+#install.packages("sjmisc")
+
+library(haven)
+cameras <- read.csv("cameras.csv")
+```
+
+## 
+
+use the 'dim', 'str' and 'head' functions to describe the dataset
+
+## 
+```{r datastructure, echo=TRUE}
+colnames(cameras)
+```
+
+## Tabulating sales by brand and country
+
+```{r tables, echo=TRUE, message=FALSE}
+library(dplyr)
+library(flextable)
+cameras %>%
+  group_by(Country) %>%
+  summarise(Sales = sum(salesunits),
+            "Average price" = mean(priceur)) %>%
+  ungroup() %>%
+  flextable()
+```
+
+## Sales and price by brand 
+
+```{r brand_group, echo=TRUE}
+cameras %>%
+  group_by(Brand) %>%
+  summarise("Sales" = sum(salesunits),
+            "Average price" = mean(priceur)) %>%
+  ungroup() %>%
+  flextable()
+
+```
+
+## prices of brand per country
+
+```{r brand_country_group, echo=TRUE, message=FALSE}
+cameras %>%
+  group_by(Brand, Country) %>%
+  summarise("Sales" = sum(salesunits),
+            "Average price" = mean(priceur)) %>%
+  ungroup() %>%
+  flextable()
+```
+
+
+
+## Hedonic price/demand regressions
+
+why do we do this?
+
+- we have no underlying theory, 
+  - no consumer decision making, no utility maximizing
+
+- we easily get (homogeneous) own-price effects, 
+- for cross price effects, we need to include one addiotinal price variable per product    
+
+## Hedonic price regression
+```{r iv1, echo=TRUE}
+# Convert brand and country into factors:
+cameras$brand <- as.factor(cameras$Brand)
+cameras$country <- as.factor(cameras$Country)
+```
+
+```{r hedonic1_a, echo=TRUE, message=FALSE}
+hedonic1 <- lm(lpriceur ~ country
+               , data = cameras)
+```
+
+## 
+```{r hedonic1_b, echo=TRUE, message=FALSE}
+summary(hedonic1)
+```
+
+## 
+```{r hedonic2_a, echo=TRUE, message=FALSE}
+hedonic2 <- lm(lsalesunits ~ lpriceur + country
+                 , data = cameras)
+```
+
+## 
+```{r hedonic2_b, echo=TRUE, message=FALSE}
+summary(hedonic2)
+```
+
+## 
+```{r hedonic3_a, echo=TRUE, message=FALSE}
+hedonic3 <- lm(lpriceur ~ type + slr + elect + optical + pixeltot + country
+               , data = cameras)
+```
+
+##
+```{r hedonic3_b, echo=TRUE, message=FALSE}
+summary(hedonic3)
+```
+
+##
+```{r hedonic4_a, echo=TRUE, message=FALSE}
+hedonic4 <- lm(lsalesunits ~ lpriceur 
+               + type + slr + elect + optical + pixeltot + country
+               , data = cameras)
+```
+##
+```{r hedonic4_b, echo=TRUE, message=FALSE}
+summary(hedonic4)
+```
+
+
+           
+## 
+```{r logit1_reg_a, echo=TRUE, message=FALSE}
+logit1 <- lm(ls ~  priceur 
+             + type + slr + elect + optical + pixeltot 
+             + country + brand
+             , data = cameras)
+```
+
+## 
+```{r logit1_reg_b, echo=TRUE}
+summary(logit1)
+```
+
+
+
+## 
+```{r iv2, echo=TRUE, message=FALSE}
+library(AER)
+
+ivlogit1 <- ivreg(ls ~  
+                    + priceur + type + slr + elect+optical + pixeltot + priceur + brand + country | 
+                    + brand + country + type + slr + elect+optical + pixeltot  
+                  + i1_con + i2_con + i7_con + i1_type + i2_type + i7_type + i1_slr + i2_slr 
+                  + i7_slr + i1_elect + i2_elect + i7_elect + i1_optical + i2_optical + i7_optical 
+                  + i1_pixeltot + i2_pixeltot + i7_pixeltot 
+                , data = cameras) 
+
+```
+
+
+
+## 
+```{r, echo=TRUE}
+summary(ivlogit1)
+```
+
+
+## Nested logit
+```{r nlogit_reg_a, echo= TRUE}
+logit2 <- lm(ls ~  + priceur + lsj_g 
+             + type + slr + elect+optical + pixeltot 
+             + brand + country , data = cameras)
+```
+
+## 
+```{r nlogit_reg_b, echo= TRUE}
+summary(logit2)
+```
+
+## 
+```{r nlogit3_a, echo=TRUE, message=FALSE}
+ivlogit2 <- ivreg(ls ~ priceur + lsj_g 
+                  + type + slr + elect + optical + pixeltot 
+                  + brand + country | 
+                    type + slr + elect + optical + pixeltot + brand + country
+                  + i1_con + i2_con +  i3_con + i4_con +  i7_con + i1_type 
+                  + i2_type + i3_type + i4_type + i7_type +   i1_slr + i2_slr 
+                  +   i3_slr +  i4_slr +    i7_slr + i1_elect +  i2_elect 
+                  +  i3_elect +  i4_elect +  i7_elect +  i1_optical 
+                  + i2_optical + i3_optical +  i4_optical +  i7_optical 
+                  +  i1_pixeltot + i2_pixeltot +   i3_pixeltot + i4_pixeltot + i7_pixeltot 
+                , data = cameras) 
+```
+## 
+```{r nlogit3_b, echo=TRUE, message=FALSE}
+summary(ivlogit2)
+```
+
+## Price elasticities based on logit
+
+```{r elasticities, echo=TRUE, message=FALSE}
+library("broom")
+
+sum <- tidy(ivlogit1)
+sum()
+
+alpha = coef(summary(ivlogit1))["priceur","Estimate"]
+cameras$own = alpha*cameras$priceur*(1-cameras$share)
+cameras$cross = -alpha*cameras$priceur*cameras$share
+
+```
+
+##
+```{r neat, echo=TRUE, message=FALSE}
+cameras %>%
+  group_by(Country, Brand) %>%
+  summarise(mean_own = mean(own)) %>%
+  tidyr::pivot_wider(id_cols= Country, names_from = Brand, values_from = mean_own) %>%
+  ungroup() %>%
+  flextable()
+
+```
+
+
+```{r elasticities_cross}
+
+cameras %>%
+  group_by(Country, Brand) %>%
+  summarise(mean_cross = mean(cross)) %>%
+  tidyr::pivot_wider(id_cols= Country, names_from = Brand, values_from = mean_cross) %>%
+  ungroup() %>%
+  flextable()
+
+
+```
+
+## Merger simulation
+
+```{r antitrust}
+
+
+```
