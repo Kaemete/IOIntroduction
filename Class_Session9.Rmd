@@ -295,7 +295,7 @@ Lots of different ways to classify demand systems
 - Logit model 
   - including red bus/blue bus
 - Nested Logit
-
+- We do not cover the famous BLP
 
 ## Flexible Elasticities
 
