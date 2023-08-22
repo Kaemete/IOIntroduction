@@ -31,44 +31,37 @@ knitr::opts_chunk$set(echo = FALSE)
 -   Session 11: Merger analysis
 -   Session 12: Merger analysis - Empirical tutorial in R
 
-## What we do in Session 9
+## Learning objectives of session 9
 
-Motivating example of Bertrand-Nash (workhorse)
+### 1. Motivating example of Bertrand-Nash (workhorse)
+- Understand theory similar to model of Cournot Conduct
+- See applications of the model
+- Discuss relevance of good demand estimation
 
-- Some theory
-- Some Applications of the model
-- Relevance of good demand estimation
-
-<br>
-
-Heterogeneous demand and differentiated products 
-
-- Problems with early models (product space)
-- Logit demand (characteristics space)
-- Nested Logit demand (characteristics space)
+### 2. Heterogeneous demand and differentiated products 
+- Understand problems with models of homogenous demand  
+- Implement logit and nested logit demand models
+- Derive markups from logit demand + Bertrand competition
 
 
-##
+## How do we proceed in this session?
 
-***Bertrand-Nash pricing with differentiated products***
-
+### ***Bertrand-Nash pricing with differentiated products***
+- observe data of prices, market shares, and ownership
 - derive costs as function of ownership, market share, elasticity
 - obtain markups by subtracting cost from price 
-- observe prices, market shares, and ownership 
 - need to estimate elasticity through demand function
 
-***How do we estimate demand?***
-
+### ***How do we estimate demand?***
 - simple case: homogeneous demand (homogeneous products)
 - difficult: heterogeneous demand + differentiated products 
-  - consumer differ in tastes/preferences
-  - which leads to variation of elasticities across consumers
-  - and firms may introduce products depending on tase
-  - each product has different elasticity 
+  - consumer differ in tastes = variation of elasticities 
+  - and firms introduce products depending on taste
+  - products have different consumers with different tastes 
 
 
 ## 
-**Consider multi-product Bertrand where firms solve**: 
+**Consider multi-product Bertrand where firms solve** (skip): 
 $$
 \begin{align*}
 \arg \max_{p \in \mathcal{J}_f} \pi_f (\mathbf{p}) &  = \sum_{j \in \mathcal{J}_f} (p_j - c_j) \cdot q_j(\mathbf{p}) \\
@@ -162,7 +155,7 @@ It is helpful to define the matrix \( \Delta \) with entries of demand derivativ
         \end{array} \right\}
 \]
 
-- $\Delta$ is a matrix full of ones in case of monopoly/full collusion  
+- $\Delta$ is a full entry matrix full in case of monopoly/full collusion  
 - $\Delta$ is a diagonal matrix in case of single-product firms 
 
 <br>
@@ -217,27 +210,18 @@ Multiproduct Demand system estimation is probably the most important contributio
 
 - Welfare analysis, pass-on of taxation, value of advertising, price effects of mergers, and many more applications
 
+<br>
+
 Last 5-10 years has seen successful export to other fields: 
 
 - Marketing, Labor. Trade, Healthcare, Education, 
 
-Anywhere consumers face a number of options and ``prices'': 
+<br>
+
+Anywhere consumers face a number of options and ``prices'':
 
 - doctors, hospitals, schools, mutual funds, etc.
 
-
-
-## Two Major Issues
-
-Endogeneity of Prices
-
-- Prices are not randomly determined, but set strategically by firms who observe the demand curve
-- The **simultaneity** of supply and demand creates a problem. We see the market clearing \( (P^*,Q^*) \) over several periods, but in general we do not know which curve shifted.
-
-Multiple Products/Flexibility
-
-- We want to allow for flexible (data driven) substitution across products but if we have \( J \) products, then \( \partial Q_j / \partial P_k \) might have \( J^2 \) elements.
-- We may also think that \( \partial Q_j / \partial P_k \) varies with \( P \) and with other covariates \( x \).
 
 ## Data Sources
 **Aggregate data** (market level data on \( (P_j,Q_j) \))
@@ -261,7 +245,7 @@ Or **aggregate purchase data** plus **micro data** from a survey
 Lots of different ways to classify demand systems 
 
 - We saw homogeneous demand + homogeneous products 
-- focus: heterogeneous demand + differentiated products 
+- Focus here: heterogeneous demand + differentiated products 
   - product characteristics space
 
 ## Homogenous Demand
@@ -288,12 +272,12 @@ Examples were given in last lecture
 - Consumers have different preferences and elasticities
 - Elasticity varies with price and/or consumer characteristics
 
-### Modeling Approach
+### Modeling approach
 - Logit Model
 - Nested logit model
 - Random-coefficient logit model
 
-### Importance of Capturing Heterogeneity
+### Importance of capturing Heterogeneity
 - Accurate analysis of demand and market power
 - Allows for more accurate policy analysis
 
@@ -325,7 +309,6 @@ s_j = \int s_{ij} di
 $$
 
 ## Estimation Equation
-For the Logit model:
 $$
 \log(s_j) - \log(s_0) = X_j \beta - \alpha p_j + \xi_j
 $$
@@ -341,58 +324,20 @@ $$
 \eta_{jk} = \alpha \cdot p_k \cdot s_k \quad \text{for } j \neq k
 $$
 
-## Taste for Heterogeneous Products
-
-### Logit Model Insights
-
-- The Logit model allows for random utility maximization, capturing consumer choices among various product alternatives.
-- Each consumer derives utility from both observed and unobserved product characteristics.
-
-**Variety in Preferences**:
-
-- Not every consumer reacts the same way to a product or its features.
-- Understanding heterogeneity helps in segmenting the market and targeting effectively.
-
-### Advantages: Modelling in Product Characteristic Space
-
-## Comparing Approaches
-
-### Why Characteristic Space Over Other Methods?
-
-1. **Reduced Dimensionality**: Instead of defining every product, we define a smaller number of characteristics.
-2. **Predictive Power**: Can anticipate how changes in features or the introduction of new features will impact demand.
-3. **Generalizability**: A model built on product characteristics can predict outcomes for new products, as long as their characteristics are known.
-
-
----
-title: "Logit vs. Nested Logit"
-output: ioslides_presentation
----
 
 ## Disadvantage of Logit
 The primary disadvantage of the standard Logit model compared to the Nested Logit model is its restrictive substitution patterns. This drawback is termed the Independence of Irrelevant Alternatives (IIA) property.
 
-1. **Independence of Irrelevant Alternatives (IIA)**
+See examples in class (red bus / blue bus)
 
-- Definition: Relative odds between two choices remain constant regardless of other choices.
--  In other words, the inclusion or exclusion of other alternatives does not affect the relative odds of choosing between any two given alternatives.
-- Implication: Unrealistic substitution patterns.
-
-Example: For instance, consider a model predicting transportation choices between a car, a bus, and a bicycle. If bicycles were to suddenly become unavailable, the standard Logit model would predict that those who previously chose bicycles would now split between cars and buses in proportion to their original shares, even though it's more likely that most bicycle riders would shift to buses rather than cars.
-
+- introducing a blue bus, consumers will more likely switch from red bus than from bike 
 
 ## Nested Logit as a Solution
 
-1. **Relaxing IIA**: Allows correlated error terms within groups of similar alternatives ("nests").
+**Relaxing IIA**: Allows correlated error terms within groups of similar alternatives ("nests").
 
-***Nesting Structure***: In our transportation example, cars and buses might be in one nest (motorized transport) while bicycles are in another nest. Within the motorized transport nest, the model recognizes higher substitutability between cars and buses than between either of those and bicycles.
-
-***Benefit***: This structure allows for more realistic substitution patterns that can capture the higher likelihood of a bicycle rider switching to a bus over a car.
-
-## Summary
-
-- Standard Logit: Simple, but has restrictive IIA property.
-- Nested Logit: More flexible substitution patterns but needs correct nesting structures and is more complex.
+- Nested Logit: More flexible substitution patterns but needs correct nesting structures
+- E.g., we can define a nest bus vs bike
 
 
 
@@ -414,13 +359,18 @@ $$
 $$
 
 - where $s_{j|g(j)}$ is the share of product $j$ in group $g$ 
-- the within group market share is again endogenous as it depends on price
-- thus we need an additional instrument, usually the number of products within each nest
+- which reflects the increased utility from products within the same group \(g\).
 
-- which captures the nested structure 
-- and reflects the increased utility from products within the same group \(g\).
+<br>
+
+the nesting parameter is endogenous as it depends on price
+
+- we need an additional instrument
+
 
 ## Elasticities
+***Main takeaway***: Nested Logit allows for different cross-price elasticities depending on whether products are in same group
+
 
 1. **Own-price elasticity** for product \(j\) in group \(g\):
 $$
@@ -437,41 +387,31 @@ $$
 \eta_{jk} = \alpha \cdot p_k \cdot s_{k|h} \cdot s_{j|g} \quad \text{for } g \neq h
 $$
 
-Main takeaway: unlike the simple Logit, the Nested Logit allows for different cross-price elasticities depending on whether the products are in the same group or not.
-
-
-
-
-
 
 # Differentiated demand, logit exercise
 
 ## 1. Import data
 
-import the data into a data frame, called 'cameras_raw', 
+import the data into a data frame, called 'cameras', 
 
 ```{r import, echo=TRUE}
 #install.packages("flextable")
-#install.packages("sjmisc")
 
 library(haven)
 cameras <- read.csv("cameras.csv")
 ```
 
-## 
+This is a data set of digital cameras per EU country and brand
 
-use the 'dim', 'str' and 'head' functions to describe the dataset
-
-## 
-```{r datastructure, echo=TRUE}
-colnames(cameras)
-```
+- prices, shares, characteristics at a single date
+- charactersitcis: type, slr, elect, optical, pixeltot
 
 ## Tabulating sales by brand and country
 
 ```{r tables, echo=TRUE, message=FALSE}
 library(dplyr)
 library(flextable)
+
 cameras %>%
   group_by(Country) %>%
   summarise(Sales = sum(salesunits),
@@ -492,7 +432,7 @@ cameras %>%
 
 ```
 
-## prices of brand per country
+## Prices of brand per country
 
 ```{r brand_country_group, echo=TRUE, message=FALSE}
 cameras %>%
@@ -504,37 +444,53 @@ cameras %>%
 ```
 
 
+## 
+
+Before we proceed to state-of-the art estimation 
+
+- of logit and nested logit, 
+
+<br>
+
+We look at ``reduced-form'' hedonic regressions
+
+- kind of homogeneous demand function
+- which can be extended to heterogenous demand for differentiated products at very high costs
 
 ## Hedonic price/demand regressions
 
-why do we do this?
+hedonic: ("pleasure/utility") regressions to uncover correlations, 
 
-- we have no underlying theory, 
+- Estimate how much people value different attributes 
+- What determines prices and quantity of a product?
+
+<br>
+
+Limitations: 
+
+- no underlying theory which guides choice of variables 
+  - no endogeneity, e.g., economic theory tells us about OVB
   - no consumer decision making, no utility maximizing
+  - no profit maximization
+- throwing in arbitrary variables to "p-hack" effect of interest 
 
-- we easily get (homogeneous) own-price effects, 
-- for cross price effects, we need to include one addiotinal price variable per product    
 
-## Hedonic price regression
+## Hedonic regressions
+
+We define country and brand as factor variables instead of including them manually
+
 ```{r iv1, echo=TRUE}
 # Convert brand and country into factors:
 cameras$brand <- as.factor(cameras$Brand)
 cameras$country <- as.factor(cameras$Country)
 ```
 
-```{r hedonic1_a, echo=TRUE, message=FALSE}
-hedonic1 <- lm(lpriceur ~ country
-               , data = cameras)
-```
+## Hedonic price regressions
 
-## 
-```{r hedonic1_b, echo=TRUE, message=FALSE}
-summary(hedonic1)
-```
+We can start by analyzing what is driving the prices
 
-## 
 ```{r hedonic2_a, echo=TRUE, message=FALSE}
-hedonic2 <- lm(lsalesunits ~ lpriceur + country
+hedonic2 <- lm(lpriceur ~  type + slr + elect + optical + pixeltot
                  , data = cameras)
 ```
 
@@ -544,30 +500,146 @@ summary(hedonic2)
 ```
 
 ## 
+
+Decomposing the prices into country means
+
+- this is the same as calculating the mean prices per country
+
 ```{r hedonic3_a, echo=TRUE, message=FALSE}
-hedonic3 <- lm(lpriceur ~ type + slr + elect + optical + pixeltot + country
+hedonic3 <- lm(lpriceur ~ country
                , data = cameras)
 ```
+
+<br>
+
+don't forget that we have coded country as a factor variable 
+
 
 ##
 ```{r hedonic3_b, echo=TRUE, message=FALSE}
 summary(hedonic3)
 ```
 
-##
+## 
+
+Now we can define some kind of demand model
+
 ```{r hedonic4_a, echo=TRUE, message=FALSE}
 hedonic4 <- lm(lsalesunits ~ lpriceur 
-               + type + slr + elect + optical + pixeltot + country
+               + type + slr + elect + optical + pixeltot + country + brand
                , data = cameras)
 ```
+
 ##
 ```{r hedonic4_b, echo=TRUE, message=FALSE}
 summary(hedonic4)
 ```
 
+## Limitations
 
-           
+These are reduced-form correlations which do not allow to: 
+
+- adress endogeneity, e.g., OVB of supply side
+- model interactions of demand and supply equations
+- derive counterfactual analysis for policy advice
+- address consumer heterogeneity in tastes
+- back out costs and markups consistent with quantity/price
+
+## this as a homogeneous demand model 
+
+... without endogeneity. Only one parameter of elasticity.
+
+- consumers only care about price and all products are the same, then the price of other products doesn't matter, 
+  - leading to a cross-price elasticity of zero.
+
+## heterogeneous demand model 
+
+Let's introduce heterogeneity by letting demand depend on prices of other products
+
+```{r, echo=TRUE, message=FALSE}
+library(dplyr)
+
+# Step 1: Grouping
+cameras_grouped <- group_by(cameras, Country, period)
+
+# Step 2: Mutate
+cameras_grouped <- mutate(cameras_grouped, own_price = priceur,
+                     cross_price_avg = (sum(priceur) - own_price) / (n() - 1))
+
+# Step 3: Ungroup
+cameras_final <- ungroup(cameras_grouped)
+
+```
+
 ## 
+
+we include the price of other products into the regression 
+
+```{r, echo=TRUE, message=FALSE}
+model <- lm(salesunits ~ own_price + cross_price_avg
+            + country + brand 
+            + type + slr + elect + optical + pixeltot 
+            , data = cameras_grouped)
+```
+
+## 
+
+```{r, echo=TRUE,message=FALSE}
+summary(model)  
+```
+
+## Homogenous demand
+
+This is special version of AIDS (Almost Ideal Demand System)
+
+- we get (homogeneous) own-price effects, 
+- for cross price effects, we include price of other products 
+- we use one additional price variable per product
+
+<br>
+
+easy-peasy, right?
+
+
+## BUT 
+
+```{r, echo=TRUE}
+num_distinct <- length(unique(cameras$brand))
+print(num_distinct)
+
+num_distinct <- length(unique(cameras$model))
+print(num_distinct)
+```
+
+- introduce for each product $j$ in a country $1+7$ or $1+807$ new coefficients. Full substitution: $7^2$ or $807^2$
+- assuming that elasticities are time invariant
+
+## There is hope 
+
+Models of characteristics space: reduce number of parameters
+
+- Instead of estimating separate parameters for each product  
+- we estimate utilities or coefficients on product characteristics. 
+
+<br> 
+
+For example, if you have 1,000 products, 
+
+- but only 10 meaningful characteristics that define products
+- then just assume that those parameters define preferences 
+- and estimate those 10 parameters
+
+This is what logit, nested logit, and BLP do
+
+## 
+
+Remember the formula: need to calculate $log(s_j)-log(s_0)$, 
+
+- where $log(s_0)$ is the outside good, often market size
+- if you observe a sample of 10 million clients in a country, then the outside good (probability of not buying) could be the population size
+- here we take it as given
+
+
 ```{r logit1_reg_a, echo=TRUE, message=FALSE}
 logit1 <- lm(ls ~  priceur 
              + type + slr + elect + optical + pixeltot 
@@ -580,6 +652,21 @@ logit1 <- lm(ls ~  priceur
 summary(logit1)
 ```
 
+## 
+
+```{r, echo=TRUE, message=FALSE}
+library(dplyr)
+
+# Calculate sum of characteristics in other countries for each country
+result <- cameras %>%
+  group_by(Country) %>%
+  mutate(sum_optical_other = sum(cameras$optical[cameras$Country != first(Country)]),
+  sum_elect_other = sum(cameras$elect[cameras$Country != first(Country)]),        
+  sum_type_other = sum(cameras$type[cameras$Country != first(Country)]),
+  sum_slr_other = sum(cameras$slr[cameras$Country != first(Country)]),
+  sum_pixeltot_other = sum(cameras$pixeltot[cameras$Country != first(Country)])) %>%
+  ungroup()
+```
 
 
 ## 
@@ -587,12 +674,10 @@ summary(logit1)
 library(AER)
 
 ivlogit1 <- ivreg(ls ~  
-                    + priceur + type + slr + elect+optical + pixeltot + priceur + brand + country | 
-                    + brand + country + type + slr + elect+optical + pixeltot  
-                  + i1_con + i2_con + i7_con + i1_type + i2_type + i7_type + i1_slr + i2_slr 
-                  + i7_slr + i1_elect + i2_elect + i7_elect + i1_optical + i2_optical + i7_optical 
-                  + i1_pixeltot + i2_pixeltot + i7_pixeltot 
-                , data = cameras) 
+                    + priceur + type + slr + elect+ optical + pixeltot + country | 
+                  country + type + slr + elect + optical + pixeltot  
+                  + sum_optical_other + sum_pixeltot_other + sum_elect_other + sum_type_other + sum_slr_other
+                , data = result) 
 
 ```
 
@@ -608,7 +693,7 @@ summary(ivlogit1)
 ```{r nlogit_reg_a, echo= TRUE}
 logit2 <- lm(ls ~  + priceur + lsj_g 
              + type + slr + elect+optical + pixeltot 
-             + brand + country , data = cameras)
+             + brand + country , data = result)
 ```
 
 ## 
@@ -621,14 +706,9 @@ summary(logit2)
 ivlogit2 <- ivreg(ls ~ priceur + lsj_g 
                   + type + slr + elect + optical + pixeltot 
                   + brand + country | 
-                    type + slr + elect + optical + pixeltot + brand + country
-                  + i1_con + i2_con +  i3_con + i4_con +  i7_con + i1_type 
-                  + i2_type + i3_type + i4_type + i7_type +   i1_slr + i2_slr 
-                  +   i3_slr +  i4_slr +    i7_slr + i1_elect +  i2_elect 
-                  +  i3_elect +  i4_elect +  i7_elect +  i1_optical 
-                  + i2_optical + i3_optical +  i4_optical +  i7_optical 
-                  +  i1_pixeltot + i2_pixeltot +   i3_pixeltot + i4_pixeltot + i7_pixeltot 
-                , data = cameras) 
+                    lsj_g + type + slr + elect + optical + pixeltot + brand + country
+                  + sum_optical_other + sum_pixeltot_other + sum_elect_other + sum_type_other + sum_slr_other 
+                , data = result) 
 ```
 ## 
 ```{r nlogit3_b, echo=TRUE, message=FALSE}
@@ -641,17 +721,16 @@ summary(ivlogit2)
 library("broom")
 
 sum <- tidy(ivlogit1)
-sum()
 
 alpha = coef(summary(ivlogit1))["priceur","Estimate"]
-cameras$own = alpha*cameras$priceur*(1-cameras$share)
-cameras$cross = -alpha*cameras$priceur*cameras$share
+result$own = alpha*result$priceur*(1-result$share)
+result$cross = -alpha*result$priceur*result$share
 
 ```
 
 ##
 ```{r neat, echo=TRUE, message=FALSE}
-cameras %>%
+result %>%
   group_by(Country, Brand) %>%
   summarise(mean_own = mean(own)) %>%
   tidyr::pivot_wider(id_cols= Country, names_from = Brand, values_from = mean_own) %>%
@@ -661,9 +740,9 @@ cameras %>%
 ```
 
 
-```{r elasticities_cross}
+```{r elasticities_cross, echo=TRUE}
 
-cameras %>%
+result %>%
   group_by(Country, Brand) %>%
   summarise(mean_cross = mean(cross)) %>%
   tidyr::pivot_wider(id_cols= Country, names_from = Brand, values_from = mean_cross) %>%
@@ -673,9 +752,52 @@ cameras %>%
 
 ```
 
-## Merger simulation
+## Matrix of Market Share Derivatives 
 
-```{r antitrust}
+... (also called the Jacobian):
 
+```{r, echo=TRUE}
+cameras_austria <- result %>% filter(country == "AUSTRIA")
 
+s <- cameras_austria$share
+diagM <- alpha * s * (1 - s)
+offdiagM <- -alpha * outer(s, s)
+Jacobian <- matrix(0, length(s), length(s))
+diag(Jacobian) <- diagM
+Jacobian[Jacobian == 0] <- offdiagM[Jacobian == 0]
 ```
+
+## Ownership Matrix
+
+```{r, echo=TRUE}
+brand <- cameras_austria$Brand
+Ownership <- outer(brand, brand, FUN = "==") * 1
+```
+
+## Markups and costs
+
+```{r, echo=TRUE}
+p <- cameras_austria$priceur
+mu <- -solve(Jacobian*Ownership) %*% s
+c <- p - mu
+
+print(mean(c))
+print(mean(mu))
+
+lerner=(p-c)/p
+print(mean(lerner))
+```
+## 
+```{r, echo=TRUE}
+# merger to full monopoly or full collusion
+
+mu_m <- -solve(Jacobian) %*% s
+c_m <- p - mu_m
+
+print(mean(c_m))
+print(mean(mu_m))
+
+lerner_m=(p-c_m)/p
+print(mean(lerner_m))
+```
+

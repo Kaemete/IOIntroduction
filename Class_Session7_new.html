@@ -3558,7 +3558,7 @@ ggplot(coffee, aes(date)) +
 
 </article></slide><slide class=""><hgroup><h2>Cournot Model / Nash in quantities</h2></hgroup><article  id="cournot-model-nash-in-quantities">
 
-<p>We consider profits \(\pi_i(q_i) = P(Q)\cdot q_i-C_i(q_i)\)</p>
+<p>We consider profits \(\pi_i(q_i) = P(Q(q_i))\cdot q_i-C_i(q_i)\)</p>
 
 <ul>
 <li>where \(Q(q_i)=\sum_{i=1}^{N}q_i\) is the total industry output</li>
@@ -3607,6 +3607,12 @@ ggplot(coffee, aes(date)) +
 
 <p>\(\theta_i\) <strong><em>conjecture</em></strong> (=belief) about how my rival is going to respond</p>
 
+</article></slide><slide class=""><hgroup><h2>Intutition:</h2></hgroup><article  id="intutition">
+
+<p>I want to estimate how competitors react to a demand change of me</p>
+
+<p>if competitors: - reduce their quantity: likely perfect competition - do not react: likely Cournot - also increase quantity: likely collusion</p>
+
 </article></slide><slide class=""><hgroup><h2>Estimation of conduct parameter</h2></hgroup><article  id="estimation-of-conduct-parameter">
 
 <p>… using <strong><em>conjectures</em></strong> (=beliefs about my rivals behavior)</p>
@@ -3615,14 +3621,15 @@ ggplot(coffee, aes(date)) +
 
 <p>\[P(Q)+\frac{\partial P(Q)}{\partial Q} \cdot q_i \cdot (\underbrace{1+\frac{\partial Q_{-i}}{\partial q_i}}_{Conduct~\theta_i})= C&#39;(Q)\]</p>
 
-<p>We can obtain <strong><em>conduct</em></strong> \(\theta_i\) if we</p>
+<p>We can obtain unknown <strong><em>conduct</em></strong> \(\theta_i\) if we</p>
 
 <ul>
 <li>know prices \(P\) and quantities \(q_i\)</li>
 <li>have information on marginal costs \(C&#39;(Q)\)</li>
 <li>and estimate how prices change with quantity</li>
-<li>(or how quantity change with price)</li>
 </ul>
+
+<p>because <strong><em>conduct</em></strong> \(\theta_i\) is the only unknown in this equation</p>
 
 </article></slide><slide class=""><hgroup><h2>Normalized conduct parameter</h2></hgroup><article  id="normalized-conduct-parameter">
 
@@ -3631,8 +3638,8 @@ ggplot(coffee, aes(date)) +
 <p>\[P(Q)+\frac{\partial P(Q)}{\partial Q} \cdot Q  \underbrace{\frac{q_i}{Q} \cdot (1+\frac{\partial Q_{-i}}{\partial q_i}}_{Normalized~Conduct~\phi_i})= C&#39;(Q)\]</p>
 
 <ul>
+<li>with symmetry market share becomes: \(\frac{q_i}{Q}=\frac{1}{N}\)</li>
 <li>where conduct is weigthted by market share: \(0\leq\phi\leq 1\)</li>
-<li>with symmetry: \(\frac{q_i}{Q}=\frac{1}{N}\)</li>
 </ul>
 
 <p>The conduct parameter can take the following values:</p>
@@ -3643,9 +3650,9 @@ ggplot(coffee, aes(date)) +
 <li>\(\phi = 1\) for monopoly or collusion</li>
 </ul>
 
-</article></slide><slide class=""><hgroup><h2>Infer normalized conduct \(\phi\)</h2></hgroup><article  id="infer-normalized-conduct-phi">
+</article></slide><slide class=""><hgroup><h2>How to infer normalized conduct \(\phi\)</h2></hgroup><article  id="how-to-infer-normalized-conduct-phi">
 
-<p>Lerner Index is given by \(L=\frac{P-MC}{P}=\frac{\phi}{\epsilon_D}\). Solve for \(\phi\)</p>
+<p>Rewrite FOC as Lerner Index: \(L=\frac{P-MC}{P}=\frac{\phi}{\epsilon_D}\). Solve for \(\phi\)</p>
 
 <p>\[ \phi  = −\epsilon_D  \frac{P-MC}{P} \equiv L_{\epsilon}\]</p>
 
@@ -3699,6 +3706,10 @@ ggplot(coffee, aes(date)) +
 
 </article></slide><slide class=""><hgroup><h2>Choosing demand and supply models</h2></hgroup><article  id="choosing-demand-and-supply-models">
 
+<p>How can we now bring the theoretical insights to data?</p>
+
+</article></slide><slide class=""><hgroup><h2>Choosing demand and supply models</h2></hgroup><article  id="choosing-demand-and-supply-models-1">
+
 <p>As stated before, we need to make assumption on demand and costs to obtain conduct</p>
 
 <ul>
@@ -3712,7 +3723,7 @@ ggplot(coffee, aes(date)) +
 </ul></li>
 </ul>
 
-</article></slide><slide class=""><hgroup><h2>Assumption Demand function</h2></hgroup><article  id="assumption-demand-function">
+</article></slide><slide class=""><hgroup><h2>Assumption demand function</h2></hgroup><article  id="assumption-demand-function">
 
 <p>We consider the following two demand functions</p>
 
@@ -3747,7 +3758,7 @@ ggplot(coffee, aes(date)) +
 <li>provide robustness checks</li>
 </ul>
 
-</article></slide><slide class=""><hgroup><h2>Production technology</h2></hgroup><article  id="production-technology">
+</article></slide><slide class=""><hgroup><h2>Assumption production technology</h2></hgroup><article  id="assumption-production-technology">
 
 <p>We assume that (constant) marginal costs for coffee are:</p>
 
@@ -3770,7 +3781,7 @@ ggplot(coffee, aes(date)) +
 
 </article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Estimating demand to obtain conduct \(\phi\)</h2></hgroup><article  id="estimating-demand-to-obtain-conduct-phi">
 
-</article></slide><slide class=""><hgroup><h2>Basic demand regressions</h2></hgroup><article  id="basic-demand-regressions">
+</article></slide><slide class=""><hgroup><h2>Basic demand regression (log-log)</h2></hgroup><article  id="basic-demand-regression-log-log">
 
 <p>Simple regression without IV</p>
 
@@ -3916,29 +3927,7 @@ iv2 &lt;- ivreg(log(qu)
 ## Multiple R-Squared: 0.281,   Adjusted R-squared: 0.2249 
 ## Wald test: 5.127 on 6 and 77 DF,  p-value: 0.0001775</pre>
 
-</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  id="section-7">
-
-<p>Back out Lerner markups \(L=\frac{P-MC}{P}=\frac{1}{N \cdot \epsilon_D}\)</p>
-
-<pre class = 'prettyprint lang-r'>epsilon_D = -0.28
-# Monopoly
-L_monopoly=1/abs(epsilon_D)
-L_monopoly</pre>
-
-<pre >## [1] 3.571429</pre>
-
-<pre class = 'prettyprint lang-r'># Cournot with N=10?
-L_cournot=1/(10*abs(epsilon_D))
-L_cournot</pre>
-
-<pre >## [1] 0.3571429</pre>
-
-<ul>
-<li>we can reject that there is monopoly: 360% markup</li>
-<li>conduct is assumed to be 0 in Cournot</li>
-</ul>
-
-</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Cost information from industry</h2></hgroup><article  id="cost-information-from-industry">
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Way 1: Cost information from industry to obtain conduct \(\phi\)</h2></hgroup><article  id="way-1-cost-information-from-industry-to-obtain-conduct-phi">
 
 </article></slide><slide class=""><hgroup><h2>Calculate learner index</h2></hgroup><article  id="calculate-learner-index">
 
@@ -3948,7 +3937,9 @@ L_cournot</pre>
 <li>without knowing the actual number of firms</li>
 </ul>
 
-<pre class = 'prettyprint lang-r'>k = 1.19 # kg of beans per kg of coffee
+<pre class = 'prettyprint lang-r'>epsilon_D = -0.28
+
+k = 1.19 # kg of beans per kg of coffee
 c0= 4 # by assumption (4 guilders)
 
 # obtain the cost function    
@@ -3963,7 +3954,7 @@ summary(Lerner)</pre>
 
 </article></slide><slide class=""><hgroup><h2>Calculate adjusted learner index</h2></hgroup><article  id="calculate-adjusted-learner-index">
 
-<p>… with cost from Bettendorf &amp; Verboven + our estimate of \(\epsilon_D\):</p>
+<p>i.e., our conduct parameter with cost from Bettendorf &amp; Verboven + our estimate of \(\epsilon_D\):</p>
 
 <pre class = 'prettyprint lang-r'># now compute adjusted Lerner index  
 Lerner_adj = -epsilon_D * Lerner
@@ -3980,7 +3971,9 @@ summary(Lerner_adj)</pre>
 <li>high markups driven by elasticity rather than collusion</li>
 </ul>
 
-</article></slide><slide class=""><hgroup><h2>Estimating conduct parameter</h2></hgroup><article  id="estimating-conduct-parameter">
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Way 2: Estimate costs to obtain conduct \(\phi\)</h2></hgroup><article  id="way-2-estimate-costs-to-obtain-conduct-phi">
+
+</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  id="section-7">
 
 <p>Remember that we have: \(P=\frac{\epsilon_D}{(\epsilon_D+\phi)}MC\)</p>
 
@@ -4036,41 +4029,7 @@ mean(phi2)</pre>
 
 <pre >## [1] 0.1143195</pre>
 
-</article></slide><slide class=""><hgroup><h2>Implied number of firms</h2></hgroup><article  id="implied-number-of-firms">
-
-<p>Once we know \(\epsilon_D\) and \(L\) or \(\phi=L*\epsilon_D\), we can back out</p>
-
-<p>\[N=\frac{1}{L \cdot \epsilon_D}\]</p>
-
-<p>which is implied number of firms as validation for our model</p>
-
-<ul>
-<li>check if equal to number of firms in the market</li>
-</ul>
-
-<p>only works for Cournot with simultaneous moves</p>
-
-<ul>
-<li>no analytical solution for conjectural variations</li>
-<li>intuition: number of firms should be lower with CV</li>
-<li>you can use Cournot as an estimate of the upper bound</li>
-</ul>
-
-</article></slide><slide class=""><hgroup><h2></h2></hgroup><article  id="section-9">
-
-<pre class = 'prettyprint lang-r'># implied number of firms
-n1=1/phi1
-mean(n1)    </pre>
-
-<pre >## [1] 5.124224</pre>
-
-<pre class = 'prettyprint lang-r'># implied number of firms
-n2=1/phi2
-mean(n2)    </pre>
-
-<pre >## [1] 8.747412</pre>
-
-<p>Ahold Delhaize Coffee Company, Jacobs Douwe Egberts, Peeze, Pelican Rouge Coffee Roasters, Boot Coffee, Espresso Fabriek, Beans Coffee, and Back to Black who operate in the market. Jacobs and Douwe Egberts merged recently</p>
+</article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Robustness check: Linear demand</h2></hgroup><article  id="robustness-check-linear-demand">
 
 </article></slide><slide class=""><hgroup><h2>Linear demand</h2></hgroup><article  id="linear-demand">
 

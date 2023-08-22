@@ -304,7 +304,7 @@ Neat: infer monopoly markup from estimating elasticity $\epsilon_D$
 
 ## Cournot Model / Nash in quantities
 
-We consider profits $\pi_i(q_i) = P(Q)\cdot q_i-C_i(q_i)$
+We consider profits $\pi_i(q_i) = P(Q(q_i))\cdot q_i-C_i(q_i)$
 
 - where $Q(q_i)=\sum_{i=1}^{N}q_i$ is the total industry output
 
@@ -343,6 +343,17 @@ Assume competitors react in $q$, then $\frac{\partial Q}{\partial q_i}=1+\frac{\
 
 $\theta_i$ ***conjecture*** (=belief) about how my rival is going to respond
 
+## Intutition:
+
+I want to estimate how competitors react to a demand change of me
+
+if competitors: 
+- reduce their quantity: likely perfect competition
+- do not react: likely Cournot
+- also increase quantity: likely collusion
+
+
+
 ## Estimation of conduct parameter 
 
 ... using ***conjectures*** (=beliefs about my rivals behavior)
@@ -351,13 +362,13 @@ We know that this relation holds in optimum:
 
 $$P(Q)+\frac{\partial P(Q)}{\partial Q} \cdot q_i \cdot (\underbrace{1+\frac{\partial Q_{-i}}{\partial q_i}}_{Conduct~\theta_i})= C'(Q)$$
 
-We can obtain ***conduct*** $\theta_i$ if we 
+We can obtain unknown ***conduct*** $\theta_i$ if we 
 
 - know prices $P$ and quantities $q_i$
 - have information on marginal costs $C'(Q)$
 - and estimate how prices change with quantity 
-- (or how quantity change with price)
 
+because ***conduct*** $\theta_i$ is the only unknown in this equation
 
 ## Normalized conduct parameter
 
@@ -365,8 +376,8 @@ We can rewrite the above expression and multiply by $\frac{Q}{Q}$ to get
 
 $$P(Q)+\frac{\partial P(Q)}{\partial Q} \cdot Q  \underbrace{\frac{q_i}{Q} \cdot (1+\frac{\partial Q_{-i}}{\partial q_i}}_{Normalized~Conduct~\phi_i})= C'(Q)$$
 
+- with symmetry market share becomes: $\frac{q_i}{Q}=\frac{1}{N}$
 - where conduct is weigthted by market share: $0\leq\phi\leq 1$
-- with symmetry: $\frac{q_i}{Q}=\frac{1}{N}$
 
 The conduct parameter can take the following values:
 
@@ -374,9 +385,9 @@ The conduct parameter can take the following values:
 - $0 < \phi < 1$ for oligopoly
 - $\phi = 1$ for monopoly or collusion
 
-## Infer normalized conduct $\phi$
+## How to infer normalized conduct $\phi$
 
-Lerner Index is given by $L=\frac{P-MC}{P}=\frac{\phi}{\epsilon_D}$. Solve for $\phi$
+Rewrite FOC as Lerner Index: $L=\frac{P-MC}{P}=\frac{\phi}{\epsilon_D}$. Solve for $\phi$
 
 $$ \phi  = −\epsilon_D  \frac{P-MC}{P} \equiv L_{\epsilon}$$
 
@@ -423,6 +434,10 @@ $$\phi = \frac{\epsilon_D(1 − b)}{b}$$
 
 ## Choosing demand and supply models 
 
+How can we now bring the theoretical insights to data?
+
+## Choosing demand and supply models 
+
 As stated before, we need to make assumption on demand and costs to obtain conduct
 
 - Usually we observe $P$ and $Q$
@@ -431,7 +446,7 @@ As stated before, we need to make assumption on demand and costs to obtain condu
   - accounting data not available at product level and usually inaccurate due to reporting bias
   - in many cases, we estimate the marginal cost function
 
-## Assumption Demand function
+## Assumption demand function
 
 We consider the following two demand functions 
 
@@ -448,7 +463,7 @@ This is of course an arbitrary choice. Normally, we need to
 - cross-check with evidence from industry
 - provide robustness checks
 
-## Production technology
+## Assumption production technology
 
 We assume that (constant) marginal costs for coffee are: 
 
@@ -467,7 +482,7 @@ $$c = c_0 + k P_{coffeebeans} $$
 
 # Estimating demand to obtain conduct $\phi$
 
-## Basic demand regressions
+## Basic demand regression (log-log)
 
 Simple regression without IV
 
@@ -528,24 +543,8 @@ iv2 <- ivreg(log(qu)
 summary(iv2)
 ```
 
-##
 
-Back out Lerner markups $L=\frac{P-MC}{P}=\frac{1}{N \cdot \epsilon_D}$
-
-```{r, echo=TRUE}
-epsilon_D = -0.28
-# Monopoly
-L_monopoly=1/abs(epsilon_D)
-L_monopoly
-# Cournot with N=10?
-L_cournot=1/(10*abs(epsilon_D))
-L_cournot
-```
-
-- we can reject that there is monopoly: 360% markup 
-- conduct is assumed to be 0 in Cournot
-
-# Cost information from industry
+# Way 1: Cost information from industry to obtain conduct $\phi$
 
 ## Calculate learner index
 
@@ -554,6 +553,8 @@ L_cournot
 - without knowing the actual number of firms
 
 ```{r lerner, echo= TRUE}
+epsilon_D = -0.28
+
 k = 1.19 # kg of beans per kg of coffee
 c0= 4 # by assumption (4 guilders)
 
@@ -567,7 +568,7 @@ summary(Lerner)
 
 ## Calculate adjusted learner index
 
-... with cost from  Bettendorf & Verboven + our estimate of $\epsilon_D$:
+i.e., our conduct parameter with cost from  Bettendorf & Verboven + our estimate of $\epsilon_D$:
 
 ```{r lerner_adj, echo= TRUE}
 # now compute adjusted Lerner index  
@@ -581,9 +582,9 @@ Although the markup is rather high, conduct is relatively low
 
 - high markups driven by elasticity rather than collusion
 
+# Way 2: Estimate costs to obtain conduct $\phi$
 
-## Estimating conduct parameter
-
+## 
 Remember that we have: $P=\frac{\epsilon_D}{(\epsilon_D+\phi)}MC$
 
 - which we get from regression of prices on costs
@@ -625,34 +626,8 @@ mean(phi2)
 ```
 
 
-## Implied number of firms
 
-Once we know $\epsilon_D$ and $L$ or $\phi=L*\epsilon_D$, we can back out 
-
-$$N=\frac{1}{L \cdot \epsilon_D}$$
-
-which is implied number of firms as validation for our model 
-
-- check if equal to number of firms in the market
-
-only works for Cournot with simultaneous moves
-
-- no analytical solution for conjectural variations
-- intuition: number of firms should be lower with CV
-- you can use Cournot as an estimate of the upper bound
-
-## 
-```{r, echo=TRUE}
-# implied number of firms
-n1=1/phi1
-mean(n1)    
-
-# implied number of firms
-n2=1/phi2
-mean(n2)    
-```
-
-Ahold Delhaize Coffee Company, Jacobs Douwe Egberts, Peeze, Pelican Rouge Coffee Roasters, Boot Coffee, Espresso Fabriek, Beans Coffee, and Back to Black who operate in the market. Jacobs and Douwe Egberts merged recently
+# Robustness check: Linear demand
 
 ## Linear demand 
 
