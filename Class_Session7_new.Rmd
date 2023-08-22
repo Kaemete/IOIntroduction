@@ -345,9 +345,10 @@ $\theta_i$ ***conjecture*** (=belief) about how my rival is going to respond
 
 ## Intutition:
 
-I want to estimate how competitors react to a demand change of me
+I want to estimate how competitors react to my demand change
 
 if competitors: 
+
 - reduce their quantity: likely perfect competition
 - do not react: likely Cournot
 - also increase quantity: likely collusion
